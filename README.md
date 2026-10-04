@@ -13,10 +13,15 @@ articles/                        Déclinaisons d'un article publié
 └── regroupement-bureaux-vote-noumea/
     ├── carrousel/                 diapositives « En bref » au format carrousel
     └── tiktok/                    diapositives « En bref » au format vertical, animation de fin
+assets/
+├── js/contours-sketch.js        bannière animée du site, avec l'option animationTimeScale
+└── data/nc_logo.geojson         contour de la Nouvelle-Calédonie utilisé par la bannière
 export/
 └── export-en-bref.js            script de capture des diapositives « En bref »
 images/
 └── contours-hexagon.svg         logo utilisé par les sources HTML
+scripts/
+└── produire_gif.py              production d'un GIF à partir d'une source HTML animée
 ```
 
 Pour un nouvel article, créer `articles/<slug-de-l-article>/` avec le même slug que sur le site.
@@ -24,6 +29,17 @@ Pour un nouvel article, créer `articles/<slug-de-l-article>/` avec le même slu
 ## Sources HTML
 
 Les fichiers `source.html` produisent les visuels : les ouvrir dans un navigateur, à la taille du format visé (1080 × 1350, 1080 × 1080, 1200 × 630…), puis capturer. Ils ne dépendent que de `images/contours-hexagon.svg` et des polices Google (`Cabin Sketch`, `Atkinson Hyperlegible`).
+
+`assets/js/contours-sketch.js` est une copie de la bannière du site, enrichie de l'option `animationTimeScale` qui ralentit l'animation pour la capture. Elle n'existe que dans ce dépôt : la version du site reste celle publiée.
+
+## Produire un GIF animé
+
+```powershell
+python -m pip install --user pillow websocket-client
+python scripts/produire_gif.py campagnes/lancement-tiktok/outro-source.html campagnes/lancement-tiktok/contours-nc-outro.gif
+```
+
+Le script ouvre la page une seule fois dans Edge ou Chrome sans interface, ralentit l'animation (`--ralenti 6` par défaut, transmis par `?timeScale=`) et la capture à 10 images par seconde (`--ips`), en 720 × 1280 avec une mise en page de 540 × 960 (`--echelle`). Options utiles : `--duree` (ms d'animation), `--pause-finale`, `--largeur`, `--hauteur`. La source doit accepter `?manual=1&timeScale=N`, signaler qu'elle est prête et exposer sa fonction de démarrage, comme `outro-source.html`.
 
 ## Capturer les diapositives « En bref » d'un article
 
