@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Appel à contributions · contours.nc</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cabin+Sketch:wght@700&display=swap");
+
+    :root {
+      --paper: #f7f1e3;
+      --paper-card: rgba(255, 255, 255, 0.3);
+      --ink: #1f1f1f;
+      --muted: #625f57;
+      --green: #455d44;
+      --olive: #73884c;
+      --gold: #e0ab1e;
+      --red: #c54832;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+    }
+
+    .slide {
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 43px, rgba(69, 93, 68, 0.065) 44px),
+        var(--paper);
+      display: none;
+      height: 100vh;
+      overflow: hidden;
+      padding: 76px 68px 112px;
+      position: relative;
+      width: 100vw;
+    }
+
+    .slide.is-active {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-content {
+      align-self: center;
+      flex: 0 0 auto;
+      transform-origin: center center;
+      width: 100%;
+    }
+
+    .slide::before,
+    .slide::after {
+      border-top: 3px dashed rgba(31, 31, 31, 0.4);
+      content: "";
+      left: 50px;
+      position: absolute;
+      right: 50px;
+    }
+
+    .slide::before { top: 37px; transform: rotate(-0.18deg); }
+    .slide::after { bottom: 81px; transform: rotate(0.14deg); }
+
+    .folio {
+      color: var(--green);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      position: absolute;
+      right: 58px;
+      top: 48px;
+    }
+
+    .eyebrow {
+      align-self: flex-start;
+      background: var(--green);
+      color: var(--paper);
+      display: inline-block;
+      font-size: 25px;
+      font-weight: 700;
+      letter-spacing: 0.075em;
+      margin: 0 0 28px;
+      padding: 11px 17px 10px;
+      text-transform: uppercase;
+      transform: rotate(-0.75deg);
+    }
+
+    .eyebrow.red { background: var(--red); }
+    .eyebrow.gold { background: var(--gold); color: var(--ink); }
+
+    h1,
+    h2,
+    h3,
+    .sketch-font {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-weight: 700;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    h1 {
+      font-size: 78px;
+      letter-spacing: -0.022em;
+      line-height: 0.96;
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      font-size: 71px;
+      letter-spacing: -0.018em;
+      line-height: 0.98;
+      margin-bottom: 28px;
+    }
+
+    .lead {
+      font-size: 35px;
+      line-height: 1.22;
+      margin-bottom: 27px;
+    }
+
+    .lead strong { color: var(--green); }
+    .accent-green { color: var(--green); }
+    .accent-red { color: var(--red); }
+    .accent-gold { color: #9b740c; }
+
+    .contours-brand {
+      background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.06) 0, rgba(0, 0, 0, 0.06) 1px, transparent 1px, transparent 3px);
+      background-clip: text;
+      color: #1d1d1b;
+      font-family: "Cabin Sketch", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-shadow: 0.3px 0.3px 0 #111, -0.3px -0.3px 0 #111, 0 0 1px rgba(0, 0, 0, 0.28);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: #1f1f1f;
+    }
+
+    .brandbar {
+      align-items: center;
+      bottom: 31px;
+      display: flex;
+      justify-content: space-between;
+      left: 68px;
+      position: absolute;
+      right: 68px;
+    }
+
+    .brandbar strong { font-size: 32px; }
+
+    .brandbar span {
+      color: var(--green);
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.05;
+      text-align: right;
+    }
+
+    .color-rule {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      margin: 9px 0 26px;
+      width: 360px;
+    }
+
+    .color-rule i {
+      border-top: 7px solid;
+      display: block;
+      transform: rotate(-0.8deg);
+    }
+
+    .color-rule i:nth-child(1) { border-color: var(--green); }
+    .color-rule i:nth-child(2) { border-color: var(--olive); transform: rotate(0.8deg); }
+    .color-rule i:nth-child(3) { border-color: var(--gold); }
+    .color-rule i:nth-child(4) { border-color: var(--red); transform: rotate(0.5deg); }
+
+    .cover-grid { display: block; }
+
+    .logo-hex {
+      display: block;
+      filter: contrast(1.03);
+      height: 390px;
+      margin: -15px auto 8px;
+      object-fit: contain;
+      width: 390px;
+    }
+
+    .cover-title { font-size: 70px; }
+
+    .format-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 27px;
+    }
+
+    .format-card {
+      background: var(--paper-card);
+      border: 3px solid var(--ink);
+      box-shadow: 8px 9px 0 rgba(69, 93, 68, 0.12);
+      min-height: 165px;
+      padding: 24px 25px 22px;
+      position: relative;
+    }
+
+    .format-card:nth-child(1) { transform: rotate(-0.45deg); }
+    .format-card:nth-child(2) { border-color: var(--green); transform: rotate(0.35deg); }
+    .format-card:nth-child(3) { border-color: var(--red); transform: rotate(0.25deg); }
+    .format-card:nth-child(4) { border-color: #9b740c; transform: rotate(-0.35deg); }
+    .format-card:nth-child(5) { grid-column: 1 / -1; min-height: 145px; transform: rotate(0.2deg); }
+
+    .format-card::before {
+      background: rgba(224, 171, 30, 0.52);
+      content: "";
+      height: 11px;
+      left: 42%;
+      position: absolute;
+      top: -8px;
+      transform: rotate(-1.4deg);
+      width: 92px;
+    }
+
+    .format-card h3 {
+      font-size: 34px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .format-card p {
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .idea-list {
+      display: grid;
+      gap: 18px;
+      margin: 30px 0 28px;
+    }
+
+    .idea-item {
+      align-items: center;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 86px 1fr;
+      min-height: 138px;
+      padding: 17px 23px;
+      position: relative;
+    }
+
+    .idea-item::after {
+      border-bottom: 3px solid var(--ink);
+      bottom: 0;
+      content: "";
+      left: 4px;
+      position: absolute;
+      right: 4px;
+      transform: rotate(-0.2deg);
+    }
+
+    .idea-item:nth-child(even)::after { transform: rotate(0.32deg); }
+
+    .idea-item em {
+      align-items: center;
+      border: 3px solid currentColor;
+      border-radius: 50%;
+      color: var(--green);
+      display: flex;
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 36px;
+      font-style: normal;
+      height: 72px;
+      justify-content: center;
+      transform: rotate(-3deg);
+      width: 72px;
+    }
+
+    .idea-item b {
+      display: block;
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 35px;
+      line-height: 1;
+      margin-bottom: 7px;
+    }
+
+    .idea-item span {
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1.18;
+    }
+
+    .idea-callout {
+      background: var(--green);
+      color: var(--paper);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 32px;
+      margin: 7px 0 0 auto;
+      padding: 18px 23px 16px;
+      transform: rotate(-0.7deg);
+      width: fit-content;
+    }
+
+    .process {
+      display: grid;
+      gap: 13px;
+      margin-top: 28px;
+    }
+
+    .process-step {
+      align-items: start;
+      display: grid;
+      gap: 25px;
+      grid-template-columns: 105px 1fr;
+      min-height: 185px;
+      padding: 25px 25px 21px;
+      position: relative;
+    }
+
+    .process-step::after {
+      border-bottom: 3px solid var(--ink);
+      bottom: 0;
+      content: "";
+      left: 3px;
+      position: absolute;
+      right: 3px;
+      transform: rotate(-0.25deg);
+    }
+
+    .process-step:nth-child(even)::after { transform: rotate(0.32deg); }
+
+    .process-step em {
+      color: var(--green);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 48px;
+      font-style: normal;
+      line-height: 1;
+    }
+
+    .process-step b {
+      display: block;
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 38px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .process-step span {
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1.22;
+    }
+
+    .cta-slide { align-items: center; text-align: center; }
+    .cta-slide .eyebrow { align-self: center; }
+    .cta-slide .logo-hex { height: 405px; margin: -10px auto 5px; width: 405px; }
+    .cta-slide h1 { font-size: 72px; margin-bottom: 22px; }
+
+    .cta-box {
+      background: var(--green);
+      color: var(--paper);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 42px;
+      margin: 25px auto 28px;
+      padding: 22px 30px 19px;
+      transform: rotate(-0.65deg);
+      width: fit-content;
+    }
+
+    .site-url {
+      color: var(--red);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 39px;
+      margin: 0;
+    }
+
+    body.layout-square .slide {
+      padding: 50px 54px 72px;
+    }
+
+    body.layout-square .slide::before { left: 40px; right: 40px; top: 27px; }
+    body.layout-square .slide::after { bottom: 55px; left: 40px; right: 40px; }
+    body.layout-square .folio { font-size: 22px; right: 47px; top: 34px; }
+    body.layout-square .brandbar { bottom: 19px; left: 54px; right: 54px; }
+    body.layout-square .brandbar strong { font-size: 27px; }
+    body.layout-square .brandbar span { font-size: 17px; }
+    body.layout-square .slide-content { transform: scale(0.77); width: 129.9%; }
+
+    body.layout-link .slide {
+      padding: 48px 62px 66px;
+    }
+
+    body.layout-link .slide::before { left: 38px; right: 38px; top: 25px; }
+    body.layout-link .slide::after { bottom: 49px; left: 38px; right: 38px; }
+    body.layout-link .folio { display: none; }
+    body.layout-link .brandbar { bottom: 14px; left: 62px; right: 62px; }
+    body.layout-link .brandbar strong { font-size: 23px; }
+    body.layout-link .brandbar span { font-size: 16px; }
+    body.layout-link .cover-grid {
+      align-items: center;
+      display: grid;
+      gap: 47px;
+      grid-template-columns: 350px 1fr;
+    }
+    body.layout-link .logo-hex { height: 340px; margin: 0; width: 340px; }
+    body.layout-link .eyebrow { font-size: 19px; margin-bottom: 18px; padding: 8px 12px 7px; }
+    body.layout-link .cover-title { font-size: 57px; margin-bottom: 19px; }
+    body.layout-link .lead { font-size: 27px; margin-bottom: 18px; }
+    body.layout-link .color-rule { margin-bottom: 0; width: 270px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <article class="slide slide--1" data-slide="1">
+    <span class="folio">01 / 05</span>
+    <span class="eyebrow red">Contributions extérieures</span>
+    <div class="cover-grid">
+      <img class="logo-hex" src="../../images/contours-hexagon.svg" alt="">
+      <div class="cover-copy">
+        <h1 class="cover-title">Vous travaillez sur la <span class="accent-green">Nouvelle-Calédonie</span> ou le Pacifique&nbsp;?</h1>
+        <p class="lead"><strong class="contours-brand">contours.nc</strong> est ouvert aux contributions extérieures.</p>
+        <div class="color-rule"><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Appel à contribuer<br>Nouvelle-Calédonie &amp; Pacifique</span></footer>
+  </article>
+
+  <article class="slide slide--2" data-slide="2">
+    <span class="folio">02 / 05</span>
+    <span class="eyebrow gold">Que peut-on proposer&nbsp;?</span>
+    <h2>Des formats <span class="accent-green">documentés</span> et adaptés au web</h2>
+    <div class="format-grid">
+      <section class="format-card"><h3>Note de recherche</h3><p>Premiers résultats ou analyse exploratoire.</p></section>
+      <section class="format-card"><h3>Carte ou datavisualisation</h3><p>Explorer un territoire ou un phénomène.</p></section>
+      <section class="format-card"><h3>Éclairage</h3><p>Analyser une question contemporaine.</p></section>
+      <section class="format-card"><h3>Données et méthodes</h3><p>Partager un jeu, un indicateur ou un outil.</p></section>
+      <section class="format-card"><h3>Mémoire, thèse ou stage</h3><p>Faire circuler un résultat au-delà de son cadre initial.</p></section>
+    </div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Recherches · cartes<br>données · méthodes</span></footer>
+  </article>
+
+  <article class="slide slide--3" data-slide="3">
+    <span class="folio">03 / 05</span>
+    <span class="eyebrow">Quelques lignes suffisent</span>
+    <h2>Une <span class="accent-red">idée</span> suffit pour commencer</h2>
+    <p class="lead">Il n’est pas nécessaire d’avoir déjà rédigé un article complet.</p>
+    <div class="idea-list">
+      <div class="idea-item"><em>01</em><div><b>Le sujet ou la question</b><span>Le point de départ de la contribution.</span></div></div>
+      <div class="idea-item"><em>02</em><div><b>Ce que vous souhaitez montrer</b><span>Le résultat, l’hypothèse ou l’éclairage proposé.</span></div></div>
+      <div class="idea-item"><em>03</em><div><b>Les sources mobilisées</b><span>Données, terrain, archives ou travaux scientifiques.</span></div></div>
+      <div class="idea-item"><em>04</em><div><b>Un lien, si vous en avez un</b><span>Publication, mémoire, données ou visualisation existante.</span></div></div>
+    </div>
+    <div class="idea-callout">Le format se discute ensuite ensemble.</div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Une première idée<br>pour commencer</span></footer>
+  </article>
+
+  <article class="slide slide--4" data-slide="4">
+    <span class="folio">04 / 05</span>
+    <span class="eyebrow red">Comment ça se passe&nbsp;?</span>
+    <h2>De l’idée à la <span class="accent-green">publication</span></h2>
+    <div class="process">
+      <div class="process-step"><em>01</em><div><b>Proposition</b><span>Vous présentez votre idée en quelques lignes.</span></div></div>
+      <div class="process-step"><em>02</em><div><b>Échange</b><span>Nous définissons ensemble le format le plus adapté.</span></div></div>
+      <div class="process-step"><em>03</em><div><b>Préparation et relecture</b><span>Clarté, sources et méthodes sont vérifiées.</span></div></div>
+      <div class="process-step"><em>04</em><div><b>Publication</b><span>La signature, l’affiliation et les informations de citation sont indiquées.</span></div></div>
+    </div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Clair · documenté<br>transparent</span></footer>
+  </article>
+
+  <article class="slide slide--5 cta-slide" data-slide="5">
+    <span class="folio">05 / 05</span>
+    <span class="eyebrow red">Proposer une contribution</span>
+    <img class="logo-hex" src="../../images/contours-hexagon.svg" alt="">
+    <h1>Faisons circuler les <span class="accent-green">recherches</span>, cartes et données.</h1>
+    <p class="lead">Quelques lignes suffisent pour commencer.</p>
+    <div class="cta-box">contributions@contours.nc</div>
+    <p class="site-url">contours.nc/contribuer/</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Nouvelle-Calédonie<br>&amp; Pacifique</span></footer>
+  </article>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const layout = params.get("layout") || "portrait";
+    document.body.classList.add(`layout-${layout}`);
+
+    document.querySelectorAll(".slide").forEach((slide) => {
+      const content = document.createElement("div");
+      content.className = "slide-content";
+      [...slide.children]
+        .filter((node) => !node.classList.contains("folio") && !node.classList.contains("brandbar"))
+        .forEach((node) => content.append(node));
+      slide.insertBefore(content, slide.querySelector(".brandbar"));
+    });
+
+    const requested = Number.parseInt(params.get("slide") || "1", 10);
+    const active = document.querySelector(`[data-slide="${Math.min(5, Math.max(1, requested))}"]`);
+    active?.classList.add("is-active");
+
+    Promise.all([
+      document.fonts.load('700 72px "Cabin Sketch"'),
+      document.fonts.load('700 35px "Atkinson Hyperlegible"'),
+      document.fonts.ready
+    ]).then(() => {
+      document.documentElement.dataset.ready = "true";
+    });
+  </script>
+</body>
+</html>

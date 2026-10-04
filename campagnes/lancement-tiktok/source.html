@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lancement TikTok · contours.nc</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cabin+Sketch:wght@700&display=swap");
+
+    :root {
+      --paper: #f7f1e3;
+      --ink: #1f1f1f;
+      --green: #455d44;
+      --olive: #73884c;
+      --gold: #e0ab1e;
+      --red: #c54832;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+    }
+
+    .slide {
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(69, 93, 68, 0.07) 32px),
+        var(--paper);
+      display: none;
+      height: 100vh;
+      overflow: hidden;
+      padding: 70px 34px 122px;
+      position: relative;
+      width: 100vw;
+    }
+
+    .slide.is-active {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-content {
+      align-self: center;
+      flex: 0 0 auto;
+      transform-origin: center center;
+      width: 100%;
+    }
+
+    .slide::before,
+    .slide::after {
+      border-top: 2px dashed rgba(31, 31, 31, 0.4);
+      content: "";
+      left: 25px;
+      position: absolute;
+      right: 25px;
+    }
+
+    .slide::before { top: 27px; transform: rotate(-0.22deg); }
+    .slide::after { bottom: 91px; transform: rotate(0.18deg); }
+
+    .folio {
+      color: var(--green);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      position: absolute;
+      right: 31px;
+      top: 40px;
+    }
+
+    .eyebrow {
+      align-self: flex-start;
+      background: var(--ink);
+      color: var(--paper);
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin: 0 0 17px;
+      padding: 7px 11px 6px;
+      text-transform: uppercase;
+      transform: rotate(-1deg);
+    }
+
+    .eyebrow.red { background: var(--red); }
+    .eyebrow.green { background: var(--green); }
+    .eyebrow.gold { background: var(--gold); color: var(--ink); }
+
+    h1, h2, h3, .sketch-font {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-weight: 700;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      font-size: 54px;
+      letter-spacing: -0.025em;
+      line-height: 0.94;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-size: 45px;
+      letter-spacing: -0.015em;
+      line-height: 0.98;
+      margin-bottom: 18px;
+    }
+
+    .lead {
+      font-size: 24px;
+      line-height: 1.22;
+      margin-bottom: 18px;
+    }
+
+    .lead strong { color: var(--green); }
+
+    .accent-red { color: var(--red); }
+    .accent-green { color: var(--green); }
+    .accent-gold { color: #a87500; }
+
+    .brandbar {
+      align-items: center;
+      bottom: 49px;
+      display: flex;
+      justify-content: space-between;
+      left: 34px;
+      position: absolute;
+      right: 34px;
+    }
+
+    .brandbar strong {
+      font-size: 22px;
+    }
+
+    .contours-brand {
+      background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.06) 0, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 3px);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: #1d1d1b;
+      font-family: "Cabin Sketch", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-shadow: 0.25px 0.25px 0 #111, -0.25px -0.25px 0 #111, 0 0 1px rgba(0,0,0,0.28);
+      -webkit-text-fill-color: #1f1f1f;
+    }
+
+    .contours-brand.brand-inverse {
+      background-image: none;
+      color: var(--paper);
+      text-shadow: 0.25px 0.25px 0 rgba(0,0,0,0.55);
+      -webkit-text-fill-color: var(--paper);
+    }
+
+    .brandbar span {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .color-rule {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(4, 1fr);
+      margin: 4px 0 18px;
+      width: 250px;
+    }
+
+    .color-rule i {
+      border-top: 5px solid;
+      display: block;
+      transform: rotate(-1deg);
+    }
+
+    .color-rule i:nth-child(1) { border-color: var(--green); }
+    .color-rule i:nth-child(2) { border-color: var(--olive); transform: rotate(1deg); }
+    .color-rule i:nth-child(3) { border-color: var(--gold); }
+    .color-rule i:nth-child(4) { border-color: var(--red); transform: rotate(0.7deg); }
+
+    .logo-hex {
+      display: block;
+      filter: contrast(1.02);
+      height: 335px;
+      margin: -8px auto -4px;
+      width: 335px;
+    }
+
+    .logo-hex svg {
+      background: transparent !important;
+      display: block;
+      height: 100%;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .launch-title { margin-bottom: 10px; }
+
+    .arrival {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+      margin-top: 5px;
+    }
+
+    .arrival .arrow {
+      color: var(--red);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 45px;
+      transform: rotate(4deg);
+    }
+
+    .arrival p {
+      font-size: 20px;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .stack {
+      display: grid;
+      gap: 15px;
+      margin-top: 19px;
+    }
+
+    .note-card {
+      background: rgba(255, 255, 255, 0.22);
+      border: 2px solid var(--ink);
+      box-shadow: 5px 6px 0 rgba(69, 93, 68, 0.14);
+      padding: 18px 19px 17px;
+      position: relative;
+    }
+
+    .note-card:nth-child(1) { transform: rotate(-0.7deg); }
+    .note-card:nth-child(2) { transform: rotate(0.55deg); }
+    .note-card:nth-child(3) { transform: rotate(-0.35deg); }
+
+    .note-card::before {
+      background: rgba(224, 171, 30, 0.55);
+      content: "";
+      height: 9px;
+      left: 42%;
+      position: absolute;
+      top: -6px;
+      transform: rotate(-1.5deg);
+      width: 65px;
+    }
+
+    .note-card strong {
+      display: block;
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 27px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .note-card p {
+      font-size: 18px;
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    .topic-grid {
+      display: grid;
+      gap: 13px;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 18px;
+    }
+
+    .topic {
+      align-content: space-between;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid var(--ink);
+      display: grid;
+      min-height: 155px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .topic:nth-child(1) { transform: rotate(-0.7deg); }
+    .topic:nth-child(2) { border-color: var(--green); transform: rotate(0.55deg); }
+    .topic:nth-child(3) { border-color: var(--red); transform: rotate(0.4deg); }
+    .topic:nth-child(4) { border-color: #9b740c; transform: rotate(-0.6deg); }
+
+    .topic b {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .topic small {
+      font-size: 15px;
+      line-height: 1.15;
+    }
+
+    .topic-mark {
+      color: var(--green);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 43px;
+      line-height: 0.8;
+      text-align: right;
+    }
+
+    .method {
+      display: grid;
+      gap: 11px;
+      margin-top: 12px;
+    }
+
+    .method-step {
+      align-items: center;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 51px 1fr;
+      min-height: 92px;
+      padding: 12px 16px;
+      position: relative;
+    }
+
+    .method-step::after {
+      border-bottom: 2px solid var(--ink);
+      bottom: 0;
+      content: "";
+      left: 5px;
+      position: absolute;
+      right: 5px;
+      transform: rotate(-0.3deg);
+    }
+
+    .method-step:nth-child(even)::after { transform: rotate(0.45deg); }
+
+    .method-step em {
+      align-items: center;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      color: var(--green);
+      display: flex;
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 27px;
+      font-style: normal;
+      height: 46px;
+      justify-content: center;
+      transform: rotate(-3deg);
+      width: 46px;
+    }
+
+    .method-step b {
+      display: block;
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 25px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .method-step span { font-size: 17px; }
+
+    .format-stack {
+      display: grid;
+      gap: 10px;
+      margin: 24px 0 17px;
+    }
+
+    .format-line {
+      align-items: baseline;
+      display: flex;
+      gap: 12px;
+      line-height: 0.9;
+    }
+
+    .format-line strong {
+      color: var(--green);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 66px;
+    }
+
+    .format-line:nth-child(2) strong { color: var(--gold); }
+    .format-line:nth-child(3) strong { color: var(--red); }
+
+    .format-line span {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 41px;
+    }
+
+    .minute-note {
+      align-self: flex-end;
+      background: var(--green);
+      color: var(--paper);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 25px;
+      margin-top: 10px;
+      padding: 13px 17px 11px;
+      transform: rotate(-1.5deg);
+    }
+
+    .promise {
+      border: 3px solid var(--ink);
+      margin-top: 20px;
+      padding: 29px 25px 25px;
+      position: relative;
+      transform: rotate(-0.5deg);
+    }
+
+    .promise::before {
+      background: var(--paper);
+      color: var(--red);
+      content: "NOTRE PROMESSE";
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 19px;
+      left: 20px;
+      padding: 0 8px;
+      position: absolute;
+      top: -13px;
+    }
+
+    .promise p {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 34px;
+      line-height: 1.03;
+      margin-bottom: 21px;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .check-list div {
+      align-items: center;
+      display: grid;
+      font-size: 21px;
+      font-weight: 700;
+      gap: 13px;
+      grid-template-columns: 35px 1fr;
+    }
+
+    .check-list i {
+      color: var(--green);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 33px;
+      font-style: normal;
+      transform: rotate(-5deg);
+    }
+
+    .cta-slide {
+      align-items: center;
+      text-align: center;
+    }
+
+    .cta-slide .eyebrow { align-self: center; }
+    .cta-slide .logo-hex { height: 320px; margin: -4px auto -10px; width: 320px; }
+
+    .cta-slide h1 {
+      font-size: 50px;
+      margin-bottom: 13px;
+    }
+
+    .cta-box {
+      background: var(--green);
+      color: var(--paper);
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 31px;
+      margin: 12px auto 17px;
+      padding: 13px 20px 11px;
+      transform: rotate(-1deg);
+    }
+
+    .site-url {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-size: 32px;
+      margin: 0;
+    }
+
+    .swirl {
+      border: 3px solid var(--red);
+      border-left-color: transparent;
+      border-radius: 50%;
+      height: 44px;
+      margin: 10px auto 0;
+      transform: rotate(20deg);
+      width: 84px;
+    }
+
+    body.layout-feed .slide {
+      padding-bottom: 61px;
+      padding-top: 43px;
+    }
+
+    body.layout-feed .slide::before { top: 20px; }
+    body.layout-feed .slide::after { bottom: 47px; }
+    body.layout-feed .folio { top: 27px; }
+    body.layout-feed .brandbar { bottom: 21px; }
+    body.layout-feed .slide-content {
+      transform: scale(0.78);
+      width: 128.2%;
+    }
+
+    body.layout-square .slide {
+      padding-bottom: 49px;
+      padding-top: 37px;
+    }
+
+    body.layout-square .slide::before { top: 17px; }
+    body.layout-square .slide::after { bottom: 38px; }
+    body.layout-square .folio { top: 22px; }
+    body.layout-square .brandbar { bottom: 16px; }
+    body.layout-square .brandbar strong { font-size: 18px; }
+    body.layout-square .brandbar span { font-size: 11px; }
+    body.layout-square .slide-content {
+      transform: scale(0.63);
+      width: 158.7%;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <article class="slide slide--1" data-slide="1">
+    <span class="folio">01 / 07</span>
+    <span class="eyebrow red">Nouvelle chaîne</span>
+    <div class="logo-hex logo-render" aria-hidden="true"></div>
+    <h1 class="launch-title"><span class="contours-brand">Contours.nc</span> arrive sur <span class="accent-red">TikTok</span></h1>
+    <div class="color-rule"><i></i><i></i><i></i><i></i></div>
+    <div class="arrival"><span class="arrow">→</span><p>Une nouvelle manière de regarder<br><strong>la Nouvelle-Calédonie.</strong></p></div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Cartes · données<br>sciences sociales</span></footer>
+  </article>
+
+  <article class="slide slide--2" data-slide="2">
+    <span class="folio">02 / 07</span>
+    <span class="eyebrow green">D’abord, c’est quoi ?</span>
+    <h2>Un carnet de <span class="accent-green">recherche</span> et de datavisualisation</h2>
+    <p class="lead">Consacré à la <strong>Nouvelle-Calédonie</strong> et au Pacifique.</p>
+    <div class="stack">
+      <section class="note-card"><strong>Cartes</strong><p>Pour voir où se jouent les écarts et les dynamiques.</p></section>
+      <section class="note-card"><strong>Données publiques</strong><p>Pour partir de faits vérifiables et documentés.</p></section>
+      <section class="note-card"><strong>Sciences sociales</strong><p>Pour replacer les chiffres dans leur contexte.</p></section>
+    </div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Nouvelle-Calédonie<br>& Pacifique</span></footer>
+  </article>
+
+  <article class="slide slide--3" data-slide="3">
+    <span class="folio">03 / 07</span>
+    <span class="eyebrow gold">Ce qu’on explore</span>
+    <h2>Les dynamiques qui <span class="accent-red">transforment</span> le pays</h2>
+    <div class="topic-grid">
+      <section class="topic"><span class="topic-mark">⌁</span><b>Territoires</b><small>Espaces, mobilités, infrastructures</small></section>
+      <section class="topic"><span class="topic-mark">▥</span><b>Élections</b><small>Votes, rapports de force, institutions</small></section>
+      <section class="topic"><span class="topic-mark">•••</span><b>Population</b><small>Démographie et transformations sociales</small></section>
+      <section class="topic"><span class="topic-mark">↗</span><b>Inégalités</b><small>Écarts sociaux et politiques publiques</small></section>
+    </div>
+    <p class="lead" style="margin-top:22px;">Toujours avec une lecture <strong>située</strong>, à l’échelle calédonienne.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Comprendre<br>par les données</span></footer>
+  </article>
+
+  <article class="slide slide--4" data-slide="4">
+    <span class="folio">04 / 07</span>
+    <span class="eyebrow green">Comment on travaille</span>
+    <h2>Du problème public à une lecture <span class="accent-green">compréhensible</span></h2>
+    <div class="method">
+      <div class="method-step"><em>1</em><div><b>Une question concrète</b><span>Partir d’un enjeu du pays.</span></div></div>
+      <div class="method-step"><em>2</em><div><b>Des sources publiques</b><span>Recouper, nettoyer, documenter.</span></div></div>
+      <div class="method-step"><em>3</em><div><b>Une carte ou un graphique</b><span>Faire apparaître les structures.</span></div></div>
+      <div class="method-step"><em>4</em><div><b>Une lecture critique</b><span>Expliquer sans simplifier à outrance.</span></div></div>
+    </div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Méthodes explicites<br>& reproductibles</span></footer>
+  </article>
+
+  <article class="slide slide--5" data-slide="5">
+    <span class="folio">05 / 07</span>
+    <span class="eyebrow red">Sur TikTok</span>
+    <h2>Des formats courts pour aller à <span class="accent-red">l’essentiel</span></h2>
+    <div class="format-stack">
+      <div class="format-line"><strong>1</strong><span>carte</span></div>
+      <div class="format-line"><strong>1</strong><span>chiffre</span></div>
+      <div class="format-line"><strong>1</strong><span>question</span></div>
+    </div>
+    <p class="lead">Des décryptages visuels pour comprendre ce que les données disent — <strong>et ce qu’elles ne disent pas.</strong></p>
+    <div class="minute-note">en moins d’une minute ↗</div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Voir · comparer<br>comprendre</span></footer>
+  </article>
+
+  <article class="slide slide--6" data-slide="6">
+    <span class="folio">06 / 07</span>
+    <span class="eyebrow gold">La nuance compte</span>
+    <h2>Une carte n’est jamais <span class="accent-gold">toute</span> l’histoire</h2>
+    <section class="promise">
+      <p>On zoome.<br>On compare.<br>On contextualise.</p>
+      <div class="color-rule"><i></i><i></i><i></i><i></i></div>
+    </section>
+    <div class="check-list">
+      <div><i>✓</i><span>Sources citées</span></div>
+      <div><i>✓</i><span>Méthodes explicites</span></div>
+      <div><i>✓</i><span>Limites et incertitudes visibles</span></div>
+      <div><i>✓</i><span>Analyses indépendantes</span></div>
+    </div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>Accessible<br>mais documenté</span></footer>
+  </article>
+
+  <article class="slide slide--7 cta-slide" data-slide="7">
+    <span class="folio">07 / 07</span>
+    <span class="eyebrow red">Bienvenue</span>
+    <div class="logo-hex logo-render" aria-hidden="true"></div>
+    <h1>Regardons le pays <span class="accent-green">autrement</span></h1>
+    <div class="cta-box">Abonne-toi à <span class="contours-brand brand-inverse">contours.nc</span></div>
+    <p class="lead">Cartes, données et sciences sociales<br>sur la Nouvelle-Calédonie.</p>
+    <p class="site-url contours-brand">contours.nc</p>
+    <div class="swirl"></div>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span>La suite<br>commence ici</span></footer>
+  </article>
+
+  <script type="module">
+    import { renderContoursBanner } from "../../assets/js/contours-sketch.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const layout = params.get("layout") || "tiktok";
+    const mode = params.get("mode") || "launch";
+    document.body.classList.add(`layout-${layout}`, `mode-${mode}`);
+
+    document.querySelectorAll(".slide").forEach((slide) => {
+      const content = document.createElement("div");
+      content.className = "slide-content";
+      [...slide.children]
+        .filter((node) => !node.classList.contains("folio") && !node.classList.contains("brandbar"))
+        .forEach((node) => content.append(node));
+      slide.insertBefore(content, slide.querySelector(".brandbar"));
+    });
+
+    if (mode === "generic") {
+      document.querySelector(".slide--1 .eyebrow").textContent = "Présentation";
+      document.querySelector(".slide--1 h1").innerHTML = '<span class="contours-brand">Contours.nc</span><br><span class="accent-green">regarder</span> le pays autrement';
+      document.querySelector(".slide--1 .arrival p").innerHTML = 'Cartes, données et sciences sociales<br><strong>sur la Nouvelle-Calédonie.</strong>';
+      document.querySelector(".slide--5 .eyebrow").textContent = "Nos formats";
+      document.querySelector(".slide--5 h2").innerHTML = 'Des formats visuels pour aller à <span class="accent-red">l’essentiel</span>';
+      document.querySelector(".slide--5 .minute-note").textContent = "à lire · enregistrer · partager";
+      document.querySelector(".slide--7 .eyebrow").textContent = "Pour aller plus loin";
+      document.querySelector(".slide--7 h1").innerHTML = 'Continue <span class="accent-green">l’exploration</span>';
+      document.querySelector(".slide--7 .cta-box").innerHTML = 'Lire les articles sur <span class="contours-brand brand-inverse">contours.nc</span>';
+      document.querySelector(".slide--7 .lead").innerHTML = 'Analyses, cartes et méthodes accessibles<br>en ligne.';
+    }
+
+    const requested = Number.parseInt(params.get("slide") || "1", 10);
+    const active = document.querySelector(`[data-slide="${Math.min(7, Math.max(1, requested))}"]`);
+    active?.classList.add("is-active");
+
+    await document.fonts.load('700 48px "Cabin Sketch"');
+    await document.fonts.ready;
+    for (const container of active?.querySelectorAll(".logo-render") || []) {
+      await renderContoursBanner(container, {
+        animate: false,
+        showThemeBadges: false,
+        subtitleLines: []
+      });
+      const logo = container.querySelector("svg");
+      logo.querySelectorAll("text").forEach((node) => {
+        if (node.getAttribute("x") !== "165") node.remove();
+      });
+      [...logo.children].forEach((node) => {
+        const bounds = node.getBBox();
+        const isOuterDecoration = bounds.height < 35 && (bounds.y < 60 || bounds.y > 450);
+        if (bounds.x > 535 || isOuterDecoration) node.remove();
+      });
+      logo.setAttribute("viewBox", "65 10 470 500");
+      logo.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    }
+
+    document.documentElement.dataset.ready = "true";
+  </script>
+</body>
+</html>

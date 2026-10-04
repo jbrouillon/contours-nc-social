@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Outro TikTok · contours.nc</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cabin+Sketch:wght@700&display=swap");
+    :root { color-scheme: light; --paper: #f7f1e3; --ink: #1f1f1f; --green: #455d44; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; overflow: hidden; width: 100%; }
+    body {
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(69, 93, 68, 0.075) 32px),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+    }
+    .outro {
+      align-content: center;
+      display: grid;
+      gap: 0.8rem;
+      height: 100vh;
+      justify-items: center;
+      padding: 2rem 1.1rem 2.4rem;
+      position: relative;
+      width: 100vw;
+    }
+    .outro::before, .outro::after {
+      border-top: 2px dashed rgba(31, 31, 31, 0.42);
+      content: "";
+      left: 1.4rem;
+      position: absolute;
+      right: 1.4rem;
+    }
+    .outro::before { top: 1.2rem; transform: rotate(-0.25deg); }
+    .outro::after { bottom: 1.25rem; transform: rotate(0.18deg); }
+    .outro-kicker, .outro-footer {
+      font-family: "Cabin Sketch", system-ui, sans-serif;
+      font-weight: 700;
+      margin: 0;
+      text-align: center;
+    }
+    .outro-kicker {
+      color: var(--green);
+      font-size: 1.55rem;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+    .outro-mark { height: 25rem; max-width: 30rem; overflow: hidden; width: 100%; }
+    .outro-copy { height: 13.2rem; max-width: 32rem; overflow: hidden; width: 100%; }
+    .outro-mark svg, .outro-copy svg {
+      background: transparent !important;
+      display: block;
+      height: 100%;
+      overflow: hidden;
+      width: 100%;
+    }
+    .outro-footer {
+      font-size: 1.35rem;
+      line-height: 1.25;
+      opacity: 0;
+    }
+    .outro-running .outro-footer {
+      animation: reveal 850ms 7800ms ease-out forwards;
+    }
+    .outro-running {
+      animation: capture-keepalive 10s linear forwards;
+    }
+    .outro-footer span {
+      color: var(--green);
+      display: block;
+      font-size: 1.05rem;
+      margin-top: 0.25rem;
+    }
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes capture-keepalive {
+      from { filter: opacity(99.99%); }
+      to { filter: opacity(100%); }
+    }
+  </style>
+</head>
+<body>
+  <main class="outro">
+    <p class="outro-kicker">À bientôt sur</p>
+    <div class="outro-mark" id="outro-mark"></div>
+    <div class="outro-copy" id="outro-copy"></div>
+    <p class="outro-footer">Cartes · données · sciences sociales<span>Nouvelle-Calédonie &amp; Pacifique</span></p>
+  </main>
+  <script>
+    let seed = 20260913;
+    Math.random = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+  </script>
+  <script type="module">
+    import { renderContoursBanner } from "../../assets/js/contours-sketch.js";
+    const pageParams = new URLSearchParams(window.location.search);
+    const animationTimeScale = Math.max(0.25, Number(pageParams.get("timeScale") || 1) || 1);
+
+    window.startContoursOutro = async () => {
+      if (document.documentElement.dataset.outroStarted === "true") return;
+
+      await renderContoursBanner("#outro-mark", {
+        animate: true,
+        animationTimeScale,
+        showThemeBadges: false,
+        subtitleLines: []
+      });
+      const mark = document.querySelector("#outro-mark svg");
+      mark.querySelectorAll("text").forEach((node) => {
+        if (node.getAttribute("x") !== "165") node.remove();
+      });
+      [...mark.children].forEach((node) => {
+        const bounds = node.getBBox();
+        if (bounds.x > 535) node.remove();
+      });
+      mark.setAttribute("viewBox", "65 10 470 500");
+      mark.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+      await renderContoursBanner("#outro-copy", { animate: true, animationTimeScale });
+      const copy = document.querySelector("#outro-copy svg");
+      [...copy.children].forEach((node) => {
+        const bounds = node.getBBox();
+        if (bounds.x + bounds.width < 530) node.remove();
+      });
+      copy.setAttribute("viewBox", "520 75 760 360");
+      copy.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      const outro = document.querySelector(".outro");
+      const footer = document.querySelector(".outro-footer");
+      outro.style.animationDuration = `${10000 * animationTimeScale}ms`;
+      footer.style.animationDuration = `${850 * animationTimeScale}ms`;
+      footer.style.animationDelay = `${7800 * animationTimeScale}ms`;
+      outro.classList.add("outro-running");
+      document.documentElement.dataset.outroStarted = "true";
+    };
+
+    await document.fonts.ready;
+    document.documentElement.dataset.outroControllerReady = "true";
+    const manual = pageParams.get("manual") === "1";
+    if (!manual) window.startContoursOutro();
+  </script>
+</body>
+</html>
