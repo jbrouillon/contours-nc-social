@@ -28,7 +28,7 @@ Pour un nouvel article, créer `articles/<slug-de-l-article>/` avec le même slu
 
 ## Sources HTML
 
-Les fichiers `source.html` produisent les visuels : les ouvrir dans un navigateur, à la taille du format visé (1080 × 1350, 1080 × 1080, 1200 × 630…), puis capturer. Ils ne dépendent que de `images/contours-hexagon.svg` et des polices Google (`Cabin Sketch`, `Atkinson Hyperlegible`).
+Les fichiers `source.html` produisent les visuels : les ouvrir dans un navigateur, à la taille du format visé (1080 × 1350, 1080 × 1080, 1200 × 630…), puis capturer. Ils dépendent de `images/contours-hexagon.svg`, de la bannière `assets/js/contours-sketch.js` (sources TikTok) et des polices Google (`Cabin Sketch`, `Atkinson Hyperlegible`) ; d3 et rough.js sont chargés depuis jsDelivr.
 
 `assets/js/contours-sketch.js` est une copie de la bannière du site, enrichie de l'option `animationTimeScale` qui ralentit l'animation pour la capture. Elle n'existe que dans ce dépôt : la version du site reste celle publiée.
 
