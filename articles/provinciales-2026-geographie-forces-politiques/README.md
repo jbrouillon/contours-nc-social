@@ -82,7 +82,7 @@ Les écrans 9:16 sont des images fixes : prévoir 3 à 4 s par écran, et 6 s po
 
 1. Carte des trois provinces de la Nouvelle-Calédonie : entre 2019 et 2026, l’UC-FLNKS gagne 3,9 points dans le Nord, la participation recule de 11,6 points aux Îles et la droite loyaliste gagne 9,5 points dans le Sud.
 2. Carte lissée de la province Sud : la droite loyaliste passe de 40,6 % à 50,1 % des suffrages exprimés et progresse dans la plupart des communes, notamment à Poya Sud (+29,3 points), Farino (+23,7) et Nouméa (+10,1).
-3. Carte des 57 secteurs électoraux de Nouméa colorés selon l’évolution de la droite loyaliste dans leur bureau : elle progresse dans 53 secteurs, surtout au sud et au nord-est, et reste stable autour de Ducos, Tindu, Kaméré et Montravel ; dans toute la commune, elle passe de 50,4 % à 60,5 %.
+3. Carte des 57 secteurs électoraux de Nouméa colorés selon l’évolution de la droite loyaliste dans leur bureau : elle progresse dans 53 secteurs ; +14,5 points en médiane là où elle dépassait 55 % en 2019, +0,1 point là où elle restait sous 25 %, notamment à Montravel, Kaméré, Tindu et Rivière-Salée.
 4. Essaim des 122 bureaux comparables de la province Sud, placés selon l’évolution du centre non-indépendantiste en points : 115 reculent, 7 progressent ; dans la province, le centre passe de 18,5 % à 12,1 % (−6,4 points).
 5. Carte lissée de la province Nord : l’UC passe de 36,0 % à 39,9 % et l’UNI de 38,5 % à 35,7 % ; l’UC progresse le plus à Houaïlou (+18,9 points) et avance à Touho (+10,3).
 6. Essaim des 41 bureaux comparables de la province des Îles, placés selon l’évolution de l’abstention en points : elle augmente dans 39 bureaux ; la participation passe de 66,5 % à 54,9 %.

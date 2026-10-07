@@ -122,6 +122,23 @@
     });
   }
 
+  // Évolution médiane selon le niveau de 2019, comme dans l'article (seuils de
+  // lecture : moins de 25 % et 55 % ou plus).
+  function noumeaBands(data) {
+    const score = (year, code) => data.points.find((d) => d.commune === "Nouméa" && d.annee === year &&
+      d.force === "loyaliste" && Number(d.code_bv) === code)?.pct;
+    const rows = pairs(data, "Province Sud").filter((p) => p.commune === "Nouméa").map((p) => {
+      const before = score(2019, Number(p.code_bv_2019));
+      return { before, delta: score(2026, Number(p.code_bv_2026)) - before };
+    }).filter((d) => Number.isFinite(d.delta));
+    const median = (list) => d3.median(list, (d) => d.delta);
+    const weak = rows.filter((d) => d.before < 25);
+    const strong = rows.filter((d) => d.before >= 55);
+    if (!weak.length || !strong.length) throw new Error("Classes de niveau vides à Nouméa");
+    return { weak: median(weak), strong: median(strong) };
+  }
+  const ptsWord = (x) => `${signed(x)} ${Math.abs(Math.round(x * 10) / 10) < 2 ? "point" : "points"}`;
+
   function sectorCounts(data) {
     const deltas = sectorDeltas(data, "loyaliste");
     const codes = new Set(data.secteurs.map((f) => Number(f.properties.code_bv)));
@@ -186,10 +203,9 @@
       farino_loy_2019: pct(communeAt(data, sud, "Farino", "loyaliste", "score_2019")),
       farino_loy_2026: pct(communeAt(data, sud, "Farino", "loyaliste")),
       poya_loy_2026: pct(communeAt(data, sud, "Poya Sud", "loyaliste")),
-      noumea_loy_2019: pct(communeAt(data, sud, "Nouméa", "loyaliste", "score_2019")),
-      noumea_loy_2026: pct(communeAt(data, sud, "Nouméa", "loyaliste")),
-      noumea_loy_evo_n: communeAt(data, sud, "Nouméa", "loyaliste", "evolution_points"),
       noumea_secteurs_hausse: sectorCounts(data).up,
+      noumea_med_fort: ptsWord(noumeaBands(data).strong),
+      noumea_med_faible: ptsWord(noumeaBands(data).weak),
       noumea_secteurs_comparables: sectorCounts(data).compared,
       sud_centre_reculs: String(centre.filter((d) => d.y < d.x).length),
       sud_paires: String(pairs(data, sud).length),
