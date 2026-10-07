@@ -35,9 +35,10 @@
       d3.csv("donnees/appariement_bureaux_2019_2026.csv", d3.autoType),
       d3.json("donnees/communes.geojson"),
       d3.json("donnees/provinces.geojson"),
-      d3.json("donnees/metadata.json")
-    ]).then(([province, communes, points, matches, communeShapes, provinceShapes, metadata]) => ({
-      province, communes, points, matches, communeShapes, provinceShapes, metadata
+      d3.json("donnees/metadata.json"),
+      d3.json("donnees/vote_context_secteurs.geojson")
+    ]).then(([province, communes, points, matches, communeShapes, provinceShapes, metadata, secteurs]) => ({
+      province, communes, points, matches, communeShapes, provinceShapes, metadata, secteurs: rewind(secteurs.features)
     }));
   }
 
@@ -56,20 +57,64 @@
     return (after - before) / 10;
   }
 
+  // d3 attend des anneaux dans le sens horaire : une couche au sens
+  // RFC 7946 (antihoraire) est retournée.
+  function rewind(features) {
+    return features.map((feature) => {
+      if (d3.geoArea(feature) <= 2 * Math.PI) return feature;
+      const g = feature.geometry;
+      const flip = (polygon) => polygon.map((ring) => ring.slice().reverse());
+      return { ...feature, geometry: { ...g, coordinates: g.type === "Polygon" ? flip(g.coordinates) : g.coordinates.map(flip) } };
+    });
+  }
+
+  // Évolution 2019 → 2026 du bureau de chaque secteur de Nouméa, clé :
+  // numéro du bureau de 2026 (celui du secteur). Les bureaux appariés par nom
+  // ou numéro suivent la règle de l'article ; les bureaux restés non appariés
+  // parce que leur école a changé de nom ou de site gardent leur numéro, donc
+  // leur secteur : ils sont appariés par numéro de secteur (deltas.parSecteur).
+  // Leurs inscrits évoluent comme ceux des autres bureaux (rapport 2026/2019
+  // de 1,01 à 1,28, contre 0,57 à 1,37 pour les bureaux appariés par nom).
+  function sectorDeltas(data, force) {
+    const score = (year, code) => data.points.find((d) => d.province === "Province Sud" && d.commune === "Nouméa" &&
+      d.annee === year && d.force === force && Number(d.code_bv) === code)?.pct;
+    const deltas = new Map();
+    pairs(data, "Province Sud").filter((p) => p.commune === "Nouméa").forEach((pair) => {
+      const before = score(2019, Number(pair.code_bv_2019));
+      const after = score(2026, Number(pair.code_bv_2026));
+      if (Number.isFinite(before) && Number.isFinite(after)) deltas.set(Number(pair.code_bv_2026), after - before);
+    });
+    const unmatched = (year) => new Set(data.matches
+      .filter((d) => d.commune === "Nouméa" && d.methode === `non apparie (${year})`)
+      .map((d) => Number(year === 2019 ? d.code_bv_2019 : d.code_bv_2026)));
+    const left2019 = unmatched(2019);
+    deltas.parSecteur = [];
+    unmatched(2026).forEach((code) => {
+      if (!left2019.has(code) || deltas.has(code)) return;
+      const before = score(2019, code);
+      const after = score(2026, code);
+      if (Number.isFinite(before) && Number.isFinite(after)) {
+        deltas.set(code, after - before);
+        deltas.parSecteur.push(code);
+      }
+    });
+    return deltas;
+  }
+
+  function sectorCounts(data) {
+    const deltas = sectorDeltas(data, "loyaliste");
+    const codes = new Set(data.secteurs.map((f) => Number(f.properties.code_bv)));
+    const compared = Array.from(deltas.keys()).filter((code) => codes.has(code));
+    const up = compared.filter((code) => deltas.get(code) > 0).length;
+    // Le titre de l'écran dit « presque tous » : on le vérifie.
+    if (up / compared.length < 0.85) throw new Error(`Progression dans ${up} secteurs sur ${compared.length} : revoir le titre`);
+    return { up: String(up), compared: String(compared.length) };
+  }
+
   function communeAt(data, province, commune, force, variable = "score_2026") {
     const row = data.communes.find((d) => d.province === province && d.commune === commune && d.force === force && d.annee === 2026);
     if (!row || !Number.isFinite(row[variable])) throw new Error(`Absent : ${commune} · ${force} · ${variable}`);
     return row[variable];
-  }
-
-  // Le titre de l'écran Grand Nouméa affirme une progression dans les quatre
-  // communes de la vue agrandie : on le vérifie plutôt que de le supposer.
-  function grandNoumeaUp(data) {
-    const view = data.metadata?.smoothing?.zoom_views?.grand_noumea;
-    if (!view) throw new Error("Vue Grand Nouméa absente de metadata.json");
-    const up = view.communes.filter((name) => communeAt(data, "Province Sud", name, "loyaliste", "evolution_points") > 0);
-    if (up.length !== view.communes.length) throw new Error(`Progression dans ${up.length} communes sur ${view.communes.length} : revoir le titre`);
-    return String(up.length);
   }
 
   function communeMax(data, province, force) {
@@ -122,7 +167,8 @@
       noumea_loy_2019: pct(communeAt(data, sud, "Nouméa", "loyaliste", "score_2019")),
       noumea_loy_2026: pct(communeAt(data, sud, "Nouméa", "loyaliste")),
       noumea_loy_evo_n: communeAt(data, sud, "Nouméa", "loyaliste", "evolution_points"),
-      grand_noumea_hausses: grandNoumeaUp(data),
+      noumea_secteurs_hausse: sectorCounts(data).up,
+      noumea_secteurs_comparables: sectorCounts(data).compared,
       sud_centre_reculs: String(centre.filter((d) => d.y < d.x).length),
       sud_paires: String(pairs(data, sud).length),
       sud_centre_2019: pct(valueAt(data, sud, "centre_non_ind", "score_2019")),
@@ -300,25 +346,6 @@
       inscrits: d3.sum(values, (d) => d.inscrits),
       bureaux: values.length
     }), (d) => `${d.longitude.toFixed(5)},${d.latitude.toFixed(5)}`).map(([, value]) => value);
-  }
-
-  // Score par lieu de vote, comme siteRows() sur le site : bureaux installés
-  // au même endroit cumulés, bureaux hors carte (spatial_include) exclus.
-  function placeScores(data, province, force, year) {
-    const rows = data.points.filter((d) => d.province === province && d.annee === year && d.force === force &&
-      d.spatial_include !== false && Number.isFinite(d.longitude) && Number.isFinite(d.latitude));
-    return d3.rollups(rows, (values) => {
-      const voix = d3.sum(values, (d) => d.voix);
-      const denominateur = d3.sum(values, (d) => d.denominateur);
-      return {
-        commune: values[0].commune,
-        longitude: values[0].longitude,
-        latitude: values[0].latitude,
-        inscrits: d3.sum(values, (d) => d.inscrits),
-        bureaux: values.length,
-        pct: denominateur > 0 ? 100 * voix / denominateur : NaN
-      };
-    }, (d) => `${d.longitude.toFixed(5)}-${d.latitude.toFixed(5)}`).map(([, value]) => value);
   }
 
   // Étiquette d'une commune signalée : point, puis texte à droite (à gauche
@@ -586,7 +613,7 @@
 
   // Légende complète, comme sur le site : une case hachurée par classe, chaque
   // classe libellée ; pour une évolution, le sens est écrit en toutes lettres.
-  function drawLegend(svg, rc, classes, x, y, width, { title, delta, missing, note }) {
+  function drawLegend(svg, rc, classes, x, y, width, { title, delta, missing, note, missingText }) {
     const size = 22;
     label(svg, title, x, y, { size: 24, weight: 800, color: ink });
     let top = y + 26;
@@ -614,7 +641,7 @@
     } else if (missing) {
       const ny = top + 84;
       svg.append("rect").attr("x", x).attr("y", ny - 11).attr("width", 34).attr("height", 22).attr("fill", noData).attr("stroke", "#b9b1a5");
-      label(svg, "commune sans résultat comparable", x + 44, ny, { size: 20, color: muted });
+      label(svg, missingText || "commune sans résultat comparable", x + 44, ny, { size: 20, color: muted });
     }
   }
 
@@ -696,78 +723,39 @@
       });
     },
 
-    // Vue agrandie à l'échelle des bureaux, comme la vue « Bureaux » du site :
-    // un cercle par position (bureaux cumulés), même échelle en 2019 et 2026.
-    // À Nouméa, les bureaux de 2026 sont placés à leur école de rattachement
-    // d'avant le regroupement dans neuf lieux : la carte se lit par secteur,
-    // pas par lieu de vote réel. Aucune évolution n'est calculée par cercle.
-    lieux(svg, data, { rc, node, width, height }) {
-      const province = node.dataset.province;
-      const force = node.dataset.force;
-      const view = data.metadata?.smoothing?.zoom_views?.[node.dataset.zoom];
-      if (!view) throw new Error(`Vue agrandie inconnue : ${node.dataset.zoom}`);
-      const years = [2019, 2026];
-      const sitesByYear = new Map(years.map((year) => [year, placeScores(data, province, force, year)]));
-      const color = data.points.find((d) => d.province === province && d.force === force)?.couleur || ink;
-      // Classes calculées sur tous les lieux de la province, comme sur le site.
-      const classes = scoreClasses(color, years.flatMap((year) => sitesByYear.get(year).map((d) => d.pct)), 6);
-      const boundary = data.provinceShapes.features.filter((f) => f.properties.province === province);
-      const communes = data.communeShapes.features.filter((f) => f.properties.province === province && f.geometry);
-
-      const legend = 26 + 64;
-      const side = width > (height - legend) * 1.25;
-      const gap = 18;
-      const panelW = side ? (width - gap) / 2 : width;
-      const panelH = side ? height - legend - 26 : (height - legend - 26 - gap) / 2;
-      const [west, south, east, north] = view.bbox;
-      years.forEach((year, index) => {
-        const x0 = side ? index * (panelW + gap) : 0;
-        const y0 = side ? 0 : index * (panelH + gap);
-        paperCard(svg, rc, x0 + 2, y0 + 2, panelW - 4, panelH - 4, `lieux-cadre-${year}`);
-        const titleH = 50;
-        const box = [[x0 + 12, y0 + titleH], [x0 + panelW - 12, y0 + panelH - 12]];
-        const projection = d3.geoMercator()
-          .fitExtent(box, { type: "MultiPoint", coordinates: [[west, south], [east, north]] })
-          .clipExtent(box);
-        const path = d3.geoPath(projection);
-        const group = svg.append("g");
-        group.append("path").attr("d", boundary.map((f) => path(f)).join("")).attr("fill", "#f4f0e8");
-        group.append("path").attr("d", communes.map((f) => path(f)).join(""))
-          .attr("fill", "none").attr("stroke", "#4f4942").attr("stroke-width", 1.3).attr("stroke-opacity", 0.7)
-          .attr("stroke-dasharray", "8 4").attr("stroke-linejoin", "round");
-        drawCoast(group, rc, path, boundary, `lieux-cote-${year}`, 30);
-
-        const inside = ([px, py]) => px >= box[0][0] && px <= box[1][0] && py >= box[0][1] && py <= box[1][1];
-        const sites = sitesByYear.get(year)
-          .map((site) => ({ ...site, xy: projection([site.longitude, site.latitude]) }))
-          .filter((site) => inside(site.xy))
-          .sort((a, b) => d3.descending(a.inscrits, b.inscrits));
-        const radius = d3.scaleSqrt().domain([0, d3.max(years, (y) => d3.max(sitesByYear.get(y), (d) => d.inscrits))]).range([6, 20]);
-        sites.forEach((site, k) => {
-          roughCircle(group, rc, site.xy[0], site.xy[1], radius(site.inscrits) * 2, {
-            fill: classes.colors[classIndex(classes, site.pct)], fillStyle: "solid", strokeWidth: 1.3, roughness: 0.9,
-            seed: `lieux-${year}-${k}`
-          });
-        });
-
-        // Noms de communes au barycentre de leurs lieux de vote visibles.
-        view.communes.forEach((name) => {
-          const own = sites.filter((s) => communeKey(s.commune, province) === communeKey(name, province));
-          if (!own.length) return;
-          const cx = d3.mean(own, (s) => s.xy[0]);
-          const cy = d3.min(own, (s) => s.xy[1]) - 26;
-          label(group, name, Math.min(Math.max(cx, box[0][0] + 60), box[1][0] - 60), Math.max(cy, box[0][1] + 14), {
-            anchor: "middle", size: 24, weight: 800, color: "#3f3a35", halo: true, haloWidth: 6
-          });
-        });
-        label(svg, String(year), x0 + 22, y0 + 30, { size: 40, family: "Cabin Sketch, sans-serif", color: hatchColor(color) })
-          .attr("stroke", hatchColor(color)).attr("stroke-width", 1.2).attr("paint-order", "stroke");
+    // Nouméa par secteur électoral : chaque secteur prend l'évolution de son
+    // bureau, apparié avec 2019 par nom ou numéro comme dans l'article. Les
+    // secteurs sans bureau comparable restent gris.
+    secteurs(svg, data, { rc, node, width, height }) {
+      const deltas = sectorDeltas(data, node.dataset.force);
+      const classes = deltaClasses(Array.from(deltas.values()));
+      const missing = data.secteurs.length - deltas.size;
+      const legend = legendHeight(true, true);
+      const cardBottom = height - legend - 18;
+      paperCard(svg, rc, 2, 2, width - 4, cardBottom - 2, "secteurs-cadre");
+      const box = [[18, 16], [width - 18, cardBottom - 14]];
+      const sectors = { type: "FeatureCollection", features: data.secteurs };
+      const projection = d3.geoMercator().fitExtent(box, sectors).clipExtent(box);
+      const path = d3.geoPath(projection);
+      data.secteurs.forEach((feature, index) => {
+        const delta = deltas.get(Number(feature.properties.code_bv));
+        const id = classIndex(classes, delta);
+        const fill = id < 0 ? noData : classes.colors[id];
+        const d = path(feature);
+        svg.append("path").attr("d", d).attr("fill", fill);
+        const hatch = id < 0 ? null : classes.hatch[id];
+        if (hatch) roughPath(svg, rc, d, hatchOptions(fill, hatch, `secteur-${feature.properties.code_bv}`));
       });
-
+      svg.append("path").attr("d", data.secteurs.map((f) => path(f)).join(""))
+        .attr("fill", "none").attr("stroke", "#4f4942").attr("stroke-width", 1).attr("stroke-opacity", 0.75).attr("stroke-linejoin", "round");
+      const noumea = data.communeShapes.features.filter((f) => communeKey(f.properties.commune, "Province Sud") === communeKey("Nouméa", "Province Sud"));
+      drawCoast(svg, rc, path, noumea, "secteurs-cote", 40);
       const legendWidth = Math.min(width - 8, 900);
-      drawLegend(svg, rc, classes, (width - legendWidth) / 2, height - legend + 6, legendWidth, {
-        title: node.dataset.legende || "Score du lieu de vote, en % des exprimés · même échelle 2019 et 2026",
-        delta: false, missing: false
+      drawLegend(svg, rc, classes, (width - legendWidth) / 2, cardBottom + 30, legendWidth, {
+        title: node.dataset.legende || "Évolution 2019 → 2026, en points",
+        delta: true, missing: missing > 0,
+        missingText: `secteur sans bureau comparable en 2019 (${missing})`,
+        note: missing > 0 ? null : `Dont ${deltas.parSecteur.length} secteurs appariés par numéro : école renommée ou déplacée entre 2019 et 2026.`
       });
     },
 
