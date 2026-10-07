@@ -1,0 +1,354 @@
+/* Gabarit commun des campagnes tirées d'un article (articles/<slug>/source.html).
+   Une diapositive = un écran [data-slide] ; la mise en page s'adapte au
+   paramètre ?layout= transmis par scripts/exporter_visuels.py :
+   portrait (4:5), square (1:1), tiktok (9:16) et link (1,91:1). */
+
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cabin+Sketch:wght@400;700&display=swap");
+
+:root {
+  --paper: #f7f1e3;
+  --surface: #fffdf8;
+  --ink: #252525;
+  --muted: #625d55;
+  --rule: rgba(37, 37, 37, 0.38);
+  --green: #455d44;
+  --teal: #237a67;
+  --red: #c54832;
+  --gold: #e0ab1e;
+  --s: 1;
+  --pad-top: 62px;
+  --pad-right: 64px;
+  --pad-bottom: 40px;
+  --pad-left: 64px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+}
+
+.slide {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 43px, rgba(69, 93, 68, 0.06) 44px),
+    var(--paper);
+  display: none;
+  flex-direction: column;
+  gap: calc(var(--s) * 18px);
+  height: 100vh;
+  overflow: hidden;
+  padding: var(--pad-top) var(--pad-right) var(--pad-bottom) var(--pad-left);
+  position: relative;
+  width: 100vw;
+}
+
+.slide.is-active { display: flex; }
+
+.slide::before {
+  border-top: 3px dashed var(--rule);
+  content: "";
+  left: calc(var(--pad-left) - 14px);
+  position: absolute;
+  right: calc(var(--pad-right) - 14px);
+  top: calc(var(--pad-top) - 26px);
+  transform: rotate(-0.15deg);
+}
+
+.slide-head {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.eyebrow {
+  border: 3px solid var(--green);
+  box-shadow: 4px 5px 0 rgba(69, 93, 68, 0.14);
+  color: var(--green);
+  display: inline-block;
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-size: calc(var(--s) * 27px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 6px 16px 4px;
+  text-transform: uppercase;
+  transform: rotate(-0.8deg);
+}
+
+.eyebrow.is-red { border-color: var(--red); color: var(--red); }
+.eyebrow.is-teal { border-color: var(--teal); color: var(--teal); }
+
+.folio {
+  color: var(--muted);
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-size: calc(var(--s) * 28px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+h1,
+h2 {
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* Cabin Sketch est creux : un liseré d'encre pleine le rend lisible dans un
+   fil mobile, où l'image est affichée au tiers de sa taille. */
+h1,
+h2,
+.big,
+.contours-brand {
+  -webkit-text-stroke: calc(var(--s) * 1.4px) currentColor;
+  paint-order: stroke fill;
+}
+
+h1 { font-size: calc(var(--s) * 80px); line-height: 0.98; }
+h2 { font-size: calc(var(--s) * 66px); line-height: 1.02; }
+
+.big {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-size: calc(var(--s) * 96px);
+  font-weight: 700;
+  gap: 0 0.28em;
+  line-height: 1;
+  margin: 0;
+}
+
+.big.is-compact { font-size: calc(var(--s) * 78px); }
+
+.big small {
+  -webkit-text-stroke: 0;
+  color: var(--muted);
+  font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+  font-size: calc(var(--s) * 32px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.big .is-up { color: var(--teal); }
+.big .is-down { color: var(--red); }
+.big .is-muted { color: var(--muted); }
+.big .arrow { -webkit-text-stroke: 0; color: var(--ink); font-family: "Atkinson Hyperlegible", Arial, sans-serif; font-size: 0.7em; }
+
+.figure {
+  flex: 1 1 auto;
+  margin: 0;
+  min-height: 0;
+  position: relative;
+}
+
+.figure svg {
+  display: block;
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+
+.note {
+  font-size: calc(var(--s) * 34px);
+  line-height: 1.24;
+  margin: 0;
+}
+
+.note strong { color: var(--green); }
+
+.brandbar {
+  align-items: flex-end;
+  border-top: 3px dashed var(--rule);
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  padding-top: calc(var(--s) * 14px);
+}
+
+.contours-brand {
+  color: #1f1f1f;
+  font-family: "Cabin Sketch", sans-serif;
+  font-size: calc(var(--s) * 36px);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.source {
+  color: var(--muted);
+  font-size: max(20px, calc(var(--s) * 23px));
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: right;
+}
+
+/* Écran final : appel à lire l'article. */
+.cta-box {
+  align-self: flex-start;
+  background: var(--green);
+  color: var(--paper);
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-size: calc(var(--s) * 40px);
+  padding: 18px 26px 14px;
+  transform: rotate(-0.7deg);
+}
+
+/* Les liens ne sont pas cliquables dans une image : adresse courte lisible,
+   renvoi au lien en bio et invitation à enregistrer. */
+.cta-url {
+  align-items: center;
+  align-self: stretch;
+  border: 4px solid var(--ink);
+  box-shadow: 7px 8px 0 rgba(69, 93, 68, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--s) * 6px);
+  padding: calc(var(--s) * 22px) 24px calc(var(--s) * 18px);
+  text-align: center;
+  transform: rotate(-0.6deg);
+}
+
+.cta-url strong {
+  -webkit-text-stroke: calc(var(--s) * 1.4px) currentColor;
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-size: calc(var(--s) * 58px);
+  line-height: 1;
+  paint-order: stroke fill;
+}
+
+.cta-url span {
+  color: var(--muted);
+  font-size: calc(var(--s) * 30px);
+  font-weight: 700;
+}
+
+.cta-actions {
+  -webkit-text-stroke: calc(var(--s) * 1.2px) currentColor;
+  color: var(--green);
+  font-family: "Cabin Sketch", system-ui, sans-serif;
+  font-size: calc(var(--s) * 36px);
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+.cta-list {
+  display: grid;
+  font-size: calc(var(--s) * 32px);
+  gap: calc(var(--s) * 14px);
+  line-height: 1.2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cta-list li {
+  border-bottom: 3px solid var(--ink);
+  padding: 0 0 calc(var(--s) * 12px) 52px;
+  position: relative;
+}
+
+.cta-list li::before {
+  color: var(--green);
+  content: "✎";
+  font-size: 1.1em;
+  left: 4px;
+  position: absolute;
+  top: -2px;
+}
+
+.caveat {
+  border-left: 8px solid var(--gold);
+  font-size: calc(var(--s) * 32px);
+  line-height: 1.25;
+  margin: 0;
+  padding: 6px 0 6px 22px;
+}
+
+.error {
+  color: var(--red);
+  font-size: 32px;
+  padding: 40px;
+}
+
+/* --- Formats ------------------------------------------------------------- */
+
+body.layout-square {
+  --s: 0.84;
+  --pad-top: 50px;
+  --pad-right: 54px;
+  --pad-bottom: 30px;
+  --pad-left: 54px;
+}
+
+body.layout-square .slide { gap: 13px; }
+body.layout-square .slide::before { top: 24px; }
+body.layout-square .hide-square { display: none; }
+
+/* 9:16 : marges élargies en haut, à droite et en bas pour rester hors des
+   zones d'interface (légende, boutons, barre de progression). Les textes sont
+   agrandis : l'image occupe l'écran mais se lit en quelques secondes. */
+body.layout-tiktok {
+  --s: 1.2;
+  --pad-top: 170px;
+  --pad-right: 150px;
+  --pad-bottom: 360px;
+  --pad-left: 72px;
+}
+
+body.layout-tiktok .slide { gap: 30px; }
+body.layout-tiktok h1 { font-size: calc(var(--s) * 68px); }
+body.layout-tiktok .hide-tiktok { display: none; }
+.only-tiktok { display: none; }
+body.layout-tiktok .only-tiktok { display: inline; }
+
+body.layout-link {
+  --s: 0.7;
+  --pad-top: 44px;
+  --pad-right: 46px;
+  --pad-bottom: 22px;
+  --pad-left: 50px;
+}
+
+body.layout-link .slide.is-active {
+  display: grid;
+  gap: 12px 34px;
+  grid-template-areas:
+    "head fig"
+    "title fig"
+    "big fig"
+    "note fig"
+    "brand brand";
+  grid-template-columns: 1fr 1.08fr;
+  grid-template-rows: auto auto auto 1fr auto;
+}
+
+body.layout-link .slide::before { top: 20px; }
+body.layout-link .slide-head { grid-area: head; }
+body.layout-link h1,
+body.layout-link h2 { grid-area: title; }
+body.layout-link .big { grid-area: big; }
+body.layout-link .figure { grid-area: fig; }
+body.layout-link .note { align-self: start; grid-area: note; }
+body.layout-link .brandbar { grid-area: brand; }
+body.layout-link .hide-link,
+body.layout-link .folio { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

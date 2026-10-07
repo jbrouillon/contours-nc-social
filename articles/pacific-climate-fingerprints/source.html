@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Empreintes climatiques du Pacifique · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    /* Couleurs de la dataviz (climate-map-interactive.js). */
+    .big .is-wet { color: #2475a7; }
+    .big .is-dry { color: #d7672d; }
+    .big .is-sea { color: #416f96; }
+  </style>
+</head>
+<body>
+  <!-- Les chiffres [data-v] sont calculés par visuels.js à partir de donnees/,
+       copie des données de la dataviz (voir donnees/provenance.json), avec les
+       mêmes règles de comptage que climate-map-interactive.js. -->
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Empreintes climatiques du Pacifique</span><span class="folio"></span></header>
+    <h1><span class="hide-tiktok">En 2025, aucun territoire cartographié n’est bleu.</span><span class="only-tiktok">2025&nbsp;: aucun territoire cartographié n’est bleu.</span></h1>
+    <p class="big"><span class="is-down" data-v="ocean_2025"></span><small>territoires où la mer est plus chaude<br>que leur propre référence locale</small></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-indicator="ocean" data-year="2025" role="img" aria-label="Carte du Pacifique : en 2025, tous les territoires cartographiés ont une température de surface de la mer supérieure à leur référence locale"></svg>
+    </figure>
+    <p class="note">La carte couvre <strong data-v="mapped"></strong> territoires&nbsp;; Pitcairn, non cartographié, reste présent dans l’atlas qui en réunit <strong data-v="atlas"></strong>.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Anomalie de température de surface de la mer, 2025<br>Pacific Data Hub (CPS) · Pacific Dataviz Challenge 2026</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Océan · 1960 → 2025</span><span class="folio"></span></header>
+    <h2>Comment le rouge <span style="white-space:nowrap">a-t-il</span> gagné le Pacifique&nbsp;?</h2>
+    <p class="big"><span data-v="ocean_1960_pos"></span><span class="arrow">→</span><span class="is-down" data-v="ocean_2025_pos"></span><small>territoires sur <span data-v="mapped"></span><br>au-dessus de leur référence</small></p>
+    <figure class="figure">
+      <svg data-sketch="compte" data-indicator="ocean" data-start="1960" data-end="2025" role="img" aria-label="Nombre de territoires au-dessus ou en dessous de leur référence de température de la mer, chaque année de 1960 à 2025 : aucun au-dessus en 1960, tous en 2025"></svg>
+    </figure>
+    <p class="note">Sur les terres, même direction&nbsp;: <strong data-v="land_2025_pos"></strong> territoires au-dessus de leur référence en 2025, <strong data-v="land_2025_neg"></strong> en dessous.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Chaque territoire comparé à sa propre référence<br>Pacific Data Hub (CPS) · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-teal">Pluies · 2025</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Le changement climatique ne signifie pas la même pluie partout.</span><span class="only-tiktok">Pas la même pluie partout.</span></h2>
+    <p class="big"><span class="is-wet" data-v="rain_2025_wetter"></span><small>plus<br>humides</small><span class="is-dry" data-v="rain_2025_drier"></span><small>plus<br>secs</small><span class="is-muted" data-v="rain_2025_near"></span><small>proches de<br>la normale</small></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-indicator="rain" data-year="2025" role="img" aria-label="Carte du Pacifique en 2025 : certains territoires nettement plus humides que leur normale, d’autres nettement plus secs, quelques-uns proches de la normale"></svg>
+    </figure>
+    <p class="note">«&nbsp;Nettement&nbsp;»&nbsp;: un écart supérieur à deux erreurs-types publiées par la source.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Anomalie annuelle de pluie, 2025<br>Pacific Data Hub (CPS) · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Niveau marin · 1993 → 2023</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Une série plus courte ajoute un autre signal à la hausse.</span><span class="only-tiktok">Niveau marin&nbsp;: un autre signal à la hausse.</span></h2>
+    <p class="big"><span class="is-sea" data-v="sea_2023_pos"></span><small>territoires sur <span data-v="sea_2023_n"></span> au-dessus<br>de leur niveau de référence en 2023</small></p>
+    <figure class="figure">
+      <svg data-sketch="compte" data-indicator="sea_level" data-start="1993" data-end="2023" role="img" aria-label="Nombre de territoires au-dessus de leur niveau marin de référence chaque année de 1993 à 2023 : la part augmente jusqu’à tous les territoires en 2023"></svg>
+    </figure>
+    <p class="note">L’archive du niveau marin ne commence qu’en 1993&nbsp;: ce signal se lit sur sa propre échelle de temps.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Anomalie du niveau marin, 1993–2023<br>Pacific Data Hub (CPS) · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Nouvelle-Calédonie</span><span class="folio"></span></header>
+    <h2>L’empreinte climatique de la Nouvelle-Calédonie</h2>
+    <p class="big"><span class="is-down" data-v="nc_ocean_2025"></span><small>pour la mer en 2025,<br>par rapport à sa référence locale</small></p>
+    <figure class="figure">
+      <svg data-sketch="empreinte" data-code="NC" role="img" aria-label="Empreinte climatique de la Nouvelle-Calédonie : quatre rubans annuels pour la mer, les terres, les pluies et le niveau marin, de 1850 à 2025 ; les années récentes de la mer et des terres sont rouges"></svg>
+    </figure>
+    <p class="note">Terres&nbsp;: <strong data-v="nc_land_2025"></strong> en 2025. Pluies&nbsp;: <strong data-v="nc_rain_2025"></strong> en 2025.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">1 bande = 1 année observée · vide = pas d’observation<br>Pacific Data Hub (CPS) · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">À explorer</span><span class="folio"></span></header>
+    <h2>Un même Pacifique. <span style="white-space:nowrap">Vingt-deux</span> empreintes climatiques.</h2>
+    <ul class="cta-list hide-tiktok">
+      <li>Rejouer la carte de 1960 à 2025</li>
+      <li>Comparer océan, terres, pluies et niveau marin</li>
+      <li>Révéler l’empreinte de chacun des 22 territoires</li>
+      <li class="hide-square">En français et en anglais</li>
+    </ul>
+    <p class="caveat">Les couleurs montrent un écart à la référence propre de chaque territoire, pas son climat absolu. Ce sont des observations, pas des prévisions.</p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-indicator="ocean" data-year="2025" data-minimal="true" role="img" aria-label="Croquis de la carte du Pacifique colorée selon l’anomalie de température de la mer en 2025"></svg>
+    </figure>
+    <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · dataviz interactive et sources</span></p>
+    <p class="cta-actions">Enregistrez · Partagez</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Pacific Data Hub (CPS) · NOAA<br>Soumission au Pacific Dataviz Challenge 2026</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

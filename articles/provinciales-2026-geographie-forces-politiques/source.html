@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Provinciales 2026 · géographie des forces · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+</head>
+<body>
+  <!-- Les chiffres [data-v] sont calculés par visuels.js à partir de donnees/,
+       copie des données de l'article (voir donnees/provenance.json). -->
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Provinciales 2019 → 2026</span><span class="folio"></span></header>
+    <h1>Où les forces politiques <span style="white-space:nowrap">ont-elles</span> gagné du terrain&nbsp;?</h1>
+    <figure class="figure">
+      <svg data-sketch="couverture" role="img" aria-label="Carte des trois provinces : entre 2019 et 2026, l’UC-FLNKS progresse dans le Nord, la participation recule aux Îles et la droite loyaliste progresse dans le Sud"></svg>
+    </figure>
+    <p class="note">Trois provinces, trois recompositions. <span class="hide-square">Une comparaison <strong>par commune et par bureau de vote</strong>.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Résultats officiels par bureau de vote<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Sud · droite loyaliste</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Dans le Sud, la droite loyaliste progresse presque partout, bien au-delà de Nouméa.</span><span class="only-tiktok">Sud&nbsp;: la droite loyaliste progresse presque partout.</span></h2>
+    <p class="big"><span data-v="sud_loy_2019"></span><span class="arrow">→</span><span data-v="sud_loy_2026" data-trend="sud_loy_evo_n"></span><small>des suffrages<br>exprimés</small></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-province="Province Sud" data-force="loyaliste" data-variable="evolution_points" data-highlight="Farino|Poya Sud|Nouméa" data-legende="Droite loyaliste : évolution 2019 → 2026, en points" role="img" aria-label="Carte des communes de la province Sud : la droite loyaliste progresse dans presque toutes les communes entre 2019 et 2026"></svg>
+    </figure>
+    <p class="note">À Farino, elle passe de <strong data-v="farino_loy_2019"></strong> à <strong data-v="farino_loy_2026"></strong>&nbsp;; à Poya Sud, elle atteint <strong data-v="poya_loy_2026"></strong>. <span class="hide-square">L’Avenir en confiance en 2019, LL-LR en 2026.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Provinciales 2019 et 2026, évolution en points<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Grand Nouméa · droite loyaliste</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Dans le Grand Nouméa, la droite loyaliste progresse dans les quatre communes.</span><span class="only-tiktok">Grand Nouméa&nbsp;: progression dans les quatre communes.</span></h2>
+    <p class="big"><span class="is-muted" data-v="noumea_loy_2019"></span><span class="arrow">→</span><span data-v="noumea_loy_2026" data-trend="noumea_loy_evo_n"></span><small>à Nouméa, des<br>suffrages exprimés</small></p>
+    <figure class="figure">
+      <svg data-sketch="lieux" data-province="Province Sud" data-force="loyaliste" data-zoom="grand_noumea" data-legende="Droite loyaliste : score par secteur, en % des exprimés" role="img" aria-label="Deux cartes du Grand Nouméa, 2019 et 2026 : les bureaux de vote, placés à leur école de rattachement, sont colorés selon le score de la droite loyaliste, sur la même échelle"></svg>
+    </figure>
+    <p class="note">Un cercle = les bureaux d’une même école de rattachement, taille selon les inscrits. <span class="hide-square">En 2026, les électeurs de Nouméa votaient en fait dans neuf lieux regroupés.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Provinciales 2019 et 2026, résultats par bureau de vote<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Sud · centre</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Le centre recule dans presque tous les bureaux.</span><span class="only-tiktok">Sud&nbsp;: le centre recule presque partout.</span></h2>
+    <p class="big"><span class="is-down" data-v="sud_centre_reculs"></span><small>bureaux sur <span data-v="sud_paires"></span><br>comparables</small></p>
+    <figure class="figure">
+      <svg data-sketch="essaim" data-province="Province Sud" data-x="centre_non_ind" data-y="centre_non_ind" data-moyenne="centre_non_ind" data-libelles="où le centre progresse|où le centre recule" role="img" aria-label="Un cercle par bureau comparable de la province Sud, placé selon l’évolution du centre en points : le centre non-indépendantiste recule dans presque tous les bureaux entre 2019 et 2026"></svg>
+    </figure>
+    <p class="note">Calédonie ensemble en 2019, puis les trois listes du centre réunies en 2026&nbsp;: <strong data-v="sud_centre_2019"></strong> → <strong data-v="sud_centre_2026"></strong> dans la province.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Bureaux présents aux deux scrutins<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Nord · UC et UNI</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Dans le Nord, l’UC repasse devant l’UNI.</span><span class="only-tiktok">Nord&nbsp;: l’UC repasse devant l’UNI.</span></h2>
+    <p class="big is-compact"><span>UC</span><span class="is-muted" data-v="nord_uc_2019"></span><span class="arrow">→</span><span data-v="nord_uc_2026" data-trend="nord_uc_evo_n"></span></p>
+    <p class="big is-compact"><span>UNI</span><span class="is-muted" data-v="nord_uni_2019"></span><span class="arrow">→</span><span data-v="nord_uni_2026" data-trend="nord_uni_evo_n"></span></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-province="Province Nord" data-force="uc_flnks" data-variable="evolution_points" data-highlight-max="true" data-highlight="Touho" data-legende="UC-FLNKS : évolution 2019 → 2026, en points" role="img" aria-label="Carte des communes de la province Nord colorées selon l’évolution de l’UC-FLNKS entre 2019 et 2026"></svg>
+    </figure>
+    <p class="note">Le vote indépendantiste reste stable (<strong data-v="nord_bloc_2019"></strong> → <strong data-v="nord_bloc_2026"></strong>). <span class="hide-square">L’UNI garde ses bastions&nbsp;: <strong data-v="poindimie_uni"></strong> à Poindimié.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">UC-FLNKS, évolution 2019 → 2026 en points<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Îles · participation</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Aux Îles, l’abstention augmente presque partout.</span><span class="only-tiktok">Îles&nbsp;: l’abstention augmente presque partout.</span></h2>
+    <p class="big"><span class="is-down" data-v="iles_abst_hausses"></span><small>bureaux sur <span data-v="iles_paires"></span><br>comparables</small></p>
+    <figure class="figure">
+      <svg data-sketch="essaim" data-province="Province des Iles" data-x="abstention" data-y="abstention" data-inverse="true" data-moyenne="participation" data-libelles="où l’abstention progresse|où l’abstention recule" data-axe="Évolution de l’abstention 2019 → 2026, en points (0 = même niveau)" role="img" aria-label="Un cercle par bureau comparable de la province des Îles, placé selon l’évolution de l’abstention en points : l’abstention augmente dans presque tous les bureaux entre 2019 et 2026"></svg>
+    </figure>
+    <p class="note">La participation passe de <strong data-v="iles_part_2019"></strong> à <strong data-v="iles_part_2026"></strong> dans la province, et recule de <strong data-v="ouvea_part_recul"></strong> à Ouvéa.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Abstention en % des inscrits, bureaux comparables<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Îles · Nation autochtone</span><span class="folio"></span></header>
+    <h2>Maré devient le cœur d’un troisième pôle.</h2>
+    <p class="big"><span data-v="mare_na"></span><small>pour Nation autochtone<br>à Maré en 2026</small></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-province="Province des Iles" data-force="dynamique_autochtone" data-variable="score_2026" data-highlight="Maré|Ouvéa|Lifou" data-legende="Nation autochtone : score 2026, en % des suffrages exprimés" role="img" aria-label="Carte des communes de la province des Îles colorées selon le score de Nation autochtone en 2026"></svg>
+    </figure>
+    <p class="note">Dans la province&nbsp;: <strong data-v="iles_na_2019"></strong> → <strong data-v="iles_na_2026"></strong>, presque autant que l’UC (<strong data-v="iles_uc_2026"></strong>). <span class="hide-square">Nation autochtone prolonge la liste Dynamique autochtone de 2019.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Score 2026 en % des suffrages exprimés<br>Haut-commissariat · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">À explorer</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Partout, la moyenne provinciale cache des mouvements locaux de sens opposés.</span><span class="only-tiktok">La moyenne provinciale cache des mouvements locaux opposés.</span></h2>
+    <ul class="cta-list hide-tiktok">
+      <li>Cartes 2019 et 2026, par commune ou par bureau</li>
+      <li>Zoom sur le Grand Nouméa</li>
+      <li class="hide-square">Une famille politique ou une liste, au choix</li>
+    </ul>
+    <p class="caveat">Les cartes montrent où les rapports de force ont changé. Elles ne disent pas comment chaque électeur a voté.</p>
+    <figure class="figure">
+      <svg data-sketch="provinces" role="img" aria-label="Croquis des trois provinces de la Nouvelle-Calédonie : Nord, Sud et Îles"></svg>
+    </figure>
+    <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · article, cartes interactives et méthode</span></p>
+    <p class="cta-actions">Enregistrez · Partagez</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Provinciales 2026&nbsp;: où les forces politiques<br>ont-elles gagné du terrain&nbsp;?</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

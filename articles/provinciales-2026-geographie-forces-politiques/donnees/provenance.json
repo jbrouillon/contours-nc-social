@@ -1,0 +1,49 @@
+{
+  "site": "jbrouillon/contours-nc",
+  "commit": "148a7888aeac539bdbcb2877ff6b19c09c546070",
+  "importe_le": "2026-10-07T15:06:00+11:00",
+  "fichiers": [
+    {
+      "fichier": "synthese_province.csv",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/synthese_province.csv",
+      "sha256": "7fde6aac9c71b7941f07e1dd6c16d43255621c46e69aa3b6afdb5098fe9407aa",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "synthese_communes.csv",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/synthese_communes.csv",
+      "sha256": "9df414b9405b4e5de5f5a0156b26a296a7b977fbe6e9599a66c6fdee214e39ba",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "communes.geojson",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/communes.geojson",
+      "sha256": "94ed881f3ba26005757a969916897cb05472dc6be44ca305d7f3d6566b9e0a1b",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "provinces.geojson",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/provinces.geojson",
+      "sha256": "3d58bc60d841545f44a690d1fd2de74003b45720638a64998eafc93c180f04c8",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "bureaux_forces_2019_2026.csv",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/bureaux_forces_2019_2026.csv",
+      "sha256": "67d64d7688604a9fd7078d9cb9112e50dc8621a6afb918e13369fdd569d7354a",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "appariement_bureaux_2019_2026.csv",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/appariement_bureaux_2019_2026.csv",
+      "sha256": "7948547befd5346c7d1c109c78c60fcdb610fdf4f8f36e30ba4a244b3dead632",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "metadata.json",
+      "origine": "posts/provinciales-2026-geographie-forces-politiques/data/metadata.json",
+      "sha256": "ccc01a42941d7b2174f2946d21e9dba3369d03043ecf8a7b78f1f05ef090bb70",
+      "modifie_localement": false
+    }
+  ]
+}

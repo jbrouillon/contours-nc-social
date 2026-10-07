@@ -1,0 +1,19 @@
+{
+  "site": "jbrouillon/contours-nc",
+  "commit": "148a7888aeac539bdbcb2877ff6b19c09c546070",
+  "importe_le": "2026-10-04T15:57:04+11:00",
+  "fichiers": [
+    {
+      "fichier": "climate_interactive.csv",
+      "origine": "assets/data/pacific-climate-fingerprints/climate_interactive.csv",
+      "sha256": "600a25d0bb35309bda2c1d244817095b72ec9d7f703dfae762c36718bcf3025c",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "eez.geojson",
+      "origine": "assets/data/pacific-climate-fingerprints/eez.geojson",
+      "sha256": "83c26bc2fe3698878ddb07470b03a507476d1b6ce9448667cfbc5a0b79112419",
+      "modifie_localement": false
+    }
+  ]
+}
