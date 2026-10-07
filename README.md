@@ -145,7 +145,21 @@ Le script masque la fermeture, la navigation et le lien de lecture détaillée, 
 - Les images sont envoyées à Buffer par leur URL `raw.githubusercontent.com` figée sur un commit : commiter et pousser les visuels avant de les programmer, et ne pas réécrire l'historique de ce dépôt.
 - Facebook et Instagram sont publiés automatiquement. Le lien de l'article doit être dans la bio Instagram et TikTok au moment de la publication.
 - TikTok est programmé en mode « rappel » : à l'heure prévue, l'application Buffer envoie une notification ; ouvrir TikTok, choisir un son (tendance ou bibliothèque commerciale), publier. Buffer n'a pas accès aux sons de TikTok.
-- Plan gratuit de Buffer : 3 canaux, 10 publications programmées à la fois.
+- Plan gratuit de Buffer : 3 canaux, 10 publications en attente par canal ; une place se libère dès qu'un post part.
+
+## Vidéos TikTok avec musique
+
+`scripts/produire_video.py` enchaîne les PNG 9:16 d'une campagne par fondus et pose une piste musicale (coupée à la durée de la vidéo, fondu d'entrée et de sortie). ffmpeg est pris dans le PATH, sinon dans `imageio-ffmpeg` (`python -m pip install --user imageio-ffmpeg`).
+
+```powershell
+python scripts/produire_video.py articles/<slug>/vertical-9x16 `
+  --musique articles/<slug>/video/musique.m4a `
+  --sortie articles/<slug>/video/<slug>.mp4 --durees 3.5,5,6,5,5,5,5,4
+```
+
+- Les pistes de `articles/*/video/musique.m4a` sont des morceaux instrumentaux originaux générés par vidIQ (outil `generate_music`, présenté comme libre de droits), convertis en AAC. Provinciales : piano feutré et marimba, ambiance documentaire neutre (piste a14cd8cd). Empreintes climatiques : nappes, ukulélé et piano, ambiance océanique (piste acfda2b8). Générées le 7 octobre 2026.
+- Buffer doit récupérer la vidéo avec le type `video/mp4` : `raw.githubusercontent.com` la sert en `application/octet-stream`, utiliser l'URL jsDelivr figée sur un commit (`https://cdn.jsdelivr.net/gh/jbrouillon/contours-nc-social@<commit>/<chemin>`, 20 Mo au plus par fichier).
+
 
 ## Règles
 
