@@ -304,18 +304,27 @@ body.layout-square .hide-square { display: none; }
    zones d'interface (légende, boutons, barre de progression). Les textes sont
    agrandis : l'image occupe l'écran mais se lit en quelques secondes. */
 body.layout-tiktok {
-  --s: 1.2;
-  --pad-top: 170px;
-  --pad-right: 150px;
-  --pad-bottom: 360px;
-  --pad-left: 72px;
+  --s: 1.04;
+  --pad-top: 150px;
+  --pad-right: 140px;
+  --pad-bottom: 330px;
+  --pad-left: 64px;
 }
 
-body.layout-tiktok .slide { gap: 30px; }
-body.layout-tiktok h1 { font-size: calc(var(--s) * 68px); }
+/* La hauteur du 9:16 revient d'abord à la figure : textes resserrés, figure
+   extensible. */
+body.layout-tiktok .slide { gap: 22px; }
+body.layout-tiktok h1 { font-size: calc(var(--s) * 72px); }
+body.layout-tiktok .note { font-size: calc(var(--s) * 30px); }
+body.layout-tiktok .figure { flex-grow: 1; }
 body.layout-tiktok .hide-tiktok { display: none; }
 .only-tiktok { display: none; }
 body.layout-tiktok .only-tiktok { display: inline; }
+/* L'aperçu de lien (1,91:1) reprend les titres courts du 9:16. */
+body.layout-link .slide-head + h1 .only-tiktok,
+body.layout-link .slide-head + h2 .only-tiktok { display: inline; }
+body.layout-link .slide-head + h1 .hide-tiktok,
+body.layout-link .slide-head + h2 .hide-tiktok { display: none; }
 
 body.layout-link {
   --s: 0.7;

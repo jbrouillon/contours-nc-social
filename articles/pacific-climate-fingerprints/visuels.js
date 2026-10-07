@@ -167,9 +167,16 @@
     return projection;
   }
 
+  // Libellés en mots de température plutôt qu'en couleurs.
+  const countLabels = {
+    ocean: ["mer plus chaude que la référence ↑", "plus froide ↓"],
+    land: ["terres plus chaudes que la référence ↑", "plus froides ↓"],
+    sea_level: ["mer plus haute que la référence ↑", "plus basse ↓"]
+  };
+
   const legendTitles = {
-    ocean: ["Mer : écart à la référence locale", "← plus froide", "plus chaude →"],
-    land: ["Terres : écart à la référence locale", "← plus froides", "plus chaudes →"],
+    ocean: ["Température de la mer : écart à la référence", "← plus froide", "plus chaude →"],
+    land: ["Température des terres : écart à la référence", "← plus froides", "plus chaudes →"],
     rain: ["Pluies : écart à la normale", "", ""],
     sea_level: ["Niveau marin : écart à la référence", "← plus bas", "plus haut →"]
   };
@@ -262,8 +269,9 @@
       roughLine(svg, rc, left, y(0), right, y(0), { strokeWidth: 2, seed: `axe-${metric}` });
       const tickYears = metric === "sea_level" ? [1993, 2000, 2010, 2023] : [1960, 1980, 2000, 2025];
       tickYears.forEach((year) => label(svg, String(year), x(year) + x.bandwidth() / 2, bottom + 28, { anchor: "middle", size: tick, color: muted }));
-      label(svg, "au-dessus de la référence ↑", left, top - 30, { size: tick, color: hatchColor(warm) });
-      label(svg, "en dessous ↓", right, y(0) + tick * 1.1, { anchor: "end", size: tick, color: muted, halo: true });
+      const [aboveText, belowText] = countLabels[metric];
+      label(svg, aboveText, left, top - 30, { size: tick, color: hatchColor(warm) });
+      label(svg, belowText, right, y(0) + tick * 1.1, { anchor: "end", size: tick, color: muted, halo: true });
       // Repères de début et de fin, lus directement sur les barres.
       [series[0], series[series.length - 1]].forEach((d, index) => {
         const cx = x(d.year) + x.bandwidth() / 2;

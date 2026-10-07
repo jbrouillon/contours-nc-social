@@ -4,7 +4,7 @@ Article : https://contours.nc/posts/provinciales-2026-geographie-forces-politiqu
 
 Huit écrans, tirés de l’article et de son résumé « En bref » : une ouverture (une carte, trois chiffres), le Sud (droite loyaliste par commune, puis le Grand Nouméa à l’échelle des bureaux, puis le centre bureau par bureau), le Nord (UC et UNI), les Îles (abstention, Nation autochtone), puis un écran de méthode et d’appel à lire.
 
-Les cartes reprennent le rendu du site (aplat, hachure rough.js légère, limites communales nettes, côte crayonnée, cadre de papier) et une légende complète : chaque classe est libellée et le sens « recul / progression » est écrit en toutes lettres. Les écrans 04 et 06 sont des essaims : un cercle par bureau présent aux deux scrutins, placé selon son évolution en points, avec la valeur de toute la province en repère.
+Les cartes reprennent le rendu et le lissage du site (surface lissée, hachure rough.js légère, limites communales, côte crayonnée, cadre de papier) et une légende complète : chaque classe est libellée et le sens « recul / progression » est écrit en toutes lettres. Les écrans 04 et 06 sont des essaims : un cercle par bureau présent aux deux scrutins, placé selon son évolution en points, avec la valeur de toute la province en repère.
 
 ## Fichiers
 
@@ -13,11 +13,13 @@ Les cartes reprennent le rendu du site (aplat, hachure rough.js légère, limite
 - Écart affiché sur la couverture : différence des deux scores arrondis au dixième (UC : 36,0 % → 39,9 %, soit +3,9 points ; l’article, qui calcule sur les valeurs exactes, indique +4,0 points).
 - `portrait-4x5/` (1080 × 1350, carrousel Instagram, Facebook, LinkedIn), `carre-1x1/` (1080 × 1080), `vertical-9x16/` (1080 × 1920, TikTok, Reels, Stories), `paysage-1.91x1/` (1200 × 630, partage de lien : écran 1 seulement).
 
-En 1:1, quelques phrases secondaires sont masquées (`hide-square`) pour garder les cartes lisibles. En 9:16, les titres sont raccourcis (`only-tiktok` / `hide-tiktok`) et la liste de l’écran final est masquée.
+En 1:1, quelques phrases secondaires sont masquées (`hide-square`) pour garder les cartes lisibles. En 9:16, les titres sont raccourcis (`only-tiktok` / `hide-tiktok`), la typographie est resserrée pour laisser la hauteur aux figures et la liste de l’écran final est masquée. L’aperçu de lien reprend les titres courts.
 
-### Grand Nouméa (écran 03)
+### Cartes lissées et Grand Nouméa (écrans 02, 03, 05, 07)
 
-Le site place les 57 bureaux de Nouméa de 2026 à leur école de rattachement d’avant le regroupement : 38 positions, comme en 2019. Le jour du scrutin, ils étaient réunis dans neuf lieux (voir l’article sur le regroupement des bureaux de vote). La carte se lit donc par secteur, pas par lieu de vote réel ; la note de l’écran le précise. Aucune évolution n’est calculée cercle par cercle.
+Les cartes sont lissées comme la vue « Lissage » du site : en chaque point, voix et suffrages des bureaux voisins sont pondérés par un noyau gaussien puis rapportés, sur 12 km dans le Sud et le Nord, 8 km aux Îles et 1,5 km dans le Grand Nouméa (portées lues dans `metadata.json`). Au-delà d’une portée du bureau le plus proche, la couleur est pâlie ; au-delà du rayon d’affichage, rien n’est estimé. Les classes de couleur sont calculées sur la surface lissée, et les chiffres affichés restent les résultats communaux officiels.
+
+Chaque bureau est placé à l’adresse de son bureau de rattachement, en général l’école de son secteur. À Nouméa, les bureaux de 2026 ont été réunis dans neuf lieux le jour du scrutin : les cercles de l’écran 03 situent les adresses de rattachement, pas le lieu physique du vote, et la note de l’écran le rappelle. L’article du site le précise dans sa méthode.
 
 ## Régénérer
 
@@ -77,12 +79,12 @@ Les écrans 9:16 sont des images fixes : prévoir 3 à 4 s par écran, et 6 s po
 ## Textes alternatifs
 
 1. Carte des trois provinces de la Nouvelle-Calédonie : entre 2019 et 2026, l’UC-FLNKS gagne 3,9 points dans le Nord, la participation recule de 11,6 points aux Îles et la droite loyaliste gagne 9,5 points dans le Sud.
-2. Carte des communes de la province Sud : la droite loyaliste passe de 40,6 % à 50,1 % des suffrages exprimés et progresse dans la plupart des communes, notamment à Poya Sud (+29,3 points), Farino (+23,7) et Nouméa (+10,1).
-3. Deux cartes du Grand Nouméa, 2019 et 2026 : les bureaux de vote, placés à leur école de rattachement, sont colorés selon le score de la droite loyaliste sur la même échelle ; à Nouméa, elle passe de 50,4 % à 60,5 %.
+2. Carte lissée de la province Sud : la droite loyaliste passe de 40,6 % à 50,1 % des suffrages exprimés et progresse dans la plupart des communes, notamment à Poya Sud (+29,3 points), Farino (+23,7) et Nouméa (+10,1).
+3. Carte lissée du Grand Nouméa : la droite loyaliste progresse dans les quatre communes entre 2019 et 2026 (Païta +9,2 points, Dumbéa +9,1, Nouméa +10,1, Mont-Dore +9,9) ; à Nouméa, elle passe de 50,4 % à 60,5 %. Cercles : bureaux de vote placés à leur école de rattachement.
 4. Essaim des 116 bureaux comparables de la province Sud, placés selon l’évolution du centre non-indépendantiste en points : 109 reculent, 7 progressent ; dans la province, le centre passe de 18,5 % à 12,1 % (−6,4 points).
-5. Carte des communes de la province Nord : l’UC passe de 36,0 % à 39,9 % et l’UNI de 38,5 % à 35,7 % ; l’UC progresse le plus à Houaïlou (+18,9 points) et avance à Touho (+10,3).
+5. Carte lissée de la province Nord : l’UC passe de 36,0 % à 39,9 % et l’UNI de 38,5 % à 35,7 % ; l’UC progresse le plus à Houaïlou (+18,9 points) et avance à Touho (+10,3).
 6. Essaim des 41 bureaux comparables de la province des Îles, placés selon l’évolution de l’abstention en points : elle augmente dans 39 bureaux ; la participation passe de 66,5 % à 54,9 %.
-7. Carte des communes de la province des Îles : Nation autochtone obtient 62,8 % à Maré, 24,2 % à Ouvéa et 11,8 % à Lifou en 2026, soit 32,2 % dans la province contre 11,0 % pour la Dynamique autochtone en 2019.
+7. Carte lissée de la province des Îles : Nation autochtone obtient 62,8 % à Maré, 24,2 % à Ouvéa et 11,8 % à Lifou en 2026, soit 32,2 % dans la province contre 11,0 % pour la Dynamique autochtone en 2019.
 8. Écran final : les moyennes provinciales cachent des mouvements locaux de sens opposés ; les cartes montrent où les rapports de force ont changé, pas comment chaque électeur a voté. Adresse contours.nc, lien en bio.
 
 ## Sources

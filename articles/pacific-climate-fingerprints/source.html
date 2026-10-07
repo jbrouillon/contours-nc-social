@@ -19,7 +19,7 @@
 
   <article class="slide" data-slide>
     <header class="slide-head"><span class="eyebrow is-red">Empreintes climatiques du Pacifique</span><span class="folio"></span></header>
-    <h1><span class="hide-tiktok">En 2025, aucun territoire cartographié n’est bleu.</span><span class="only-tiktok">2025&nbsp;: aucun territoire cartographié n’est bleu.</span></h1>
+    <h1><span class="hide-tiktok">En 2025, la mer est plus chaude que sa référence dans tous les territoires cartographiés.</span><span class="only-tiktok">2025&nbsp;: une mer plus chaude partout.</span></h1>
     <p class="big"><span class="is-down" data-v="ocean_2025"></span><small>territoires où la mer est plus chaude<br>que leur propre référence locale</small></p>
     <figure class="figure">
       <svg data-sketch="carte" data-indicator="ocean" data-year="2025" role="img" aria-label="Carte du Pacifique : en 2025, tous les territoires cartographiés ont une température de surface de la mer supérieure à leur référence locale"></svg>
@@ -30,12 +30,12 @@
 
   <article class="slide" data-slide>
     <header class="slide-head"><span class="eyebrow is-red">Océan · 1960 → 2025</span><span class="folio"></span></header>
-    <h2>Comment le rouge <span style="white-space:nowrap">a-t-il</span> gagné le Pacifique&nbsp;?</h2>
-    <p class="big"><span data-v="ocean_1960_pos"></span><span class="arrow">→</span><span class="is-down" data-v="ocean_2025_pos"></span><small>territoires sur <span data-v="mapped"></span><br>au-dessus de leur référence</small></p>
+    <h2><span class="hide-tiktok">Mer plus chaude que sa référence&nbsp;: aucun territoire en 1960, tous en 2025.</span><span class="only-tiktok">Mer plus chaude&nbsp;: aucun territoire en 1960, tous en 2025.</span></h2>
+    <p class="big"><span data-v="ocean_1960_pos"></span><span class="arrow">→</span><span class="is-down" data-v="ocean_2025_pos"></span><small>territoires sur <span data-v="mapped"></span><br>où la mer est plus chaude</small></p>
     <figure class="figure">
-      <svg data-sketch="compte" data-indicator="ocean" data-start="1960" data-end="2025" role="img" aria-label="Nombre de territoires au-dessus ou en dessous de leur référence de température de la mer, chaque année de 1960 à 2025 : aucun au-dessus en 1960, tous en 2025"></svg>
+      <svg data-sketch="compte" data-indicator="ocean" data-start="1960" data-end="2025" role="img" aria-label="Nombre de territoires où la mer est plus chaude ou plus froide que leur référence, chaque année de 1960 à 2025 : aucun plus chaud en 1960, tous en 2025"></svg>
     </figure>
-    <p class="note">Sur les terres, même direction&nbsp;: <strong data-v="land_2025_pos"></strong> territoires au-dessus de leur référence en 2025, <strong data-v="land_2025_neg"></strong> en dessous.</p>
+    <p class="note">Sur les terres aussi&nbsp;: en 2025, <strong data-v="land_2025_pos"></strong> territoires plus chauds que leur référence, <strong data-v="land_2025_neg"></strong> plus froid.</p>
     <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Chaque territoire comparé à sa propre référence<br>Pacific Data Hub (CPS) · calculs contours.nc</span></footer>
   </article>
 
@@ -53,7 +53,7 @@
   <article class="slide" data-slide>
     <header class="slide-head"><span class="eyebrow">Niveau marin · 1993 → 2023</span><span class="folio"></span></header>
     <h2><span class="hide-tiktok">Une série plus courte ajoute un autre signal à la hausse.</span><span class="only-tiktok">Niveau marin&nbsp;: un autre signal à la hausse.</span></h2>
-    <p class="big"><span class="is-sea" data-v="sea_2023_pos"></span><small>territoires sur <span data-v="sea_2023_n"></span> au-dessus<br>de leur niveau de référence en 2023</small></p>
+    <p class="big"><span class="is-sea" data-v="sea_2023_pos"></span><small>territoires sur <span data-v="sea_2023_n"></span> où la mer est plus<br>haute que sa référence en 2023</small></p>
     <figure class="figure">
       <svg data-sketch="compte" data-indicator="sea_level" data-start="1993" data-end="2023" role="img" aria-label="Nombre de territoires au-dessus de leur niveau marin de référence chaque année de 1993 à 2023 : la part augmente jusqu’à tous les territoires en 2023"></svg>
     </figure>
@@ -66,7 +66,7 @@
     <h2>L’empreinte climatique de la Nouvelle-Calédonie</h2>
     <p class="big"><span class="is-down" data-v="nc_ocean_2025"></span><small>pour la mer en 2025,<br>par rapport à sa référence locale</small></p>
     <figure class="figure">
-      <svg data-sketch="empreinte" data-code="NC" role="img" aria-label="Empreinte climatique de la Nouvelle-Calédonie : quatre rubans annuels pour la mer, les terres, les pluies et le niveau marin, de 1850 à 2025 ; les années récentes de la mer et des terres sont rouges"></svg>
+      <svg data-sketch="empreinte" data-code="NC" role="img" aria-label="Empreinte climatique de la Nouvelle-Calédonie : quatre rubans annuels pour la mer, les terres, les pluies et le niveau marin, de 1850 à 2025 ; les années récentes de la mer et des terres sont plus chaudes que la référence"></svg>
     </figure>
     <p class="note">Terres&nbsp;: <strong data-v="nc_land_2025"></strong> en 2025. Pluies&nbsp;: <strong data-v="nc_rain_2025"></strong> en 2025.</p>
     <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">1 bande = 1 année observée · vide = pas d’observation<br>Pacific Data Hub (CPS) · calculs contours.nc</span></footer>
@@ -81,9 +81,9 @@
       <li>Révéler l’empreinte de chacun des 22 territoires</li>
       <li class="hide-square">En français et en anglais</li>
     </ul>
-    <p class="caveat">Les couleurs montrent un écart à la référence propre de chaque territoire, pas son climat absolu. Ce sont des observations, pas des prévisions.</p>
+    <p class="caveat">Chaque territoire est comparé à sa propre référence&nbsp;: plus chaud ou plus froid que d’habitude chez lui, pas que ses voisins. Ce sont des observations, pas des prévisions.</p>
     <figure class="figure">
-      <svg data-sketch="carte" data-indicator="ocean" data-year="2025" data-minimal="true" role="img" aria-label="Croquis de la carte du Pacifique colorée selon l’anomalie de température de la mer en 2025"></svg>
+      <svg data-sketch="carte" data-indicator="ocean" data-year="2025" data-minimal="true" role="img" aria-label="Croquis de la carte du Pacifique : écart de la température de la mer à la référence de chaque territoire en 2025"></svg>
     </figure>
     <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · dataviz interactive et sources</span></p>
     <p class="cta-actions">Enregistrez · Partagez</p>

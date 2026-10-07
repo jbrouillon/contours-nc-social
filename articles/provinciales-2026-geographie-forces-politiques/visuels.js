@@ -15,6 +15,7 @@
   const FLOOR = -1000;
 
   const format0 = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+  const formatKm = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
   const format1 = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const minus = (text) => text.replace("-", "−");
   const pct = (x) => `${format1.format(x)} %`;
@@ -334,14 +335,158 @@
     node.attr("x", x).attr("y", y);
   }
 
+  // --- Lissage (repris de provinciales-2026-geographie-forces.js) -------------
+
+  const NODATA = -9999;
+
+  function ringsToPath(geometry, transform) {
+    let pathData = "";
+    geometry.coordinates.forEach((polygon) => {
+      polygon.forEach((ring) => {
+        ring.forEach(([x, y], index) => {
+          const [px, py] = transform(x, y);
+          pathData += `${index ? "L" : "M"}${px.toFixed(1)},${py.toFixed(1)}`;
+        });
+        pathData += "Z";
+      });
+    });
+    return pathData;
+  }
+
+  // Bandes de classes vectorisées par marching squares, rendues en pair-impair.
+  function classBands(grid, values, thresholds) {
+    const contours = d3.contours().size([grid.nx, grid.ny]).thresholds(thresholds)(values);
+    const transform = (x, y) => [grid.ox + x * grid.step, grid.oy + y * grid.step];
+    const outlines = contours.map((contour) => ringsToPath(contour, transform));
+    return outlines.map((outline, index) => ({ index, outline, d: outline ? outline + (outlines[index + 1] || "") : "" }));
+  }
+
+  // Cellules terrestres de la vue : masque terre/mer rastérisé, coordonnées
+  // en km dans un plan local équirectangulaire.
+  function viewCells(projection, boundary, box, step) {
+    const [[x0, y0], [x1, y1]] = box;
+    const nx = Math.ceil((x1 - x0) / step) + 2;
+    const ny = Math.ceil((y1 - y0) / step) + 2;
+    const ox = x0 - step;
+    const oy = y0 - step;
+    const center = projection.invert([(x0 + x1) / 2, (y0 + y1) / 2]);
+    const kmX = 111.32 * Math.cos(center[1] * Math.PI / 180);
+    const kmY = 110.574;
+    const canvas = document.createElement("canvas");
+    canvas.width = nx;
+    canvas.height = ny;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    context.setTransform(1 / step, 0, 0, 1 / step, -ox / step, -oy / step);
+    context.beginPath();
+    d3.geoPath(projection, context)({ type: "FeatureCollection", features: boundary });
+    context.fill();
+    const mask = context.getImageData(0, 0, nx, ny).data;
+    const index = [];
+    const xs = [];
+    const ys = [];
+    for (let j = 1; j < ny - 1; j += 1) {
+      for (let i = 1; i < nx - 1; i += 1) {
+        if (mask[4 * (j * nx + i) + 3] < 128) continue;
+        const geographic = projection.invert([ox + (i + 0.5) * step, oy + (j + 0.5) * step]);
+        if (!geographic) continue;
+        index.push(j * nx + i);
+        xs.push(geographic[0] * kmX);
+        ys.push(geographic[1] * kmY);
+      }
+    }
+    return { nx, ny, ox, oy, step, kmX, kmY, index, xs, ys };
+  }
+
+  // Score lissé : voix et dénominateurs des bureaux voisins pondérés par un
+  // noyau gaussien, puis rapportés ; vide au-delà du rayon d'affichage.
+  function smoothGrid(cells, rows, bandwidthKm, displayRadiusKm) {
+    const rx = rows.map((row) => row.longitude * cells.kmX);
+    const ry = rows.map((row) => row.latitude * cells.kmY);
+    const cutoff2 = Math.pow(5 * bandwidthKm, 2);
+    const radius2 = displayRadiusKm * displayRadiusKm;
+    const inverse = -0.5 / (bandwidthKm * bandwidthKm);
+    const values = new Float64Array(cells.nx * cells.ny).fill(NODATA);
+    const near = new Float64Array(cells.nx * cells.ny).fill(-1);
+    for (let c = 0; c < cells.index.length; c += 1) {
+      let numerator = 0;
+      let denominator = 0;
+      let nearest = Infinity;
+      for (let r = 0; r < rows.length; r += 1) {
+        const dx = rx[r] - cells.xs[c];
+        const dy = ry[r] - cells.ys[c];
+        const distance2 = dx * dx + dy * dy;
+        if (distance2 < nearest) nearest = distance2;
+        if (distance2 > cutoff2) continue;
+        const weight = Math.exp(distance2 * inverse);
+        numerator += weight * rows[r].voix;
+        denominator += weight * rows[r].denominateur;
+      }
+      near[cells.index[c]] = Math.sqrt(nearest);
+      if (nearest <= radius2 && denominator > 0) values[cells.index[c]] = 100 * numerator / denominator;
+    }
+    return { nx: cells.nx, ny: cells.ny, ox: cells.ox, oy: cells.oy, step: cells.step, values, near };
+  }
+
+  function bureauRows(data, province, force, year) {
+    return data.points.filter((d) => d.province === province && d.annee === year && d.force === force &&
+      d.spatial_include !== false && Number.isFinite(d.longitude) && Number.isFinite(d.latitude) && d.denominateur > 0);
+  }
+
+  // Surface lissée d'une évolution (2026 − 2019, en points) ou d'un score 2026.
+  function smoothSurface(data, { province, force, variable, projection, boundary, box, bandwidthKm, displayRadiusKm }) {
+    const cells = viewCells(projection, boundary, box, 4);
+    const g2026 = smoothGrid(cells, bureauRows(data, province, force, 2026), bandwidthKm, displayRadiusKm);
+    if (variable !== "evolution_points") {
+      const color = data.points.find((d) => d.province === province && d.force === force)?.couleur || ink;
+      return { grid: g2026, values: g2026.values, near: g2026.near, classes: scoreClasses(color, Array.from(g2026.values), 7) };
+    }
+    const g2019 = smoothGrid(cells, bureauRows(data, province, force, 2019), bandwidthKm, displayRadiusKm);
+    const values = new Float64Array(g2026.values.length).fill(NODATA);
+    const near = new Float64Array(g2026.values.length).fill(-1);
+    g2019.values.forEach((value, index) => {
+      const next = g2026.values[index];
+      if (value > FLOOR && next > FLOOR) values[index] = next - value;
+      near[index] = Math.max(g2019.near[index], g2026.near[index]);
+    });
+    return { grid: g2026, values, near, classes: deltaClasses(Array.from(values)) };
+  }
+
+  let clipCounter = 0;
+
+  function drawSmooth(svg, rc, surface, path, boundary, bandwidthKm, seedKey) {
+    const id = `terre-${++clipCounter}`;
+    svg.append("defs").append("clipPath").attr("id", id).append("path").attr("d", boundary.map((f) => path(f)).join(""));
+    const land = svg.append("g").attr("clip-path", `url(#${id})`);
+    land.append("path").attr("d", boundary.map((f) => path(f)).join("")).attr("fill", noData);
+    const { grid, values, classes } = surface;
+    const bands = classBands(grid, values, classes.thresholds);
+    bands.forEach((band) => {
+      if (!band.d) return;
+      const color = classes.colors[band.index];
+      land.append("path").attr("d", band.d).attr("fill", color).attr("fill-rule", "evenodd");
+      const hatch = classes.hatch[band.index];
+      if (hatch) roughPath(land, rc, band.d, hatchOptions(color, hatch, `${seedKey}-bande-${band.index}`));
+    });
+    land.append("path").attr("d", bands.slice(1).map((band) => band.outline).join(""))
+      .attr("fill", "none").attr("stroke", ink).attr("stroke-width", 1).attr("stroke-opacity", 0.35).attr("stroke-linejoin", "round");
+    // Au-delà d'une portée du bureau le plus proche, la couleur est extrapolée :
+    // lavis de papier et pointillé discret, comme sur le site.
+    const [contour] = d3.contours().size([grid.nx, grid.ny]).thresholds([bandwidthKm])(surface.near);
+    const far = contour ? ringsToPath(contour, (x, y) => [grid.ox + x * grid.step, grid.oy + y * grid.step]) : "";
+    if (far) {
+      land.append("path").attr("d", far).attr("fill", paper).attr("fill-opacity", 0.5)
+        .attr("stroke", ink).attr("stroke-width", 1.2).attr("stroke-opacity", 0.4).attr("stroke-dasharray", "2 5").attr("stroke-linecap", "round");
+    }
+  }
+
   // Carte choroplèthe des communes d'une province, entière ou agrandie sur
   // une emprise (view.bbox). Les classes sont toujours calculées sur toute la
   // province, comme sur le site : une vue agrandie garde la même légende.
   function drawProvinceMap(svg, rc, data, options) {
-    const { province, force, variable, box, highlights = [], seedKey, labelSize = 28, view = null, names = true } = options;
+    const { province, force, variable, box, highlights = [], seedKey, labelSize = 28, view = null, names = true, smooth = false } = options;
     const rows = data.communes.filter((d) => d.province === province && d.force === force && d.annee === 2026);
     const byKey = new Map(rows.map((row) => [communeKey(row.commune, province), row]));
-    const classes = variable === "evolution_points"
+    let classes = variable === "evolution_points"
       ? deltaClasses(rows.map((r) => r.evolution_points))
       : scoreClasses(rows[0]?.couleur || ink, rows.flatMap((r) => [r.score_2019, r.score_2026]), 5);
     const boundary = data.provinceShapes.features.filter((f) => f.properties.province === province);
@@ -357,7 +502,16 @@
       (f) => f.properties.province === province && f.geometry && f.geometry.coordinates.length
     );
     let missing = false;
-    features.forEach((feature, index) => {
+    const smoothing = data.metadata.smoothing;
+    const bandwidthKm = Number(view ? view.bandwidth_km : smoothing.bandwidth_km[province]);
+    const displayRadiusKm = Number(view ? view.display_radius_km : smoothing.display_radius_km[province]);
+    if (smooth) {
+      if (!Number.isFinite(bandwidthKm) || !Number.isFinite(displayRadiusKm)) throw new Error(`Portée de lissage absente : ${province}`);
+      const surface = smoothSurface(data, { province, force, variable, projection, boundary, box, bandwidthKm, displayRadiusKm });
+      classes = surface.classes;
+      drawSmooth(svg, rc, surface, path, boundary, bandwidthKm, seedKey);
+    }
+    if (!smooth) features.forEach((feature, index) => {
       const row = byKey.get(communeKey(feature.properties.commune, province));
       const id = classIndex(classes, row ? row[variable] : NaN);
       if (id < 0) missing = true;
@@ -369,14 +523,14 @@
       if (hatch) roughPath(svg, rc, d, hatchOptions(fill, hatch, `${seedKey}-${index}`));
     });
     svg.append("path").attr("d", features.map((f) => path(f)).join(""))
-      .attr("fill", "none").attr("stroke", "#4f4942").attr("stroke-width", view ? 1.6 : 1).attr("stroke-opacity", 0.8)
+      .attr("fill", "none").attr("stroke", "#4f4942").attr("stroke-width", view ? 1.6 : 1).attr("stroke-opacity", smooth ? 0.55 : 0.8)
       .attr("stroke-dasharray", view ? "9 4" : null).attr("stroke-linejoin", "round");
     drawCoast(svg, rc, path, boundary, `${seedKey}-coast`, view ? 40 : 90);
 
     // Lieux de vote (vue agrandie) : cercles de papier, taille selon les inscrits.
     const places = view ? votingPlaces(data, province, 2026, view.communes) : [];
     if (places.length) {
-      const radius = d3.scaleSqrt().domain([0, d3.max(places, (d) => d.inscrits)]).range([4, 12]);
+      const radius = d3.scaleSqrt().domain([0, d3.max(places, (d) => d.inscrits)]).range([4, 11]);
       places.sort((a, b) => d3.descending(a.inscrits, b.inscrits)).forEach((place, index) => {
         const [px, py] = projection([place.longitude, place.latitude]);
         if (px < box[0][0] || px > box[1][0] || py < box[0][1] || py > box[1][1]) return;
@@ -427,12 +581,12 @@
           label(svg, name, xy[0], xy[1], { anchor: "middle", size, weight: 800, color: "#3f3a35", halo: true, haloWidth: 5 });
         });
     }
-    return { classes, missing };
+    return { classes, missing, bandwidthKm };
   }
 
   // Légende complète, comme sur le site : une case hachurée par classe, chaque
   // classe libellée ; pour une évolution, le sens est écrit en toutes lettres.
-  function drawLegend(svg, rc, classes, x, y, width, { title, delta, missing }) {
+  function drawLegend(svg, rc, classes, x, y, width, { title, delta, missing, note }) {
     const size = 22;
     label(svg, title, x, y, { size: 24, weight: 800, color: ink });
     let top = y + 26;
@@ -455,15 +609,17 @@
       });
       label(svg, classes.labels[index], x0 + swatch / 2, top + 50, { anchor: "middle", size: size * 0.92, weight: 700, color: muted });
     });
-    if (missing) {
+    if (note) {
+      label(svg, note, x, top + 84, { size: 20, color: muted });
+    } else if (missing) {
       const ny = top + 84;
       svg.append("rect").attr("x", x).attr("y", ny - 11).attr("width", 34).attr("height", 22).attr("fill", noData).attr("stroke", "#b9b1a5");
       label(svg, "commune sans résultat comparable", x + 44, ny, { size: 20, color: muted });
     }
   }
 
-  function legendHeight(delta, missing) {
-    return 26 + (delta ? 26 : 0) + 64 + (missing ? 34 : 0);
+  function legendHeight(delta, extra) {
+    return 26 + (delta ? 26 : 0) + 64 + (extra ? 34 : 0);
   }
 
   // Une commune de la province sans valeur : la légende doit alors l'expliquer.
@@ -521,20 +677,22 @@
       if (node.dataset.zoom && !view) throw new Error(`Vue agrandie inconnue : ${node.dataset.zoom}`);
       const highlights = (node.dataset.highlight || "").split("|").filter(Boolean);
       if (node.dataset.highlightMax === "true") highlights.unshift(communeMax(data, province, force).commune);
-      const missing = !view && hasMissing(data, province, force, variable);
-      const legend = legendHeight(delta, missing);
+      const smooth = node.dataset.lissage === "true";
+      const missing = !smooth && !view && hasMissing(data, province, force, variable);
+      const legend = legendHeight(delta, missing || smooth);
       const cardBottom = height - legend - 18;
       paperCard(svg, rc, 2, 2, width - 4, cardBottom - 2, `carte-cadre-${province}-${force}-${node.dataset.zoom || ""}`);
       const labelSize = Math.max(26, Math.min(32, width / 30));
-      const { classes } = drawProvinceMap(svg, rc, data, {
-        province, force, variable, highlights, labelSize, view,
+      const { classes, bandwidthKm } = drawProvinceMap(svg, rc, data, {
+        province, force, variable, highlights, labelSize, view, smooth,
         box: [[18, 16], [width - 18, cardBottom - 14]],
         seedKey: `carte-${province}-${force}-${variable}-${node.dataset.zoom || ""}`
       });
       const legendWidth = Math.min(width - 8, 900);
       drawLegend(svg, rc, classes, (width - legendWidth) / 2, cardBottom + 30, legendWidth, {
         title: node.dataset.legende || (delta ? "Évolution 2019 → 2026, en points" : "Score 2026, en % des suffrages exprimés"),
-        delta, missing
+        delta, missing,
+        note: smooth ? `Estimation lissée sur ${formatKm.format(bandwidthKm)} km autour des bureaux ; pâlie au-delà. Chiffres : résultats communaux.` : null
       });
     },
 
