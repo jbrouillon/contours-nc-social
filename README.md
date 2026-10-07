@@ -138,6 +138,15 @@ Le script d'injection reste utile pour une prévisualisation ponctuelle dans un 
 
 Le script masque la fermeture, la navigation et le lien de lecture détaillée, puis ajuste la mise en page pour la capture sans modifier le site. Il prend en charge le composant commun `.contours-brief-*` des nouveaux articles et l'ancien composant `.vote-brief-*` de l'article sur le regroupement des bureaux de vote. Il peut être relancé sans dupliquer les styles ; le paramètre `export` détermine le mode à chaque exécution.
 
+## Calendrier de diffusion
+
+`calendrier.csv` liste les publications programmées dans Buffer (organisation « My organization », fuseau Pacific/Noumea) : date et heure de Nouméa, réseau, campagne, format, mode, statut et identifiant Buffer. Le mettre à jour à chaque programmation ou publication.
+
+- Les images sont envoyées à Buffer par leur URL `raw.githubusercontent.com` figée sur un commit : commiter et pousser les visuels avant de les programmer, et ne pas réécrire l'historique de ce dépôt.
+- Facebook et Instagram sont publiés automatiquement. Le lien de l'article doit être dans la bio Instagram et TikTok au moment de la publication.
+- TikTok est programmé en mode « rappel » : à l'heure prévue, l'application Buffer envoie une notification ; ouvrir TikTok, choisir un son (tendance ou bibliothèque commerciale), publier. Buffer n'a pas accès aux sons de TikTok.
+- Plan gratuit de Buffer : 3 canaux, 10 publications programmées à la fois.
+
 ## Règles
 
 - Ne publier que des chiffres, cartes et citations présents dans l'article d'origine, avec sa source.
