@@ -69,34 +69,19 @@
   }
 
   // Évolution 2019 → 2026 du bureau de chaque secteur de Nouméa, clé :
-  // numéro du bureau de 2026 (celui du secteur). Les bureaux appariés par nom
-  // ou numéro suivent la règle de l'article ; les bureaux restés non appariés
-  // parce que leur école a changé de nom ou de site gardent leur numéro, donc
-  // leur secteur : ils sont appariés par numéro de secteur (deltas.parSecteur).
-  // Leurs inscrits évoluent comme ceux des autres bureaux (rapport 2026/2019
-  // de 1,01 à 1,28, contre 0,57 à 1,37 pour les bureaux appariés par nom).
+  // numéro du bureau de 2026 (celui du secteur). L'appariement est celui de
+  // l'article, y compris les bureaux appariés par numéro de secteur.
   function sectorDeltas(data, force) {
     const score = (year, code) => data.points.find((d) => d.province === "Province Sud" && d.commune === "Nouméa" &&
       d.annee === year && d.force === force && Number(d.code_bv) === code)?.pct;
     const deltas = new Map();
+    deltas.parSecteur = [];
     pairs(data, "Province Sud").filter((p) => p.commune === "Nouméa").forEach((pair) => {
       const before = score(2019, Number(pair.code_bv_2019));
       const after = score(2026, Number(pair.code_bv_2026));
-      if (Number.isFinite(before) && Number.isFinite(after)) deltas.set(Number(pair.code_bv_2026), after - before);
-    });
-    const unmatched = (year) => new Set(data.matches
-      .filter((d) => d.commune === "Nouméa" && d.methode === `non apparie (${year})`)
-      .map((d) => Number(year === 2019 ? d.code_bv_2019 : d.code_bv_2026)));
-    const left2019 = unmatched(2019);
-    deltas.parSecteur = [];
-    unmatched(2026).forEach((code) => {
-      if (!left2019.has(code) || deltas.has(code)) return;
-      const before = score(2019, code);
-      const after = score(2026, code);
-      if (Number.isFinite(before) && Number.isFinite(after)) {
-        deltas.set(code, after - before);
-        deltas.parSecteur.push(code);
-      }
+      if (!Number.isFinite(before) || !Number.isFinite(after)) return;
+      deltas.set(Number(pair.code_bv_2026), after - before);
+      if (pair.methode === "secteur") deltas.parSecteur.push(Number(pair.code_bv_2026));
     });
     return deltas;
   }
@@ -124,9 +109,10 @@
     );
   }
 
-  // Bureaux appariés par nom ou par numéro (appariement_bureaux_2019_2026.csv).
+  // Bureaux appariés par nom, par numéro ou, à Nouméa, par numéro de secteur
+  // (appariement_bureaux_2019_2026.csv).
   function pairs(data, province) {
-    return data.matches.filter((d) => d.province === province && (d.methode === "nom" || d.methode === "numero"));
+    return data.matches.filter((d) => d.province === province && ["nom", "numero", "secteur"].includes(d.methode));
   }
 
   function series(data, province, key, year) {

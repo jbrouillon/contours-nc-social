@@ -1,7 +1,7 @@
 {
   "site": "jbrouillon/contours-nc",
   "commit": "148a7888aeac539bdbcb2877ff6b19c09c546070",
-  "importe_le": "2026-10-07T15:47:25+11:00",
+  "importe_le": "2026-10-07T15:54:48+11:00",
   "fichiers": [
     {
       "fichier": "synthese_province.csv",
@@ -36,14 +36,14 @@
     {
       "fichier": "appariement_bureaux_2019_2026.csv",
       "origine": "posts/provinciales-2026-geographie-forces-politiques/data/appariement_bureaux_2019_2026.csv",
-      "sha256": "7948547befd5346c7d1c109c78c60fcdb610fdf4f8f36e30ba4a244b3dead632",
-      "modifie_localement": false
+      "sha256": "640bc5ebf73c0f2754262abb0f94717e472d3e3cd17995a48889cc87168d76c5",
+      "modifie_localement": true
     },
     {
       "fichier": "metadata.json",
       "origine": "posts/provinciales-2026-geographie-forces-politiques/data/metadata.json",
-      "sha256": "ccc01a42941d7b2174f2946d21e9dba3369d03043ecf8a7b78f1f05ef090bb70",
-      "modifie_localement": false
+      "sha256": "c2f2b5bdd79ee0789b049c33b2bebd9a110bdebded7019ab5f685f68c6b2adaf",
+      "modifie_localement": true
     },
     {
       "fichier": "vote_context_secteurs.geojson",
