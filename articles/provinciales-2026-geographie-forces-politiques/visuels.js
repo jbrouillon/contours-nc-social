@@ -36,9 +36,11 @@
       d3.json("donnees/communes.geojson"),
       d3.json("donnees/provinces.geojson"),
       d3.json("donnees/metadata.json"),
-      d3.json("donnees/vote_context_secteurs.geojson")
-    ]).then(([province, communes, points, matches, communeShapes, provinceShapes, metadata, secteurs]) => ({
-      province, communes, points, matches, communeShapes, provinceShapes, metadata, secteurs: rewind(secteurs.features)
+      d3.json("donnees/vote_context_secteurs.geojson"),
+      d3.json("donnees/iris_context.geojson")
+    ]).then(([province, communes, points, matches, communeShapes, provinceShapes, metadata, secteurs, iris]) => ({
+      province, communes, points, matches, communeShapes, provinceShapes, metadata,
+      secteurs: rewind(secteurs.features), iris: rewind(iris.features)
     }));
   }
 
@@ -84,6 +86,40 @@
       if (pair.methode === "secteur") deltas.parSecteur.push(Number(pair.code_bv_2026));
     });
     return deltas;
+  }
+
+  // Repères de quartier : contours IRIS de Nouméa (iris_context.geojson),
+  // regroupés par quartier et nommés au centre de leur emprise. Seuls les
+  // quartiers les plus connus sont nommés ; un nom qui en chevaucherait un
+  // autre est omis.
+  const quartiers = [
+    [/^Nouville/, "Nouville"], [/^Ducos$/, "Ducos"], [/^Riv.re Sal.e/, "Rivière-Salée"],
+    [/Montravel/, "Montravel"], [/^Tindu/, "Tindu"], [/^Kam.r./, "Kaméré"], [/^Normandie/, "Normandie"],
+    [/^Tina/, "Tina"], [/^PK 6/, "PK6"], [/^PK 7/, "PK7"], [/Magenta/, "Magenta"],
+    [/^Vall.e des Colons/, "Vallée des Colons"], [/^Centre ville/, "Centre-ville"], [/^Anse Vata/, "Anse Vata"],
+    [/^Ou.mo/, "Ouémo"], [/^N.G.a/, "N’Géa"], [/^Portes de Fer/, "Portes de Fer"]
+  ];
+  function sectorLabels(svg, data, path, box) {
+    const groups = d3.rollups(
+      data.iris.map((f) => [quartiers.find(([pattern]) => pattern.test(f.properties.libgeo || ""))?.[1], f]).filter(([name]) => name),
+      (items) => {
+        const shape = { type: "FeatureCollection", features: items.map(([, f]) => f) };
+        return { area: path.area(shape), xy: path.centroid(shape) };
+      },
+      ([name]) => name
+    ).sort((a, b) => d3.descending(a[1].area, b[1].area));
+    const size = 21;
+    const placed = [];
+    groups.forEach(([name, g]) => {
+      const [x, y] = g.xy;
+      if (!Number.isFinite(x)) return;
+      const half = (name.length * size * 0.55) / 2 + 4;
+      const b = [x - half, y - size * 0.6, x + half, y + size * 0.6];
+      if (b[0] < box[0][0] || b[2] > box[1][0] || b[1] < box[0][1] || b[3] > box[1][1]) return;
+      if (placed.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) return;
+      placed.push(b);
+      label(svg, name, x, y, { anchor: "middle", size, weight: 800, color: "#3f3a35", halo: true, haloWidth: 5 });
+    });
   }
 
   function sectorCounts(data) {
@@ -205,7 +241,9 @@
       colors: deltaColors,
       labels: [`< ${s(-c)}`, `${s(-c)} à ${s(-b)}`, `${s(-b)} à ${s(-a)}`, `±${a}`, `${s(a)} à ${s(b)}`, `${s(b)} à ${s(c)}`, `≥ ${s(c)}`],
       hatch: [
-        { angle: 45, gap: 4 }, { angle: 45, gap: 5.5 }, { angle: 45, gap: 7.5 }, null,
+        // « Stable » reçoit une hachure horizontale légère : sans elle, il se
+        // confond avec le gris des communes ou secteurs sans donnée.
+        { angle: 45, gap: 4 }, { angle: 45, gap: 5.5 }, { angle: 45, gap: 7.5 }, { angle: 0, gap: 6 },
         { angle: -45, gap: 7.5 }, { angle: -45, gap: 5.5 }, { angle: -45, gap: 4 }
       ]
     };
@@ -736,6 +774,7 @@
         .attr("fill", "none").attr("stroke", "#4f4942").attr("stroke-width", 1).attr("stroke-opacity", 0.75).attr("stroke-linejoin", "round");
       const noumea = data.communeShapes.features.filter((f) => communeKey(f.properties.commune, "Province Sud") === communeKey("Nouméa", "Province Sud"));
       drawCoast(svg, rc, path, noumea, "secteurs-cote", 40);
+      sectorLabels(svg, data, path, box);
       const legendWidth = Math.min(width - 8, 900);
       drawLegend(svg, rc, classes, (width - legendWidth) / 2, cardBottom + 30, legendWidth, {
         title: node.dataset.legende || "Évolution 2019 → 2026, en points",

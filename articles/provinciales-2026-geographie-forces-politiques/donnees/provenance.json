@@ -1,7 +1,7 @@
 {
   "site": "jbrouillon/contours-nc",
   "commit": "148a7888aeac539bdbcb2877ff6b19c09c546070",
-  "importe_le": "2026-10-07T15:54:48+11:00",
+  "importe_le": "2026-10-07T15:59:27+11:00",
   "fichiers": [
     {
       "fichier": "synthese_province.csv",
@@ -49,6 +49,12 @@
       "fichier": "vote_context_secteurs.geojson",
       "origine": "posts/regroupement-bureaux-vote-noumea/data/vote_context_secteurs.geojson",
       "sha256": "0ff10e790a65373c6abd049e9469470e318be6c22df36c99205196f6f445b64c",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "iris_context.geojson",
+      "origine": "posts/regroupement-bureaux-vote-noumea/data/iris_context.geojson",
+      "sha256": "56c5533b728667c2c713e8130f3d01f14ce68f98ca6f3f02cb714db4d02cc778",
       "modifie_localement": false
     }
   ]
