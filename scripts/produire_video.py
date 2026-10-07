@@ -1,7 +1,8 @@
 """Monte une série de diapositives 9:16 en vidéo MP4 avec une piste musicale.
 
-Les PNG d'un dossier (triés par nom) sont enchaînés par fondus, la musique est
-coupée à la durée de la vidéo avec un fondu d'entrée et de sortie. Le résultat
+Les PNG d'un dossier (triés par nom) sont enchaînés par fondus, suivis le cas
+échéant d'une vidéo d'outro (logo animé), et la musique est coupée à la durée
+totale avec un fondu d'entrée et de sortie. Le résultat
 respecte les recommandations de TikTok : 1080 × 1920, H.264, 30 images par
 seconde, AAC, `faststart`.
 
@@ -11,7 +12,8 @@ Exemple, depuis la racine de ce dépôt :
       articles/<slug>/vertical-9x16 ^
       --musique articles/<slug>/musique.wav ^
       --sortie articles/<slug>/video/<slug>.mp4 ^
-      --durees 3.5,5,6,5,5,5,5,4
+      --durees 3.5,5,6,5,5,5,5,4 ^
+      --outro campagnes/lancement-tiktok/contours-nc-outro.mp4
 
 ffmpeg est cherché dans le PATH, puis dans le paquet Python `imageio-ffmpeg`
 (`python -m pip install --user imageio-ffmpeg`).
@@ -54,11 +56,23 @@ def durees_par_image(texte: str | None, nombre: int, defaut: float) -> list[floa
     return valeurs
 
 
+def duree_media(ffmpeg: str, chemin: Path) -> float:
+    """Durée d'un fichier audio ou vidéo, lue dans l'en-tête affiché par ffmpeg."""
+    sortie = subprocess.run([ffmpeg, "-hide_banner", "-i", str(chemin)], capture_output=True, text=True).stderr
+    for ligne in sortie.splitlines():
+        ligne = ligne.strip()
+        if ligne.startswith("Duration:"):
+            heures, minutes, secondes = ligne.split(",")[0].split(": ")[1].split(":")
+            return int(heures) * 3600 + int(minutes) * 60 + float(secondes)
+    raise SystemExit(f"Durée illisible : {chemin}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("images", help="dossier des PNG 9:16, enchaînés par ordre alphabétique")
     parser.add_argument("--sortie", required=True, help="fichier MP4 à écrire, dans ce dépôt")
     parser.add_argument("--musique", help="piste audio (WAV, MP3…) ; sans elle, la vidéo est muette")
+    parser.add_argument("--outro", help="vidéo ajoutée à la fin par un fondu (logo animé), sans son")
     parser.add_argument("--durees", help="durées d'affichage en secondes (point décimal), une par image, séparées par des virgules")
     parser.add_argument("--duree", type=float, default=4.0, help="durée par défaut d'une image (s)")
     parser.add_argument("--fondu", type=float, default=0.5, help="durée des fondus enchaînés (s)")
@@ -79,11 +93,24 @@ def main() -> int:
     fondu = args.fondu
     if fondu * 2 >= min(durees):
         raise SystemExit("Le fondu doit durer moins de la moitié de l'image la plus courte.")
+    ffmpeg = trouver_ffmpeg()
+    outro = None
+    if args.outro:
+        outro = (RACINE / args.outro).resolve()
+        if not outro.exists():
+            raise SystemExit(f"Outro introuvable : {outro}")
+        duree_outro = duree_media(ffmpeg, outro)
     total = sum(durees) - fondu * (len(images) - 1)
+    if outro:
+        total += duree_outro - fondu
 
-    commande = [trouver_ffmpeg(), "-hide_banner", "-loglevel", "error", "-y"]
+    commande = [ffmpeg, "-hide_banner", "-loglevel", "error", "-y"]
     for image, duree in zip(images, durees):
         commande += ["-loop", "1", "-framerate", str(IPS), "-t", f"{duree:.3f}", "-i", str(image)]
+    entree_audio = len(images)
+    if outro:
+        commande += ["-i", str(outro)]
+        entree_audio += 1
     if args.musique:
         musique = (RACINE / args.musique).resolve()
         if not musique.exists():
@@ -92,16 +119,18 @@ def main() -> int:
         commande += ["-stream_loop", "-1", "-i", str(musique)]
 
     filtres = []
-    for i in range(len(images)):
+    clips = len(images) + (1 if outro else 0)
+    longueurs = durees + ([duree_outro] if outro else [])
+    for i in range(clips):
         filtres.append(
-            f"[{i}:v]scale={LARGEUR}:{HAUTEUR}:force_original_aspect_ratio=decrease,"
+            f"[{i}:v]scale={LARGEUR}:{HAUTEUR}:force_original_aspect_ratio=decrease:flags=lanczos,"
             f"pad={LARGEUR}:{HAUTEUR}:(ow-iw)/2:(oh-ih)/2:color=0xf7f1e3,"
-            f"setsar=1,fps={IPS},format=yuv420p[v{i}]"
+            f"setsar=1,fps={IPS},format=yuv420p,settb=AVTB[v{i}]"
         )
     precedent = "v0"
     decalage = 0.0
-    for i in range(1, len(images)):
-        decalage += durees[i - 1] - fondu
+    for i in range(1, clips):
+        decalage += longueurs[i - 1] - fondu
         courant = f"x{i}"
         filtres.append(
             f"[{precedent}][v{i}]xfade=transition=fade:duration={fondu:.3f}:offset={decalage:.3f}[{courant}]"
@@ -111,7 +140,7 @@ def main() -> int:
     if args.musique:
         fin = max(0.0, total - 2.0)
         filtres.append(
-            f"[{len(images)}:a]atrim=0:{total:.3f},asetpts=PTS-STARTPTS,volume={args.volume},"
+            f"[{entree_audio}:a]atrim=0:{total:.3f},asetpts=PTS-STARTPTS,volume={args.volume},"
             f"afade=t=in:st=0:d=0.8,afade=t=out:st={fin:.3f}:d=2[a]"
         )
         cartes += ["-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
@@ -127,7 +156,8 @@ def main() -> int:
         print(resultat.stderr, file=sys.stderr)
         raise SystemExit("ffmpeg a échoué.")
     taille = sortie.stat().st_size / 1e6
-    print(f"écrit : {sortie.relative_to(RACINE)} · {len(images)} images · {total:.1f} s · {taille:.1f} Mo")
+    suite = " + outro" if outro else ""
+    print(f"écrit : {sortie.relative_to(RACINE)} · {len(images)} images{suite} · {total:.1f} s · {taille:.1f} Mo")
     return 0
 
 

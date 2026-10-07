@@ -154,8 +154,19 @@ Le script masque la fermeture, la navigation et le lien de lecture détaillée, 
 ```powershell
 python scripts/produire_video.py articles/<slug>/vertical-9x16 `
   --musique articles/<slug>/video/musique.m4a `
-  --sortie articles/<slug>/video/<slug>.mp4 --durees 3.5,5,6,5,5,5,5,4
+  --sortie articles/<slug>/video/<slug>.mp4 --durees 3.5,5,6,5,5,5,5,4 `
+  --outro campagnes/lancement-tiktok/contours-nc-outro.mp4
 ```
+
+L'outro (`campagnes/lancement-tiktok/contours-nc-outro.mp4`, 7,5 s) est le logo animé de `outro-source.html`, capturé à 30 images par seconde et accéléré d'un tiers ; la musique continue dessous et s'éteint sur la signature. Pour la régénérer :
+
+```powershell
+python scripts/produire_gif.py campagnes/lancement-tiktok/outro-source.html `
+  campagnes/lancement-tiktok/contours-nc-outro.mp4 --ips 30 --ralenti 12 `
+  --acceleration 1.5 --duree 9000 --pause-finale 1500
+```
+
+La capture se fait en 720 × 1280 (mise en page de 540 × 960) puis est agrandie au montage : en 1080 × 1920, le navigateur sans interface ne suit pas le rendu du second bloc du logo.
 
 - Les pistes de `articles/*/video/musique.m4a` sont des morceaux instrumentaux originaux générés par vidIQ (outil `generate_music`, présenté comme libre de droits), convertis en AAC. Provinciales : piano feutré et marimba, ambiance documentaire neutre (piste a14cd8cd). Empreintes climatiques : nappes, ukulélé et piano, ambiance océanique (piste acfda2b8). Générées le 7 octobre 2026.
 - Buffer doit récupérer la vidéo avec le type `video/mp4` : `raw.githubusercontent.com` la sert en `application/octet-stream`, utiliser l'URL jsDelivr figée sur un commit (`https://cdn.jsdelivr.net/gh/jbrouillon/contours-nc-social@<commit>/<chemin>`, 20 Mo au plus par fichier).

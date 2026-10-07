@@ -1,4 +1,4 @@
-"""Produit un GIF à partir d'une source HTML animée du dépôt.
+"""Produit un GIF ou une vidéo MP4 à partir d'une source HTML animée du dépôt.
 
 La page est ouverte une seule fois dans Edge ou Chrome sans interface,
 piloté par le protocole DevTools. L'animation est ralentie par le paramètre
@@ -10,6 +10,14 @@ Exemple, depuis la racine du dépôt :
 
     python scripts/produire_gif.py campagnes/lancement-tiktok/outro-source.html \\
         campagnes/lancement-tiktok/contours-nc-outro.gif
+
+Une sortie en `.mp4` produit une vidéo H.264 (ffmpeg requis, voir
+scripts/produire_video.py), par exemple l'outro des vidéos TikTok en
+1080 × 1920 à 30 images par seconde, accélérée d'un tiers :
+
+    python scripts/produire_gif.py campagnes/lancement-tiktok/outro-source.html \\
+        campagnes/lancement-tiktok/contours-nc-outro.mp4 --largeur 1080 --hauteur 1920 \\
+        --echelle 2 --ips 30 --ralenti 12 --acceleration 1.5 --duree 9000 --pause-finale 1500
 
 La source doit accepter `?manual=1&timeScale=N`, signaler qu'elle est prête
 (`document.documentElement.dataset.outroControllerReady = "true"`) et exposer
@@ -146,6 +154,30 @@ def ouvrir_navigateur(navigateur: str, profil: str) -> tuple[subprocess.Popen, s
     sys.exit("Le navigateur n'a pas ouvert son port de débogage.")
 
 
+def ecrire_mp4(images: list[bytes], sortie: Path, ips: float, pause_finale: int, largeur: int, hauteur: int) -> int:
+    """Encode les captures en H.264, la dernière image maintenue `pause_finale` ms."""
+    from produire_video import trouver_ffmpeg
+
+    with tempfile.TemporaryDirectory() as dossier:
+        for index, donnees in enumerate(images):
+            (Path(dossier) / f"image-{index:05d}.png").write_bytes(donnees)
+        commande = [
+            trouver_ffmpeg(), "-hide_banner", "-loglevel", "error", "-y",
+            "-framerate", f"{ips:g}", "-i", str(Path(dossier) / "image-%05d.png"),
+            "-vf", f"scale={largeur}:{hauteur},tpad=stop_mode=clone:stop_duration={pause_finale / 1000:.3f},format=yuv420p",
+            "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-r", f"{ips:g}",
+            "-movflags", "+faststart", str(sortie),
+        ]
+        resultat = subprocess.run(commande, capture_output=True, text=True)
+    if resultat.returncode != 0:
+        print(resultat.stderr, file=sys.stderr)
+        sys.exit("ffmpeg a échoué.")
+    duree = len(images) / ips + pause_finale / 1000
+    taille = os.path.getsize(sortie) / 1e6
+    print(f"Vidéo produite : {sortie} ({len(images)} images, {duree:.1f} s, {taille:.1f} Mo)")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("source", help="page HTML animée, relative à la racine du dépôt")
@@ -157,6 +189,8 @@ def main() -> int:
     parser.add_argument("--duree", type=int, default=9500, help="durée d'animation capturée, en ms")
     parser.add_argument("--ips", type=float, default=10, help="images par seconde du GIF")
     parser.add_argument("--ralenti", type=float, default=6, help="facteur de ralentissement (timeScale)")
+    parser.add_argument("--acceleration", type=float, default=1,
+                        help="vitesse de lecture de l'animation (1,5 : la sortie dure 1,5 fois moins longtemps)")
     parser.add_argument("--pause-finale", type=int, default=2500, help="maintien de la dernière image, en ms")
     parser.add_argument("--demarrage", default="startContoursOutro", help="fonction JS qui lance l'animation")
     parser.add_argument("--attente", default="#outro-mark svg",
@@ -173,9 +207,13 @@ def main() -> int:
     url = (f"http://127.0.0.1:{port}/{source.relative_to(RACINE).as_posix()}"
            f"?manual=1&timeScale={args.ralenti:g}")
 
+    # Pas entre deux images, en temps d'animation : une accélération espace
+    # les captures sans changer le rythme de la sortie.
     pas = 1000 / args.ips
-    nombre = int(args.duree // pas) + 1
+    pas_animation = pas * args.acceleration
+    nombre = int(args.duree // pas_animation) + 1
     images = []
+    video = Path(args.sortie).suffix.lower() == ".mp4"
     with tempfile.TemporaryDirectory() as profil:
         processus, url_websocket = ouvrir_navigateur(navigateur, profil)
         outil = DevTools(url_websocket)
@@ -195,13 +233,18 @@ def main() -> int:
             outil.attendre(f"Boolean(document.querySelector({selecteur}))")
             depart = time.monotonic()
             for index in range(nombre):
-                cible = depart + index * pas * args.ralenti / 1000
+                cible = depart + index * pas_animation * args.ralenti / 1000
                 attente = cible - time.monotonic()
                 if attente > 0:
                     time.sleep(attente)
                 capture = outil.appeler("Page.captureScreenshot", format="png", fromSurface=True)
-                image = Image.open(io.BytesIO(base64.b64decode(capture["data"]))).convert("RGB")
-                images.append(image.resize((args.largeur, args.hauteur)) if image.size != (args.largeur, args.hauteur) else image)
+                donnees = base64.b64decode(capture["data"])
+                if video:
+                    # PNG gardés compressés : en 1080 × 1920, les images décodées dépasseraient le Go.
+                    images.append(donnees)
+                else:
+                    image = Image.open(io.BytesIO(donnees)).convert("RGB")
+                    images.append(image.resize((args.largeur, args.hauteur)) if image.size != (args.largeur, args.hauteur) else image)
                 print(f"\rImage {index + 1}/{nombre}", end="", flush=True)
         finally:
             outil.fermer()
@@ -210,6 +253,13 @@ def main() -> int:
             serveur.shutdown()
     print()
 
+    sortie = Path(args.sortie)
+    if not sortie.is_absolute():
+        sortie = RACINE / sortie
+    sortie.parent.mkdir(parents=True, exist_ok=True)
+    if sortie.suffix.lower() == ".mp4":
+        return ecrire_mp4(images, sortie, args.ips, args.pause_finale, args.largeur, args.hauteur)
+
     # Palette commune, construite sur la dernière image (la plus complète),
     # pour éviter le scintillement des couleurs d'une image à l'autre.
     palette = images[-1].quantize(colors=255, method=Image.Quantize.MEDIANCUT)
@@ -217,10 +267,6 @@ def main() -> int:
     durees = [round(pas)] * len(cadres)
     durees[-1] += args.pause_finale
 
-    sortie = Path(args.sortie)
-    if not sortie.is_absolute():
-        sortie = RACINE / sortie
-    sortie.parent.mkdir(parents=True, exist_ok=True)
     cadres[0].save(sortie, save_all=True, append_images=cadres[1:], duration=durees, loop=0, optimize=True)
     taille = os.path.getsize(sortie) / 1024
     print(f"GIF produit : {sortie} ({len(cadres)} images, {taille:.0f} Ko)")
