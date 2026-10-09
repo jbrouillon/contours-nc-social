@@ -380,13 +380,18 @@ def exporter_en_bref(args, outil: DevTools, url_source: str) -> None:
             f"document.documentElement.dataset.contoursBriefExportReady === {json.dumps(format_.nom)}",
             libelle=f"préparation du format {format_.nom}",
         )
-        nombre = outil.evaluer(
+        nombre_detecte = outil.evaluer(
             "document.querySelectorAll("
             "'.contours-brief-slide, [data-vote-brief-slide]'"
             ").length"
         )
-        if not nombre:
+        if not nombre_detecte:
             raise ErreurExport("Aucune diapositive En bref trouvée.")
+        if args.slides is not None and not 1 <= args.slides <= nombre_detecte:
+            raise ErreurExport(
+                f"--slides doit être compris entre 1 et {nombre_detecte}, reçu : {args.slides}."
+            )
+        nombre = args.slides or nombre_detecte
         if nombre_reference is None:
             nombre_reference = nombre
         elif nombre != nombre_reference:
@@ -540,6 +545,7 @@ def parser_arguments() -> argparse.ArgumentParser:
     origine.add_argument("--url", help="URL complète de l'article publié ou prévisualisé")
     origine.add_argument("--racine-web", help="racine locale du site rendu (par exemple ../contours-nc/docs)")
     en_bref.add_argument("--page", help="page relative à --racine-web")
+    en_bref.add_argument("--slides", type=int, help="nombre de diapositives à exporter (toutes par défaut)")
 
     html = sous_commandes.add_parser("html", help="exporter une source HTML autonome")
     ajouter_options_communes(html)

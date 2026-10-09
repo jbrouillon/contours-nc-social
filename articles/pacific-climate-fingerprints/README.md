@@ -69,7 +69,7 @@ https://contours.nc/posts/pacific-climate-fingerprints/
 
 ### TikTok / Reels (légende courte)
 
-1960 → 2025 : une mer plus chaude que sa référence dans tous les territoires 🌡️ Et pourquoi la pluie ne suit pas la même trajectoire partout. #Pacifique #climat #NouvelleCalédonie
+1960 → 2025 : une mer plus chaude que sa référence dans les 21 territoires cartographiés 🌡️ Et pourquoi la pluie ne suit pas la même trajectoire partout. Dataviz complète sur contours.nc #Pacifique #climat #NouvelleCalédonie
 
 ## Textes alternatifs
 
