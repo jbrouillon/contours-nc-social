@@ -3,17 +3,12 @@
   "commit": "32d2e5663d186574b1f368859d0005d9cbfbbc3b",
   "page": "docs/posts/concentration-population-noumea-pacifique/index.html",
   "page_sha256": "c5f2417ad369d99703555d429596376e231f9768fa3a642891fec28394f8a432",
-  "extrait_le": "2026-10-10T08:07:04+11:00",
+  "extrait_le": "2026-10-10T09:04:35+11:00",
   "fichiers": [
     {
       "fichier": "chart-concentration.json",
       "bloc": "chart-concentration-data",
       "sha256": "fab0d55db06440083947c280770fc0cbbda00b9ea959f0605e5fd8b31a063bcd"
-    },
-    {
-      "fichier": "chart-top-communes.json",
-      "bloc": "chart-top-communes-data",
-      "sha256": "4684c4137257ddc4b3635b43f90e645dc2c265b7d730e88f50316d887d48acdf"
     },
     {
       "fichier": "chart-migrations-internes.json",
