@@ -1,0 +1,49 @@
+{
+  "site": "jbrouillon/contours-nc",
+  "commit": "32d2e5663d186574b1f368859d0005d9cbfbbc3b",
+  "page": "docs/posts/concentration-population-noumea-pacifique/index.html",
+  "page_sha256": "c5f2417ad369d99703555d429596376e231f9768fa3a642891fec28394f8a432",
+  "extrait_le": "2026-10-10T08:07:04+11:00",
+  "fichiers": [
+    {
+      "fichier": "chart-concentration.json",
+      "bloc": "chart-concentration-data",
+      "sha256": "fab0d55db06440083947c280770fc0cbbda00b9ea959f0605e5fd8b31a063bcd"
+    },
+    {
+      "fichier": "chart-top-communes.json",
+      "bloc": "chart-top-communes-data",
+      "sha256": "4684c4137257ddc4b3635b43f90e645dc2c265b7d730e88f50316d887d48acdf"
+    },
+    {
+      "fichier": "chart-migrations-internes.json",
+      "bloc": "chart-migrations-internes-data",
+      "sha256": "b2943421acec696b863a55e43b1e9329ee4f615c513c6e7ee65d7273eb0d75ed"
+    },
+    {
+      "fichier": "chart-arrivees-exterieures.json",
+      "bloc": "chart-arrivees-exterieures-data",
+      "sha256": "7e8598c3dc2a1d2fa22f3c6eb41ab899466897b4c60fbbee54d23d7b0c252f81"
+    },
+    {
+      "fichier": "chart-emplois-residence.json",
+      "bloc": "chart-emplois-residence-data",
+      "sha256": "6c592db943a34822e6fa63bf7772b502ef20799a0c6fa1a16a0f1131094c3fbc"
+    },
+    {
+      "fichier": "chart-emplois-noumea-historique.json",
+      "bloc": "chart-emplois-noumea-historique-data",
+      "sha256": "7590a47339e154c3f2042fec9617894e6cfb9deb71e90913848832876562b7ff"
+    },
+    {
+      "fichier": "chart-pacifique-villes.json",
+      "bloc": "chart-pacifique-villes-data",
+      "sha256": "d599d1648a292ed3db2fae72c5ff6b3fe8fdae48e452ea2629f2f6fed080801d"
+    },
+    {
+      "fichier": "carte-population-communes.json",
+      "bloc": "carte-population-communes-data",
+      "sha256": "7727b3d748a225fdbbf4255112ca44ea860e38ade37f85d91a596823424538f0"
+    }
+  ]
+}

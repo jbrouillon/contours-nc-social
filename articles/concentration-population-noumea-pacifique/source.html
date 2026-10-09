@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Concentration autour de Nouméa · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    /* Couleurs des séries de l'article (chart-concentration, chart-emplois-residence). */
+    .big .is-gn { color: #2f6b45; }
+    .big .is-noumea { color: #c54832; }
+    .big .is-couronne { color: #b8860b; }
+    .only-square-inline { display: none; }
+    body.layout-square .only-square-inline { display: inline; }
+  </style>
+</head>
+<body>
+  <!-- Les chiffres [data-v] sont calculés par visuels.js à partir de donnees/,
+       blocs de données extraits de la page publiée de l'article (voir
+       donnees/provenance.json). -->
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Population · 1956 → 2019</span><span class="folio"></span></header>
+    <h1><span class="hide-tiktok">Plus de deux habitants sur trois vivent dans le Grand Nouméa.</span><span class="only-tiktok">Plus de 2&nbsp;habitants sur 3 vivent dans le Grand Nouméa.</span></h1>
+    <p class="big"><span class="is-gn" data-v="gn_part_2019"></span><small>de la population en 2019,<br>dans 4 communes sur <span data-v="communes_total"></span></small></p>
+    <figure class="figure">
+      <svg data-sketch="cercles" data-annee="2019" role="img" aria-label="Carte des communes de Nouvelle-Calédonie représentées par des cercles proportionnels à leur population en 2019 : les quatre cercles du Grand Nouméa dominent tous les autres"></svg>
+    </figure>
+    <p class="note"><strong data-v="gn_pop_2019"></strong> habitants à Nouméa, Dumbéa, Mont-Dore et Païta. <span class="hide-square">1&nbsp;cercle = 1&nbsp;commune, taille selon sa population.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Population des communes, recensement 2019<br>Isee · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">La couronne · 1956 → 2019</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Dumbéa, Mont-Dore et Païta ont presque rattrapé Nouméa.</span><span class="only-tiktok">La couronne a presque rattrapé Nouméa.</span></h2>
+    <p class="big"><span class="is-couronne" data-v="couronne_pop_2019"></span><small>habitants dans la couronne en 2019,<br>contre <span data-v="noumea_pop_2019"></span> à Nouméa</small></p>
+    <figure class="figure">
+      <svg data-sketch="evolution" data-annees="1956|1976|1996|2019" role="img" aria-label="Quatre cartes des communes en cercles proportionnels à leur population, en 1956, 1976, 1996 et 2019 : les cercles de Dumbéa, Mont-Dore et Païta grossissent jusqu’à peser presque autant que Nouméa, et la part du Grand Nouméa passe de 36,8 % à 67,2 %"></svg>
+    </figure>
+    <p class="note">En 1956, la couronne comptait <strong data-v="couronne_pop_1956"></strong> habitants. <span class="hide-square">Même échelle de cercles sur les quatre cartes.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Population des communes, recensements 1956–2019<br>Isee · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Changer d’échelle</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">La concentration ne disparaît pas&nbsp;: elle change d’échelle.</span><span class="only-tiktok">La concentration change d’échelle.</span></h2>
+    <p class="big is-compact"><span class="is-noumea" data-v="noumea_part_2019"></span><small>Nouméa<br>seule</small><span class="is-gn" data-v="gn_part_2019"></span><small>Grand<br>Nouméa</small></p>
+    <figure class="figure">
+      <svg data-sketch="courbes" role="img" aria-label="Courbes de 1956 à 2019 : la part de la commune de Nouméa dans la population culmine dans les années 1970 puis recule, tandis que celles de la couronne et du Grand Nouméa augmentent à chaque recensement"></svg>
+    </figure>
+    <p class="note">La part de Nouméa culmine en <strong data-v="noumea_pic_annee"></strong> (<strong data-v="noumea_pic_part"></strong>). Celle du Grand Nouméa augmente à chaque recensement depuis 1956.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Part de la population totale, 1956–2019<br>Isee, recensements · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-teal">Migrations internes</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Le Grand Nouméa gagne des habitants sur les autres régions à chaque période.</span><span class="only-tiktok">Le Grand Nouméa gagne à chaque période.</span></h2>
+    <p class="big"><span class="is-gn" data-v="gn_solde_recent"></span><small>habitants gagnés entre 2014 et 2019<br>dans les échanges avec les autres régions</small></p>
+    <figure class="figure">
+      <svg data-sketch="soldes" role="img" aria-label="Barres du solde des déménagements entre cinq grandes régions de 2014 à 2019 : le Grand Nouméa gagne des habitants, les Îles Loyauté et le Nord-Est en perdent ; le solde du Grand Nouméa est positif à chaque période depuis 1989"></svg>
+    </figure>
+    <p class="note">Une exception à sa première place&nbsp;: entre 2009 et 2014, le Nord-Ouest gagne davantage (<strong data-v="no_solde_2009"></strong>).</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Arrivées moins départs entre grandes régions<br>Isee, recensements · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-teal">Arrivées de l’extérieur</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Plus de huit arrivants de l’extérieur sur dix s’installent dans le Grand Nouméa.</span><span class="only-tiktok">Plus de 8 arrivants sur 10 s’installent dans le Grand Nouméa.</span></h2>
+    <p class="big"><span class="is-gn" data-v="ext_part_recent"></span><small>des personnes arrivées de l’extérieur<br>entre 2014 et 2019 (<span data-v="ext_gn_recent"></span> sur <span data-v="ext_total_recent"></span>)</small></p>
+    <figure class="figure">
+      <svg data-sketch="arrivees" role="img" aria-label="Barres empilées par période de 1989 à 2019 : à chaque période, plus de huit personnes arrivées de l’extérieur sur dix résident ensuite dans le Grand Nouméa"></svg>
+    </figure>
+    <p class="note">Personnes qui vivaient hors de Nouvelle-Calédonie au recensement précédent. <span class="hide-square">Les départs vers l’extérieur ne sont pas connus par région.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Arrivées de l’extérieur par période intercensitaire<br>Isee, recensements · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Habiter, travailler</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">On travaille plus souvent à Nouméa qu’on n’y habite.</span><span class="only-tiktok">On travaille plus à Nouméa qu’on n’y habite.</span></h2>
+    <p class="big is-compact"><span class="is-gn" data-v="noumea_emplois"></span><small>des emplois sont à Nouméa</small></p>
+    <p class="big is-compact"><span class="is-couronne" data-v="noumea_residents"></span><small>des personnes en emploi y habitent</small></p>
+    <figure class="figure">
+      <svg data-sketch="travail" role="img" aria-label="Barres comparant, pour Nouméa, la couronne et le reste du territoire, la part des personnes en emploi qui y habitent et la part de celles qui y travaillent en 2019 : Nouméa concentre plus d’emplois que de travailleurs résidents, la couronne l’inverse"></svg>
+    </figure>
+    <p class="note">Dans la couronne, c’est l’inverse&nbsp;: <strong data-v="couronne_residents"></strong> des personnes en emploi y habitent, pour <strong data-v="couronne_emplois"></strong> des emplois.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Personnes en emploi, lieu d’habitation et de travail, 2019<br>Isee, recensement · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-teal">Pacifique</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Dans le Pacifique aussi, la capitale seule donne une image trop petite de la ville.</span><span class="only-tiktok">La capitale seule donne une image trop petite de la ville.</span></h2>
+    <p class="big is-compact"><span class="is-noumea" data-v="papeete_noyau"></span><span class="arrow">→</span><span class="is-gn" data-v="papeete_elargi"></span><small>Papeete seule, puis<br>l’agglomération (<span data-v="papeete_annee"></span>)</small></p>
+    <figure class="figure">
+      <svg data-sketch="pacifique" role="img" aria-label="Pour les territoires du Pacifique comparés dans l’article, part de la population vivant dans la capitale seule et dans son agglomération ou sa ville associée : l’écart est souvent important, et le Grand Nouméa reste parmi les plus concentrés"></svg>
+    </figure>
+    <p class="note">Les périmètres diffèrent d’un territoire à l’autre&nbsp;: <span class="hide-square">* signale un périmètre large, fonctionnel ou estimé.</span><span class="only-square-inline">* périmètre large ou estimé.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Capitale seule et agglomération, 2017–2022<br>Instituts statistiques · UN-Habitat · contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">À lire</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Pourquoi la population <span style="white-space:nowrap">se concentre-t-elle</span> autour de Nouméa&nbsp;?</span><span class="only-tiktok">Pourquoi tant d’habitants autour de Nouméa&nbsp;?</span></h2>
+    <ul class="cta-list hide-tiktok">
+      <li>La carte animée des communes, de 1956 à 2019</li>
+      <li>Naissances, déménagements, arrivées</li>
+      <li class="hide-square">Habiter la couronne, travailler à Nouméa</li>
+    </ul>
+    <p class="caveat">Le Grand Nouméa, ce sont quatre communes&nbsp;: Nouméa, Dumbéa, Mont-Dore et Païta. Comparé au Pacifique, il reste parmi les plus concentrés.</p>
+    <figure class="figure">
+      <svg data-sketch="cercles" data-annee="2019" data-minimal="true" role="img" aria-label="Croquis des communes en cercles proportionnels à leur population en 2019, le Grand Nouméa en vert"></svg>
+    </figure>
+    <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · analyse, cartes et données</span></p>
+    <p class="cta-actions">Enregistrez · Partagez</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Note de recherche 2026-06<br>Isee · instituts statistiques du Pacifique</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

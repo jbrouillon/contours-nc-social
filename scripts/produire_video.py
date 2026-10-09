@@ -72,6 +72,9 @@ def main() -> int:
     parser.add_argument("images", help="dossier des PNG 9:16, enchaînés par ordre alphabétique")
     parser.add_argument("--sortie", required=True, help="fichier MP4 à écrire, dans ce dépôt")
     parser.add_argument("--musique", help="piste audio (WAV, MP3…) ; sans elle, la vidéo est muette")
+    parser.add_argument("--intro", help="vidéo placée avant les images par un fondu (carte animée), sans son")
+    parser.add_argument("--sans", help="numéros des images à ne pas reprendre (à partir de 1), séparés par des virgules ; "
+                                       "par exemple les écrans fixes qu'une intro animée remplace")
     parser.add_argument("--outro", help="vidéo ajoutée à la fin par un fondu (logo animé), sans son")
     parser.add_argument("--durees", help="durées d'affichage en secondes (point décimal), une par image, séparées par des virgules")
     parser.add_argument("--duree", type=float, default=4.0, help="durée par défaut d'une image (s)")
@@ -87,6 +90,11 @@ def main() -> int:
     if sortie.exists() and not args.force:
         raise SystemExit(f"{sortie.relative_to(RACINE)} existe déjà : ajouter --force pour le remplacer.")
     images = sorted(dossier.glob("*.png"))
+    if args.sans:
+        exclues = {int(n) for n in args.sans.split(",")}
+        if not exclues <= set(range(1, len(images) + 1)):
+            raise SystemExit(f"--sans : numéros hors de 1 à {len(images)}.")
+        images = [image for n, image in enumerate(images, 1) if n not in exclues]
     if len(images) < 2:
         raise SystemExit(f"Au moins deux PNG sont attendus dans {dossier}.")
     durees = durees_par_image(args.durees, len(images), args.duree)
@@ -94,6 +102,12 @@ def main() -> int:
     if fondu * 2 >= min(durees):
         raise SystemExit("Le fondu doit durer moins de la moitié de l'image la plus courte.")
     ffmpeg = trouver_ffmpeg()
+    intro = None
+    if args.intro:
+        intro = (RACINE / args.intro).resolve()
+        if not intro.exists():
+            raise SystemExit(f"Intro introuvable : {intro}")
+        duree_intro = duree_media(ffmpeg, intro)
     outro = None
     if args.outro:
         outro = (RACINE / args.outro).resolve()
@@ -101,13 +115,17 @@ def main() -> int:
             raise SystemExit(f"Outro introuvable : {outro}")
         duree_outro = duree_media(ffmpeg, outro)
     total = sum(durees) - fondu * (len(images) - 1)
+    if intro:
+        total += duree_intro - fondu
     if outro:
         total += duree_outro - fondu
 
     commande = [ffmpeg, "-hide_banner", "-loglevel", "error", "-y"]
+    if intro:
+        commande += ["-i", str(intro)]
     for image, duree in zip(images, durees):
         commande += ["-loop", "1", "-framerate", str(IPS), "-t", f"{duree:.3f}", "-i", str(image)]
-    entree_audio = len(images)
+    entree_audio = len(images) + (1 if intro else 0)
     if outro:
         commande += ["-i", str(outro)]
         entree_audio += 1
@@ -119,8 +137,8 @@ def main() -> int:
         commande += ["-stream_loop", "-1", "-i", str(musique)]
 
     filtres = []
-    clips = len(images) + (1 if outro else 0)
-    longueurs = durees + ([duree_outro] if outro else [])
+    clips = len(images) + (1 if intro else 0) + (1 if outro else 0)
+    longueurs = ([duree_intro] if intro else []) + durees + ([duree_outro] if outro else [])
     for i in range(clips):
         filtres.append(
             f"[{i}:v]scale={LARGEUR}:{HAUTEUR}:force_original_aspect_ratio=decrease:flags=lanczos,"
@@ -156,7 +174,7 @@ def main() -> int:
         print(resultat.stderr, file=sys.stderr)
         raise SystemExit("ffmpeg a échoué.")
     taille = sortie.stat().st_size / 1e6
-    suite = " + outro" if outro else ""
+    suite = (" + intro" if intro else "") + (" + outro" if outro else "")
     print(f"écrit : {sortie.relative_to(RACINE)} · {len(images)} images{suite} · {total:.1f} s · {taille:.1f} Mo")
     return 0
 

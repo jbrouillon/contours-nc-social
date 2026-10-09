@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carte animée de la population · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    .big .is-gn { color: #2f6b45; }
+    [data-anime] { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <!-- Carte animée des communes, de 1956 à 2019, pour l'ouverture de la vidéo
+       TikTok. visuels.js expose window.dessinerCarte(p), p de 0 à 1 ;
+       scripts/produire_gif.py --image-par-image dessinerCarte capture chaque
+       image. Ouverte seule, la page montre l'état de 2019. -->
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Population · 1956 → 2019</span></header>
+    <h1>Comment la population s’est concentrée autour de Nouméa.</h1>
+    <p class="big"><span class="is-gn" data-anime="part">67,2 %</span><small>des habitants vivent dans<br>le Grand Nouméa en <span data-anime="annee">2019</span></small></p>
+    <figure class="figure">
+      <svg data-sketch="cercles-anime" role="img" aria-label="Carte animée des communes de Nouvelle-Calédonie en cercles proportionnels à leur population, de 1956 à 2019 : les cercles de Nouméa, Dumbéa, Mont-Dore et Païta grossissent bien plus vite que les autres"></svg>
+    </figure>
+    <p class="note">1&nbsp;cercle = 1&nbsp;commune, taille selon sa population&nbsp;; Grand Nouméa en vert.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Population des communes, recensements 1956–2019<br>Isee · calculs contours.nc</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

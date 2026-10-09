@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disparités territoriales · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    /* Couleurs des indicateurs (palettes de la carte de l'article). */
+    .big .is-gn { color: #2f6b45; }
+    .big .is-olive { color: #52582d; }
+    .big .is-rust { color: #8e2f27; }
+    .big .is-violet { color: #49356c; }
+  </style>
+</head>
+<body>
+  <!-- Les chiffres [data-v] sont calculés par visuels.js à partir de donnees/,
+       copie des données publiées par l'article (voir donnees/provenance.json),
+       avec les seuils de classes de la carte de l'article. Pour le grand
+       public, les IRIS de l'Isee sont appelés « zones » : le pied de page de
+       la couverture le précise. -->
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Recensement 2019 · 162 zones</span><span class="folio"></span></header>
+    <h1>Une moyenne cache de grands écarts.</h1>
+    <p class="big"><span class="is-olive" data-v="internet_haut"></span><small>zones où au moins 80&nbsp;% des ménages<br>n’ont pas accès à internet</small></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-metric="taux_sans_internet" role="img" aria-label="Carte des 162 zones de recensement de Nouvelle-Calédonie selon la part des ménages sans accès à internet en 2019, avec un agrandissement du Grand Nouméa : les parts les plus élevées se trouvent hors du Grand Nouméa, les plus faibles dans l’agglomération"></svg>
+    </figure>
+    <p class="note">Seules <strong data-v="internet_haut_gn"></strong> sont dans le Grand Nouméa. À l’inverse, <strong data-v="internet_bas_gn"></strong> des <strong data-v="internet_bas"></strong> zones sous 20&nbsp;% s’y trouvent.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">1 zone = 1 IRIS, petit secteur du recensement 2019<br>Isee, RGP 2019 · PopGIS3 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Emploi</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Le chômage dessine la même géographie.</span><span class="only-tiktok">Le chômage, même géographie.</span></h2>
+    <p class="big"><span class="is-rust" data-v="chomage_haut"></span><small>zones où le chômage touche<br>au moins 30&nbsp;% des actifs</small></p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-metric="taux_chomage" role="img" aria-label="Carte des 162 zones de recensement de Nouvelle-Calédonie selon le taux de chômage en 2019, avec un agrandissement du Grand Nouméa : les taux les plus élevés se trouvent hors du Grand Nouméa"></svg>
+    </figure>
+    <p class="note">Une seule est dans le Grand Nouméa, qui regroupe <strong data-v="chomage_bas_gn"></strong> des <strong data-v="chomage_bas"></strong> zones sous 8&nbsp;%.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Chômage parmi les actifs, par zone, 2019<br>Isee, RGP 2019 · PopGIS3 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-teal">Diplômes · Grand Nouméa</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Les zones les plus diplômées sont toutes à Nouméa.</span><span class="only-tiktok">Les plus diplômées&nbsp;: toutes à Nouméa.</span></h2>
+    <p class="big"><span class="is-gn" data-v="bac3_haut_noumea"></span><small>zones où au moins 35&nbsp;% ont un bac&nbsp;+3<br>ou plus, toutes dans la commune de Nouméa</small></p>
+    <figure class="figure">
+      <svg data-sketch="grand-noumea" data-metric="taux_bac3_plus" role="img" aria-label="Carte des zones de recensement de l’agglomération de Nouméa selon la part des diplômés d’un bac +3 ou plus en 2019 : les parts les plus élevées se concentrent dans le sud et l’est de la presqu’île de Nouméa"></svg>
+    </figure>
+    <p class="note">Dans la moitié des zones du pays, cette part reste sous <strong data-v="bac3_mediane"></strong>.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Diplômés d’un bac +3 ou plus, par zone, 2019<br>Isee, RGP 2019 · PopGIS3 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Origine · diplômes</span><span class="folio"></span></header>
+    <h2>Nés hors du pays, diplômés du supérieur&nbsp;: deux cartes qui se ressemblent.</h2>
+    <p class="big"><span class="is-violet" data-v="r_nes_bac3"></span><small>corrélation entre les deux parts<br>dans les <span data-v="iris_peuples_nes"></span> zones habitées du pays</small></p>
+    <figure class="figure">
+      <svg data-sketch="deux-cartes" data-gauche="taux_nes_hors_nc" data-droite="taux_bac3_plus" role="img" aria-label="Deux cartes de l’agglomération de Nouméa en 2019 : à gauche la part des personnes nées hors de Nouvelle-Calédonie, à droite celle des diplômés d’un bac +3 ou plus ; les deux parts sont élevées dans les mêmes zones du sud de la presqu’île"></svg>
+    </figure>
+    <p class="note">Le lieu de naissance ne dit pas l’appartenance communautaire&nbsp;: ce lien décrit des zones, pas des personnes.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Nés hors de Nouvelle-Calédonie et diplômés, 2019<br>Isee, RGP 2019 · PopGIS3 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Cumul des écarts</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Chômage élevé et absence d’internet vont souvent de pair.</span><span class="only-tiktok">Chômage et absence d’internet vont de pair.</span></h2>
+    <p class="big"><span data-v="r_chomage_internet"></span><small>corrélation entre les <span data-v="iris_peuples"></span> zones habitées<br>(1 = lien parfait, 0 = aucun lien)</small></p>
+    <figure class="figure">
+      <svg data-sketch="nuage" data-x="taux_sans_internet" data-y="taux_chomage" role="img" aria-label="Nuage de points des zones habitées : plus la part des ménages sans internet est élevée, plus le chômage l’est aussi ; les zones du Grand Nouméa sont regroupées en bas à gauche"></svg>
+    </figure>
+    <p class="note">Un lien entre territoires&nbsp;: il ne dit ni la cause, ni la situation de chaque habitant.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">1 point = 1 zone, taille selon sa population<br>Isee, RGP 2019 · PopGIS3 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">À explorer</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">20&nbsp;indicateurs, 162&nbsp;zones, 58&nbsp;quartiers du Grand Nouméa.</span><span class="only-tiktok">20&nbsp;indicateurs, 162&nbsp;zones, à explorer.</span></h2>
+    <ul class="cta-list hide-tiktok">
+      <li>Deux cartes côte à côte, au choix</li>
+      <li>Les quartiers du Grand Nouméa en 2014 et 2019</li>
+      <li class="hide-square">Nuages de points et matrices de corrélation</li>
+    </ul>
+    <p class="caveat">Ces cartes décrivent des territoires, pas des personnes&nbsp;: un écart entre zones ne dit rien de chaque habitant, ni de ses causes.</p>
+    <figure class="figure">
+      <svg data-sketch="carte" data-metric="taux_sans_internet" data-minimal="true" role="img" aria-label="Croquis de la carte des zones de recensement de Nouvelle-Calédonie selon la part des ménages sans accès à internet en 2019"></svg>
+    </figure>
+    <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · cartes interactives et données</span></p>
+    <p class="cta-actions">Enregistrez · Partagez</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Explorer les disparités territoriales<br>en Nouvelle-Calédonie</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

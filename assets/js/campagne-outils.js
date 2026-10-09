@@ -152,10 +152,13 @@
     const slides = Array.from(document.querySelectorAll("[data-slide]"));
     const requested = Number.parseInt(params.get("slide") || "1", 10);
     const index = Math.min(slides.length, Math.max(1, requested || 1)) - 1;
+    // ?folio=0 masque la numérotation, par exemple pour une vidéo qui ne
+    // reprend pas tous les écrans du carrousel.
+    const showFolio = params.get("folio") !== "0";
     slides.forEach((slide, i) => {
       slide.classList.toggle("is-active", i === index);
       const folio = slide.querySelector(".folio");
-      if (folio) folio.textContent = `${String(i + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+      if (folio) folio.textContent = showFolio ? `${String(i + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}` : "";
     });
 
     try {

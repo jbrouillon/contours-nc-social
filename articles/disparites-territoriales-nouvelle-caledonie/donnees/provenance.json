@@ -1,0 +1,13 @@
+{
+  "site": "jbrouillon/contours-nc",
+  "commit": "32d2e5663d186574b1f368859d0005d9cbfbbc3b",
+  "importe_le": "2026-10-10T08:07:04+11:00",
+  "fichiers": [
+    {
+      "fichier": "disparites-territoriales-nouvelle-caledonie-nc.json",
+      "origine": "assets/data/disparites-territoriales-nouvelle-caledonie-nc.json",
+      "sha256": "adf4f782084ab534e821c97f6bb0d7662b5647dbbc7f2816376ab345c7cfba80",
+      "modifie_localement": false
+    }
+  ]
+}

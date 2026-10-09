@@ -24,6 +24,17 @@ La source doit accepter `?manual=1&timeScale=N`, signaler qu'elle est prête
 une fonction de démarrage (`window.startContoursOutro`), comme
 campagnes/lancement-tiktok/outro-source.html.
 
+Avec `--image-par-image FONCTION`, la page n'est pas lue en temps réel : elle
+expose `window.FONCTION(p)`, qui dessine l'état `p` (de 0 à 1) et renvoie une
+valeur, et chaque image est dessinée puis capturée. C'est le mode des cartes
+animées des campagnes, par exemple :
+
+    python scripts/produire_gif.py articles/concentration-population-noumea-pacifique/animation.html \\
+        articles/concentration-population-noumea-pacifique/video/carte-animee.mp4 \\
+        --largeur 1080 --hauteur 1920 --echelle 1 --ips 15 --duree 9000 --pause-finale 1500 \\
+        --image-par-image dessinerCarte --pret "document.documentElement.dataset.ready === 'true'" \\
+        --parametre layout=tiktok
+
 Dépendances : Pillow et websocket-client
 (python -m pip install --user pillow websocket-client).
 """
@@ -45,6 +56,7 @@ import sys
 import tempfile
 import threading
 import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -132,6 +144,11 @@ def ouvrir_navigateur(navigateur: str, profil: str) -> tuple[subprocess.Popen, s
             "--disable-gpu",
             "--hide-scrollbars",
             "--mute-audio",
+            # Sans ces options, le moteur peut cesser de produire des images
+            # au cours d'une longue capture et bloquer Page.captureScreenshot.
+            "--disable-background-timer-throttling",
+            "--disable-renderer-backgrounding",
+            "--disable-backgrounding-occluded-windows",
             f"--remote-debugging-port={port}",
             "--remote-allow-origins=*",
             f"--user-data-dir={profil}",
@@ -195,6 +212,13 @@ def main() -> int:
     parser.add_argument("--demarrage", default="startContoursOutro", help="fonction JS qui lance l'animation")
     parser.add_argument("--attente", default="#outro-mark svg",
                         help="sélecteur CSS dont l'apparition marque le début de l'animation")
+    parser.add_argument("--pret", default="document.documentElement.dataset.outroControllerReady === 'true'",
+                        help="expression JS vraie quand la page est prête")
+    parser.add_argument("--image-par-image", metavar="FONCTION",
+                        help="fonction JS window.FONCTION(p) qui dessine l'état p (0 à 1) : chaque image est "
+                             "dessinée puis capturée, sans dépendre du temps réel (--ralenti est alors ignoré)")
+    parser.add_argument("--parametre", action="append", default=[], metavar="CLE=VALEUR",
+                        help="paramètre d'URL supplémentaire, par exemple layout=tiktok ; option répétable")
     parser.add_argument("--navigateur", help="chemin d'Edge ou de Chrome")
     args = parser.parse_args()
 
@@ -206,6 +230,11 @@ def main() -> int:
     serveur = servir(RACINE, port)
     url = (f"http://127.0.0.1:{port}/{source.relative_to(RACINE).as_posix()}"
            f"?manual=1&timeScale={args.ralenti:g}")
+    for parametre in args.parametre:
+        cle, _, valeur = parametre.partition("=")
+        if not cle or not valeur:
+            sys.exit(f"Paramètre invalide (CLE=VALEUR attendu) : {parametre}")
+        url += f"&{urllib.parse.quote(cle)}={urllib.parse.quote(valeur)}"
 
     # Pas entre deux images, en temps d'animation : une accélération espace
     # les captures sans changer le rythme de la sortie.
@@ -214,43 +243,84 @@ def main() -> int:
     nombre = int(args.duree // pas_animation) + 1
     images = []
     video = Path(args.sortie).suffix.lower() == ".mp4"
-    with tempfile.TemporaryDirectory() as profil:
+
+    def ouvrir(profil: str) -> tuple[subprocess.Popen, DevTools]:
         processus, url_websocket = ouvrir_navigateur(navigateur, profil)
         outil = DevTools(url_websocket)
+        outil.appeler("Page.enable")
+        outil.appeler(
+            "Emulation.setDeviceMetricsOverride",
+            width=round(args.largeur / args.echelle),
+            height=round(args.hauteur / args.echelle),
+            deviceScaleFactor=args.echelle,
+            mobile=False,
+        )
+        outil.appeler("Page.navigate", url=url)
+        outil.attendre(args.pret)
+        return processus, outil
+
+    def fermer(processus: subprocess.Popen, outil: DevTools) -> None:
         try:
-            outil.appeler("Page.enable")
-            outil.appeler(
-                "Emulation.setDeviceMetricsOverride",
-                width=round(args.largeur / args.echelle),
-                height=round(args.hauteur / args.echelle),
-                deviceScaleFactor=args.echelle,
-                mobile=False,
-            )
-            outil.appeler("Page.navigate", url=url)
-            outil.attendre("document.documentElement.dataset.outroControllerReady === 'true'")
-            outil.evaluer(f"window.{args.demarrage}()")
-            selecteur = json.dumps(args.attente)
-            outil.attendre(f"Boolean(document.querySelector({selecteur}))")
-            depart = time.monotonic()
-            for index in range(nombre):
-                cible = depart + index * pas_animation * args.ralenti / 1000
-                attente = cible - time.monotonic()
-                if attente > 0:
-                    time.sleep(attente)
-                capture = outil.appeler("Page.captureScreenshot", format="png", fromSurface=True)
-                donnees = base64.b64decode(capture["data"])
-                if video:
-                    # PNG gardés compressés : en 1080 × 1920, les images décodées dépasseraient le Go.
-                    images.append(donnees)
-                else:
-                    image = Image.open(io.BytesIO(donnees)).convert("RGB")
-                    images.append(image.resize((args.largeur, args.hauteur)) if image.size != (args.largeur, args.hauteur) else image)
-                print(f"\rImage {index + 1}/{nombre}", end="", flush=True)
-        finally:
             outil.fermer()
-            processus.terminate()
+        except OSError:
+            pass
+        processus.terminate()
+        try:
             processus.wait(timeout=30)
-            serveur.shutdown()
+        except subprocess.TimeoutExpired:
+            processus.kill()
+
+    # Au cours d'une longue capture, le navigateur sans interface cesse parfois
+    # de produire des images. En mode image par image, chaque état est
+    # reproductible : le navigateur est relancé et la capture reprend à
+    # l'image en cours.
+    reprises_max = 5
+    reprises = 0
+    try:
+        with tempfile.TemporaryDirectory() as dossier:
+            processus, outil = ouvrir(str(Path(dossier) / "profil-0"))
+            try:
+                if not args.image_par_image:
+                    outil.evaluer(f"window.{args.demarrage}()")
+                    selecteur = json.dumps(args.attente)
+                    outil.attendre(f"Boolean(document.querySelector({selecteur}))")
+                depart = time.monotonic()
+                index = 0
+                while index < nombre:
+                    try:
+                        if args.image_par_image:
+                            # État dessiné par la page elle-même : rythme exact,
+                            # quelle que soit la durée de rendu d'une image.
+                            progression = index / max(1, nombre - 1)
+                            if outil.evaluer(f"window.{args.image_par_image}({progression:.6f})") is None:
+                                sys.exit(f"window.{args.image_par_image} n'a rien renvoyé : fonction absente ou en erreur.")
+                        else:
+                            cible = depart + index * pas_animation * args.ralenti / 1000
+                            attente = cible - time.monotonic()
+                            if attente > 0:
+                                time.sleep(attente)
+                        capture = outil.appeler("Page.captureScreenshot", format="png", fromSurface=True)
+                    except (websocket.WebSocketException, TimeoutError, OSError) as erreur:
+                        if not args.image_par_image or reprises >= reprises_max:
+                            raise
+                        reprises += 1
+                        print(f"\nNavigateur bloqué à l'image {index + 1} ({erreur}) : relance {reprises}/{reprises_max}")
+                        fermer(processus, outil)
+                        processus, outil = ouvrir(str(Path(dossier) / f"profil-{reprises}"))
+                        continue
+                    donnees = base64.b64decode(capture["data"])
+                    if video:
+                        # PNG gardés compressés : en 1080 × 1920, les images décodées dépasseraient le Go.
+                        images.append(donnees)
+                    else:
+                        image = Image.open(io.BytesIO(donnees)).convert("RGB")
+                        images.append(image.resize((args.largeur, args.hauteur)) if image.size != (args.largeur, args.hauteur) else image)
+                    index += 1
+                    print(f"\rImage {index}/{nombre}", end="", flush=True)
+            finally:
+                fermer(processus, outil)
+    finally:
+        serveur.shutdown()
     print()
 
     sortie = Path(args.sortie)

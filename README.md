@@ -15,7 +15,12 @@ articles/                        Déclinaisons d'un article publié
 │   └── tiktok/                    diapositives « En bref » au format vertical, animation de fin
 ├── provinciales-2026-geographie-forces-politiques/
 │                                  campagne en 8 écrans : source.html, visuels.js, donnees/, exports, textes
-└── pacific-climate-fingerprints/  campagne en 6 écrans : source.html, visuels.js, donnees/, exports, textes
+├── pacific-climate-fingerprints/  campagne en 6 écrans : source.html, visuels.js, donnees/, exports, textes
+├── disparites-territoriales-nouvelle-caledonie/
+│                                  campagne en 6 écrans : source.html, visuels.js, donnees/, exports, vidéo, textes
+└── concentration-population-noumea-pacifique/
+                                   campagne en 8 écrans et carte animée : source.html, animation.html,
+                                   visuels.js, donnees/, exports, vidéo, textes
 assets/
 ├── css/campagne-article.css     gabarit commun des campagnes d'article (4:5, 1:1, 9:16, 1,91:1)
 ├── js/campagne-outils.js        outils communs : formats, valeurs calculées, croquis rough.js, signal prêt
@@ -28,7 +33,9 @@ images/
 scripts/
 ├── exporter_visuels.py          export PNG multiformat depuis « En bref » ou une source HTML
 ├── importer_donnees_site.py     copie de données du site avec provenance (commit, SHA-256)
-└── produire_gif.py              production d'un GIF à partir d'une source HTML animée
+├── extraire_donnees_page.py     extraction des données embarquées dans une page publiée du site
+├── produire_gif.py              GIF ou MP4 à partir d'une source HTML animée
+└── produire_video.py            vidéo 9:16 : intro animée, écrans, musique et outro
 ```
 
 Pour un nouvel article, créer `articles/<slug-de-l-article>/` avec le même slug que sur le site.
@@ -47,6 +54,17 @@ python scripts/produire_gif.py campagnes/lancement-tiktok/outro-source.html camp
 ```
 
 Le script ouvre la page une seule fois dans Edge ou Chrome sans interface, ralentit l'animation (`--ralenti 6` par défaut, transmis par `?timeScale=`) et la capture à 10 images par seconde (`--ips`), en 720 × 1280 avec une mise en page de 540 × 960 (`--echelle`). Options utiles : `--duree` (ms d'animation), `--pause-finale`, `--largeur`, `--hauteur`. La source doit accepter `?manual=1&timeScale=N`, signaler qu'elle est prête et exposer sa fonction de démarrage, comme `outro-source.html`.
+
+Pour une carte animée, préférer le mode **image par image** : la page expose `window.FONCTION(p)`, qui dessine l'état `p` (de 0 à 1) et renvoie une valeur, et le script dessine puis capture chaque image (`--image-par-image FONCTION`, avec `--pret` pour le signal de disponibilité et `--parametre layout=tiktok` pour le format). Le rendu ne dépend plus du temps réel ; si le navigateur sans interface se bloque en cours de capture, il est relancé et la capture reprend à l'image en cours. Exemple : `articles/concentration-population-noumea-pacifique/animation.html` (voir son README).
+
+## Données d'un article sans fichier séparé
+
+Quand un article embarque ses données dans la page (blocs `<script type="application/json" id="…-data">` écrits par `analysis.R`), `scripts/extraire_donnees_page.py` les extrait de la page publiée, lue dans le commit `HEAD` du site et non dans un rendu local, et écrit `provenance.json` :
+
+```powershell
+python scripts/extraire_donnees_page.py --page docs/posts/<slug>/index.html `
+  --sortie articles/<slug>/donnees chart-concentration carte-population-communes
+```
 
 ## Exporter les visuels sociaux
 
@@ -158,6 +176,10 @@ python scripts/produire_video.py articles/<slug>/vertical-9x16 `
   --outro campagnes/lancement-tiktok/contours-nc-outro.mp4
 ```
 
+**Toute vidéo se termine par l'outro animée** (`--outro`) : ne jamais livrer ni programmer une vidéo sans elle.
+
+`--intro` place une vidéo avant les écrans fixes (par exemple une carte animée produite par `produire_gif.py --image-par-image`) et `--sans 1,2` retire les écrans qu'elle remplace. Exporter alors les PNG 9:16 avec `--parametre folio=0` pour masquer une numérotation qui ne correspondrait plus.
+
 L'outro (`campagnes/lancement-tiktok/contours-nc-outro.mp4`, 7,5 s) est le logo animé de `outro-source.html`, capturé à 30 images par seconde et accéléré d'un tiers ; la musique continue dessous et s'éteint sur la signature. Pour la régénérer :
 
 ```powershell
@@ -168,7 +190,7 @@ python scripts/produire_gif.py campagnes/lancement-tiktok/outro-source.html `
 
 La capture se fait en 720 × 1280 (mise en page de 540 × 960) puis est agrandie au montage : en 1080 × 1920, le navigateur sans interface ne suit pas le rendu du second bloc du logo.
 
-- Les pistes de `articles/*/video/musique.m4a` sont des morceaux instrumentaux originaux générés par vidIQ (outil `generate_music`, présenté comme libre de droits), convertis en AAC. Provinciales : piano feutré et marimba, ambiance documentaire neutre (piste a14cd8cd). Empreintes climatiques : nappes, ukulélé et piano, ambiance océanique (piste acfda2b8). Générées le 7 octobre 2026.
+- Les pistes de `articles/*/video/musique.m4a` sont des morceaux instrumentaux originaux générés par vidIQ (outil `generate_music`, présenté comme libre de droits), convertis en AAC. Provinciales : piano feutré et marimba, ambiance documentaire neutre (piste a14cd8cd). Empreintes climatiques : nappes, ukulélé et piano, ambiance océanique (piste acfda2b8). Générées le 7 octobre 2026. Disparités territoriales : lo-fi documentaire, piano feutré, contrebasse et balais (piste 54bf0a24). Concentration autour de Nouméa : guitare acoustique, marimba et nappes, ambiance de ville insulaire (piste 9c8348d2). Générées le 10 octobre 2026.
 - Buffer doit récupérer la vidéo avec le type `video/mp4` : `raw.githubusercontent.com` la sert en `application/octet-stream`, utiliser l'URL jsDelivr figée sur un commit (`https://cdn.jsdelivr.net/gh/jbrouillon/contours-nc-social@<commit>/<chemin>`, 20 Mo au plus par fichier).
 
 
@@ -177,3 +199,5 @@ La capture se fait en 720 × 1280 (mise en page de 540 × 960) puis est agrandie
 - Ne publier que des chiffres, cartes et citations présents dans l'article d'origine, avec sa source.
 - Garder l'identité visuelle du site : papier clair, encre sombre, `Cabin Sketch` pour les titres, `Atkinson Hyperlegible` pour le texte, signature `contours.nc`.
 - Fournir un texte alternatif pour chaque visuel publié.
+- Écrire pour le grand public : éviter le jargon statistique (« IRIS » devient « zone », définie une fois dans le visuel) et rappeler la précaution de lecture utile (territoires et non personnes, lieu de naissance et non appartenance communautaire).
+- Terminer toute vidéo par l'outro animée de contours.nc.
