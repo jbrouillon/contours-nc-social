@@ -44,6 +44,10 @@ python scripts/produire_video.py articles/disparites-territoriales-nouvelle-cale
   --durees 4.5,5.5,5.5,6,5.5,4 --outro campagnes/lancement-tiktok/contours-nc-outro.mp4 --force
 ```
 
+### Son TikTok : Gurejele, depuis la bibliothèque musicale de TikTok
+
+La vidéo publiée sur TikTok est la **version muette** (`video/disparites-territoriales-muet.mp4`) : le son est ajouté dans l’application au moment de la publication, avec un morceau de **Gurejele** (kaneka, Maré) choisi dans la bibliothèque musicale de TikTok, qui en détient la licence. La publication Buffer est donc en mode « rappel » : à l’heure prévue, Buffer envoie une notification ; ouvrir TikTok, ajouter le morceau, publier. Ne jamais intégrer à la vidéo un enregistrement commercial récupéré ailleurs (YouTube, etc.). La version avec musique générée (`video/disparites-territoriales.mp4`) reste disponible pour un autre usage.
+
 ## Textes proposés
 
 ### Facebook

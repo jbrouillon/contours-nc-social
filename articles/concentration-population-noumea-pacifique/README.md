@@ -53,6 +53,10 @@ python scripts/produire_video.py articles/concentration-population-noumea-pacifi
 
 `extraire_donnees_page.py` lit la page dans le commit `HEAD` du site, pas un rendu local en cours.
 
+### Son TikTok : Gurejele, depuis la bibliothèque musicale de TikTok
+
+La vidéo publiée sur TikTok est la **version muette** (`video/concentration-grand-noumea-muet.mp4`) : le son est ajouté dans l’application au moment de la publication, avec un morceau de **Gurejele** (kaneka, Maré) choisi dans la bibliothèque musicale de TikTok, qui en détient la licence. La publication Buffer est donc en mode « rappel » : à l’heure prévue, Buffer envoie une notification ; ouvrir TikTok, ajouter le morceau, publier. Ne jamais intégrer à la vidéo un enregistrement commercial récupéré ailleurs (YouTube, etc.). La version avec musique générée (`video/concentration-grand-noumea.mp4`) reste disponible pour un autre usage.
+
 ## Textes proposés
 
 ### Facebook
