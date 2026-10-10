@@ -229,8 +229,10 @@
     return d3.geoMercator().fitExtent(box, { type: "MultiPoint", coordinates: [[west, south], [east, north]] }).clipExtent(box);
   }
 
-  // Noms de repère dans le Grand Nouméa : IRIS regroupés par quartier, nommés
-  // au centre de leur emprise ; un nom qui en chevaucherait un autre est omis.
+  // Noms de repère dans le Grand Nouméa : IRIS regroupés par quartier. Pour ne
+  // jamais masquer la carte, chaque nom est posé dans la mer, relié à son
+  // quartier par un point et un trait de rappel ; s'il n'y a pas de place
+  // libre, il est omis.
   const quartiers = [
     [/^Centre ville/, "Centre-ville"], [/^Anse Vata/, "Anse Vata"], [/^Ouémo/, "Ouémo"], [/Magenta/, "Magenta"],
     [/^Vallée des Colons/, "Vallée des Colons"], [/^Rivi.re Sal.e/, "Rivière-Salée"], [/^Ducos$/, "Ducos"],
@@ -238,35 +240,87 @@
     [/^Paita centre/, "Païta"], [/^N'Géa/, "N’Géa"], [/^Val Plaisance/, "Val Plaisance"], [/^Normandie/, "Normandie"]
   ];
 
-  function quartierLabels(svg, data, path, box, size, only = null) {
+  // Masque terre / mer de la vue, rastérisé une fois dans un canevas.
+  function landMask(data, path, [[x0, y0], [x1, y1]]) {
+    const width = Math.ceil(x1 - x0);
+    const height = Math.ceil(y1 - y0);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    context.translate(-x0, -y0);
+    context.beginPath();
+    d3.geoPath(path.projection(), context)({ type: "FeatureCollection", features: data.features });
+    context.fill();
+    const pixels = context.getImageData(0, 0, width, height).data;
+    return (x, y) => {
+      const i = Math.round(x - x0);
+      const j = Math.round(y - y0);
+      if (i < 0 || j < 0 || i >= width || j >= height) return true;
+      return pixels[4 * (j * width + i) + 3] > 32;
+    };
+  }
+
+  function calloutLabels(svg, rc, data, path, box, size, names, reserved = [], seedKey = "rappel") {
+    const isLand = landMask(data, path, box);
     const groups = d3.rollups(
       data.features.filter((f) => GN.includes(f.properties.commune))
         .map((f) => [quartiers.find(([pattern]) => pattern.test(f.properties.map_label || ""))?.[1], f])
-        .filter(([name]) => name && (!only || only.includes(name))),
-      (items) => {
-        const shape = { type: "FeatureCollection", features: items.map(([, f]) => f) };
-        return { area: path.area(shape), xy: path.centroid(shape) };
-      },
+        .filter(([name]) => name && names.includes(name)),
+      (items) => path.centroid({ type: "FeatureCollection", features: items.map(([, f]) => f) }),
       ([name]) => name
-    ).sort((a, b) => d3.descending(a[1].area, b[1].area));
-    const placed = [];
-    groups.forEach(([name, g]) => {
-      const [x, y] = g.xy;
-      if (!Number.isFinite(x)) return;
-      const half = (name.length * size * 0.55) / 2 + 4;
-      const b = [x - half, y - size * 0.6, x + half, y + size * 0.6];
-      if (b[0] < box[0][0] || b[2] > box[1][0] || b[1] < box[0][1] || b[3] > box[1][1]) return;
-      if (placed.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) return;
-      placed.push(b);
-      label(svg, name, x, y, { anchor: "middle", size, weight: 800, color: "#3f3a35", halo: true, haloWidth: 5 }).classed("nom-quartier", true);
+    ).sort((a, b) => names.indexOf(a[0]) - names.indexOf(b[0]));
+    const pad = size * 0.25;
+    const taken = reserved.map(([[a, b], [c, d]]) => [a - pad, b - pad, c + pad, d + pad]);
+    const [[bx0, by0], [bx1, by1]] = box;
+    const angles = d3.range(0, 360, 22.5).sort((a, b) => Math.abs(Math.cos(b * Math.PI / 180)) - Math.abs(Math.cos(a * Math.PI / 180)));
+    groups.forEach(([name, [ax, ay]]) => {
+      if (!Number.isFinite(ax) || ax < bx0 || ax > bx1 || ay < by0 || ay > by1) return;
+      const w = name.length * size * 0.56 + size * 0.5;
+      const h = size * 1.3;
+      let found = null;
+      for (const radius of [1.6, 2.4, 3.3, 4.4, 5.6, 7].map((k) => k * size)) {
+        for (const angle of angles) {
+          const cx = ax + radius * Math.cos(angle * Math.PI / 180);
+          const cy = ay + radius * Math.sin(angle * Math.PI / 180);
+          const r = [cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2];
+          if (r[0] < bx0 + 4 || r[2] > bx1 - 4 || r[1] < by0 + 4 || r[3] > by1 - 4) continue;
+          if (taken.some((o) => r[0] < o[2] && r[2] > o[0] && r[1] < o[3] && r[3] > o[1])) continue;
+          let wet = true;
+          for (let x = r[0]; x <= r[2] && wet; x += 3) {
+            for (let y = r[1]; y <= r[3]; y += 3) {
+              if (isLand(x, y)) { wet = false; break; }
+            }
+          }
+          if (wet) { found = { r, cx, cy }; break; }
+        }
+        if (found) break;
+      }
+      if (!found) return;
+      const { r, cx, cy } = found;
+      taken.push([r[0] - pad, r[1] - pad, r[2] + pad, r[3] + pad]);
+      // Trait du quartier jusqu'au bord de l'étiquette le plus proche.
+      const ex = Math.max(r[0], Math.min(ax, r[2]));
+      const ey = Math.max(r[1], Math.min(ay, r[3]));
+      roughLine(svg, rc, ax, ay, ex, ey, { strokeWidth: Math.max(1, size / 16), roughness: 0.6, opacity: 0.8, seed: `${seedKey}-${name}` });
+      svg.append("circle").attr("cx", ax).attr("cy", ay).attr("r", Math.max(2.2, size * 0.17)).attr("fill", ink)
+        .attr("stroke", paper).attr("stroke-width", Math.max(1, size / 18));
+      label(svg, name, cx, cy, { anchor: "middle", size, weight: 800, color: "#3f3a35", halo: true, haloWidth: Math.max(2.5, size / 6) });
     });
   }
 
-  // Panneau du Grand Nouméa : IRIS agrandis, côte, limites communales.
-  function drawGrandNoumea(svg, rc, data, definition, box, { seedKey, labels = false, labelSize = 22, title = null, bbox = GN_BBOX, only = null }) {
+  // Panneau du Grand Nouméa : IRIS agrandis, côte, limites communales. Le
+  // titre éventuel occupe un bandeau au-dessus de la carte, pour ne rien masquer.
+  function drawGrandNoumea(svg, rc, data, definition, box, { seedKey, labelSize = 22, title = null, bbox = GN_BBOX }) {
     const [[x0, y0], [x1, y1]] = box;
     paperCard(svg, rc, x0, y0, x1 - x0, y1 - y0, `${seedKey}-cadre`);
-    const inner = [[x0 + 8, y0 + 8], [x1 - 8, y1 - 8]];
+    const header = title ? labelSize * 1.5 : 0;
+    if (title) {
+      label(svg, title, x0 + 12, y0 + header / 2 + 3, { size: labelSize, weight: 800 });
+      svg.append("line").attr("x1", x0 + 6).attr("x2", x1 - 6).attr("y1", y0 + header + 3).attr("y2", y0 + header + 3)
+        .attr("stroke", "#b9b1a5").attr("stroke-width", 1);
+    }
+    const inner = [[x0 + 8, y0 + 8 + header], [x1 - 8, y1 - 8]];
     const projection = gnProjection(inner, bbox);
     const path = d3.geoPath(projection);
     const clip = `clip-${seedKey}`;
@@ -275,9 +329,7 @@
     const g = svg.append("g").attr("clip-path", `url(#${clip})`);
     drawIris(g, rc, data, path, definition, { seedKey, gap: 6, irisStroke: 0.8 });
     drawCoast(g, rc, path, data.area, `${seedKey}-cote`, 30, 1.8);
-    if (labels) quartierLabels(svg, data, path, inner, labelSize, only);
-    if (title) label(svg, title, x0 + 16, y0 + 26, { size: labelSize, weight: 800, halo: true, haloWidth: 7 });
-    return projection;
+    return { projection, path, inner };
   }
 
   // Légende de l'article : une case par classe, chaque classe libellée, et le
@@ -336,16 +388,15 @@
       const legendH = 52;
       const panelW = stacked ? width : (width - gap) / 2;
       const panelH = stacked ? (height - gap) / 2 : height;
-      const only = ["Rivière-Salée", "Ducos", "Magenta", "Anse Vata", "Koutio", "Nouville"];
+      const names = ["Magenta", "Anse Vata", "Rivière-Salée", "Koutio", "Nouville"];
       definitions.forEach((definition, index) => {
         const x0 = stacked ? 0 : index * (panelW + gap);
         const y0 = stacked ? index * (panelH + gap) : 0;
         const titleText = definition.key === "taux_nes_hors_nc" ? "Nés hors de Nouvelle-Calédonie" : definition.label;
         label(svg, titleText, x0 + 2, y0 + titleH / 2, { size: Math.min(25, panelW / 19), weight: 800, color: definition.colors[5] });
         const mapBox = [[x0 + 2, y0 + titleH], [x0 + panelW - 2, y0 + panelH - legendH]];
-        drawGrandNoumea(svg, rc, data, definition, mapBox, {
-          seedKey: `deux-${definition.key}`, bbox: AGGLO_BBOX, labels: true, labelSize: Math.max(17, Math.min(21, panelW / 24)), only
-        });
+        const { path, inner } = drawGrandNoumea(svg, rc, data, definition, mapBox, { seedKey: `deux-${definition.key}`, bbox: AGGLO_BBOX });
+        calloutLabels(svg, rc, data, path, inner, Math.max(17, Math.min(21, panelW / 24)), names, [], `deux-${definition.key}-rappel`);
         drawCompactLegend(svg, rc, definition, x0 + 6, y0 + panelH - legendH + 10, panelW - 12, `deux-${definition.key}`);
       });
     },
@@ -408,9 +459,7 @@
       const seedKey = `gn-${definition.key}`;
       const mapBottom = height - LEGEND_HEIGHT - 14;
       const box = [[2, 2], [width - 2, mapBottom]];
-      const projection = drawGrandNoumea(svg, rc, data, definition, box, {
-        seedKey, labels: true, labelSize: Math.max(21, Math.min(26, width / 40)), bbox: AGGLO_BBOX
-      });
+      const { projection, path, inner } = drawGrandNoumea(svg, rc, data, definition, box, { seedKey, bbox: AGGLO_BBOX });
 
       // Repère de situation : silhouette du pays, emprise agrandie en rouge,
       // dans le premier coin du cadre qui tombe en mer.
@@ -432,8 +481,10 @@
       const [bx, by] = loc([east, south]);
       svg.append("rect").attr("x", ax - 3).attr("y", ay - 3).attr("width", bx - ax + 6).attr("height", by - ay + 6)
         .attr("fill", "none").attr("stroke", trendColor).attr("stroke-width", 2.4);
-      // Les noms de quartier restent lisibles au-dessus du repère.
-      svg.selectAll("text.nom-quartier").raise();
+      // Noms de quartier dans la mer, hors du repère de situation.
+      calloutLabels(svg, rc, data, path, inner, Math.max(21, Math.min(26, width / 40)),
+        ["Nouville", "Centre-ville", "Magenta", "Ouémo", "Anse Vata", "Rivière-Salée", "Ducos", "Koutio", "Boulari"],
+        [[[locBox[0][0] - 6, locBox[0][1] - 6], [locBox[1][0] + 6, locBox[1][1] + 6]]], `${seedKey}-rappel`);
 
       const legendWidth = Math.min(width - 8, 860);
       drawLegend(svg, rc, definition, (width - legendWidth) / 2, mapBottom + 30, legendWidth, seedKey);
