@@ -44,6 +44,10 @@ python scripts/exporter_visuels.py html articles/provinciales-2026-geographie-fo
 
 Si une valeur manque dans les données, la source affiche une erreur et l’export échoue au lieu de produire un visuel incomplet.
 
+### Vidéo TikTok : son ajouté dans l’application
+
+La vidéo publiée sur TikTok est la version muette (`video/provinciales-2026-geographie-muet.mp4`, mêmes écrans et outro) : le son est choisi dans la bibliothèque musicale de TikTok au moment de la publication (mode « rappel » de Buffer). La version avec musique générée (`video/provinciales-2026-geographie.mp4`) reste disponible.
+
 ## Textes proposés
 
 ### Facebook / Instagram (carrousel)
