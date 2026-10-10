@@ -5,7 +5,7 @@ date_noumea,reseau,campagne,format,mode,statut,buffer_id,visuels
 2026-10-11 12:00,instagram,presentation-contours-nc,portrait-4x5 (7),automatique,programme,6ac9ac4db07d37ac975c2b56,campagnes/presentation-contours-nc/portrait-4x5
 2026-10-12 12:00,facebook,appel-contributions,portrait-4x5 (6),automatique,programme,6ac9ac4ec4de2d2b12136170,campagnes/appel-contributions/portrait-4x5
 2026-10-13 12:00,instagram,pacific-climate-fingerprints,portrait-4x5 (6),automatique,programme,6ac5c7d2203d24e39e0bb355,articles/pacific-climate-fingerprints/portrait-4x5
-2026-10-14 19:00,tiktok,pacific-climate-fingerprints,"vidéo 32,5 s avec musique et outro",automatique,programme,6ac5c7d336c2a7788dcd4bc7,articles/pacific-climate-fingerprints/video/empreintes-climatiques.mp4
+2026-10-14 19:00,tiktok,pacific-climate-fingerprints,"vidéo muette 32,5 s et outro ; son ajouté dans TikTok",rappel (son dans l'app),programme,6ac5c7d336c2a7788dcd4bc7,articles/pacific-climate-fingerprints/video/empreintes-climatiques-muet.mp4
 2026-10-15 12:00,facebook,concentration-population-noumea-pacifique,portrait-4x5 (8),automatique,programme,6ac9653df91f772d45738c9b,articles/concentration-population-noumea-pacifique/portrait-4x5
 2026-10-16 12:00,instagram,concentration-population-noumea-pacifique,portrait-4x5 (8),automatique,programme,6ac96559ed92ed8fa5ac3914,articles/concentration-population-noumea-pacifique/portrait-4x5
 2026-10-17 12:00,facebook,provinciales-2026-geographie-forces-politiques,"extrait : écran 03, Nouméa par secteur (1)",automatique,programme,6ac9ac4fbba9419ccbeae959,articles/provinciales-2026-geographie-forces-politiques/portrait-4x5/provinciales-2026-geographie-03.png

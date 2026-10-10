@@ -80,6 +80,10 @@ def main() -> int:
     parser.add_argument("--duree", type=float, default=4.0, help="durée par défaut d'une image (s)")
     parser.add_argument("--fondu", type=float, default=0.5, help="durée des fondus enchaînés (s)")
     parser.add_argument("--volume", type=float, default=0.8, help="gain de la musique (1 = inchangé)")
+    parser.add_argument("--debit", default="3.4M",
+                        help="débit vidéo constant (défaut 3.4M). Des écrans fixes s'encodent sinon autour de 1 Mbit/s : "
+                             "TikTok et Instagram recompressent alors fortement les hachures et les petits textes. "
+                             "3,4 Mbit/s garde une vidéo de 45 s sous la limite de 20 Mo de jsDelivr (URL utilisée par Buffer)")
     parser.add_argument("--force", action="store_true", help="remplacer un fichier existant")
     args = parser.parse_args()
 
@@ -166,7 +170,11 @@ def main() -> int:
     sortie.parent.mkdir(parents=True, exist_ok=True)
     commande += [
         "-filter_complex", ";".join(filtres), *cartes,
-        "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p",
+        # Débit plancher élevé et image clé chaque seconde : la plateforme
+        # recompresse à partir d'une source riche plutôt que déjà appauvrie.
+        "-c:v", "libx264", "-preset", "slow", "-profile:v", "high", "-level", "4.2",
+        "-b:v", args.debit, "-minrate", args.debit, "-maxrate", args.debit, "-bufsize", args.debit,
+        "-x264-params", "nal-hrd=cbr:force-cfr=1", "-g", str(IPS), "-pix_fmt", "yuv420p",
         "-r", str(IPS), "-t", f"{total:.3f}", "-movflags", "+faststart", str(sortie),
     ]
     resultat = subprocess.run(commande, capture_output=True, text=True)

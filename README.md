@@ -179,6 +179,8 @@ python scripts/produire_video.py articles/<slug>/vertical-9x16 `
   --outro campagnes/lancement-tiktok/contours-nc-outro.mp4
 ```
 
+La vidéo est encodée à débit constant (`--debit`, 3,4 Mbit/s par défaut) : sans plancher, des écrans fixes descendent vers 1 Mbit/s et TikTok les recompresse en flou. Ce débit garde une vidéo de 45 s sous les 20 Mo acceptés par jsDelivr. Pour publier depuis TikTok Studio, importer le fichier MP4 d’origine (pas une copie renvoyée par une messagerie) et activer l’importation en haute qualité dans l’application ; juste après la mise en ligne, TikTok affiche parfois une version basse définition le temps de finir son traitement.
+
 **Toute vidéo se termine par l'outro animée** (`--outro`) : ne jamais livrer ni programmer une vidéo sans elle.
 
 `--intro` place une vidéo avant les écrans fixes (par exemple une carte animée produite par `produire_gif.py --image-par-image`) et `--sans 1,2` retire les écrans qu'elle remplace. Exporter alors les PNG 9:16 avec `--parametre folio=0` pour masquer une numérotation qui ne correspondrait plus.
