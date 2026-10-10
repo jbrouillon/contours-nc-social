@@ -6,7 +6,8 @@ Dépôt public des visuels et sources de diffusion de [contours.nc](https://cont
 
 ```text
 campagnes/                       Campagnes propres au carnet
-├── appel-contributions-facebook/  carrousels 4:5 et 1:1, visuel 1200 × 630, source HTML, textes
+├── appel-contributions/          campagne en 6 écrans (source.html, visuels.js), quatre formats, vidéo muette, textes
+├── appel-contributions-facebook/  ancienne version Facebook : carrousels 4:5 et 1:1, visuel 1200 × 630, source HTML
 ├── lancement-tiktok/              slides de lancement, animation de fin, sources HTML
 └── presentation-contours-nc/      carrousels 4:5 et 1:1
 articles/                        Déclinaisons d'un article publié
@@ -157,6 +158,8 @@ Le script d'injection reste utile pour une prévisualisation ponctuelle dans un 
 Le script masque la fermeture, la navigation et le lien de lecture détaillée, puis ajuste la mise en page pour la capture sans modifier le site. Il prend en charge le composant commun `.contours-brief-*` des nouveaux articles et l'ancien composant `.vote-brief-*` de l'article sur le regroupement des bureaux de vote. Il peut être relancé sans dupliquer les styles ; le paramètre `export` détermine le mode à chaque exécution.
 
 ## Calendrier de diffusion
+
+Rythme visé depuis octobre 2026 : deux publications par semaine sur Facebook (12 h), deux sur Instagram (12 h), une à deux sur TikTok (19 h), en alternant campagnes complètes (carrousels, vidéos) et extraits d’une image tirés d’une campagne déjà publiée, avec le lien de l’article. Les vidéos TikTok et les Reels sont publiés muets, en mode « rappel », pour ajouter un son de la bibliothèque de l’application (par exemple Gurejele).
 
 `calendrier.csv` liste les publications programmées dans Buffer (organisation « My organization », fuseau Pacific/Noumea) : date et heure de Nouméa, réseau, campagne, format, mode, statut et identifiant Buffer. Le mettre à jour à chaque programmation ou publication.
 
