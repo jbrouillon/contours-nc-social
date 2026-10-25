@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nés ici ou en métropole · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    /* Couleurs de l'article : vert pour les natifs, bleu pour les personnes
+       nées en métropole, brun pour Wallis-et-Futuna. */
+    .big .is-nc { color: #2f6b45; }
+    .big .is-metro { color: #2f5673; }
+    .big .is-wf { color: #a8633f; }
+    .note strong.is-metro { color: #2f5673; }
+    /* Deux chiffres comparés, chacun avec son libellé dessous. */
+    .duo { align-items: flex-start; display: flex; gap: calc(var(--s) * 36px); }
+    .duo .big { align-items: flex-start; flex: 1 1 0; flex-direction: column; gap: calc(var(--s) * 6px); }
+    .duo .big + .big { border-left: 3px dashed var(--rule); padding-left: calc(var(--s) * 36px); }
+    .duo .big small { font-size: calc(var(--s) * 28px); }
+    body.layout-link .duo { grid-area: big; }
+    .nw { white-space: nowrap; }
+    .only-square-inline { display: none; }
+    body.layout-square .only-square-inline { display: inline; }
+    /* Écran final : la composition des 25-64 ans tient sur une bande. */
+    .figure.is-strip { min-height: calc(var(--s) * 170px); }
+  </style>
+</head>
+<body>
+  <!-- Les chiffres [data-v] sont calculés par visuels.js à partir de donnees/,
+       copie des fichiers publiés par l'article (voir donnees/provenance.json).
+       « Nés en métropole » désigne la modalité « métropole, DOM ou autre
+       territoire français » du recensement, qui ne peut pas être détaillée.
+       Pour le grand public, les IRIS de l'Isee sont appelés « zones ». -->
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Nés ici ou en métropole · 2019</span><span class="folio"></span></header>
+    <h1><span class="hide-tiktok">Les personnes nées en métropole ont plus de quatre fois plus souvent un bac&nbsp;+3 que les natifs.</span><span class="only-tiktok">Bac&nbsp;+3&nbsp;: plus de 4&nbsp;fois plus fréquent chez les personnes nées en métropole.</span></h1>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-nc" data-v="bac3_nc"></span><small>des natifs ont un bac&nbsp;+3 ou plus</small></p>
+      <p class="big is-compact"><span class="is-metro" data-v="bac3_metro"></span><small>des personnes nées en métropole</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="paires" data-indicateurs="bac3,sans_diplome" role="img" aria-label="Barres comparant les 25-64 ans nés en Nouvelle-Calédonie et ceux nés en métropole en 2019 : part des diplômés d’un bac +3 ou plus, puis part des personnes sans aucun diplôme"></svg>
+    </figure>
+    <p class="note">À âge et sexe comparables, l’écart ne bouge presque pas&nbsp;: <strong data-v="bac3_nc_std"></strong> contre <strong class="is-metro" data-v="bac3_metro_std"></strong>.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">« Nés en métropole » inclut les DOM<br>Isee, recensement 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Lieu de naissance</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">«&nbsp;Nés ailleurs&nbsp;» mêle des situations opposées.</span><span class="only-tiktok">«&nbsp;Nés ailleurs&nbsp;»&nbsp;: des situations opposées.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-wf" data-v="bac3_wf"></span><small>des personnes nées à <span class="nw">Wallis-et-Futuna</span></small></p>
+      <p class="big is-compact"><span class="is-metro" data-v="bac3_metro"></span><small>des personnes nées en métropole</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="origines" role="img" aria-label="Barres de la part des 25-64 ans diplômés d’un bac +3 ou plus selon le lieu de naissance en 2019 : la plus forte pour les personnes nées en métropole, la plus faible pour celles nées à Wallis-et-Futuna, les natifs entre les deux ; trait rouge pour l’ensemble"></svg>
+    </figure>
+    <p class="note"><span class="hide-square">Part des diplômés d’un bac&nbsp;+3 ou plus. </span>Les personnes nées en métropole forment <strong data-v="part_metro_hors"></strong> des 25-64 ans nés hors du pays&nbsp;: elles tirent la moyenne vers le haut.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Diplômés d’un bac +3 ou plus, 25-64 ans<br>Isee, recensement 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Emploi</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">À diplôme égal, le chômage reste plus fréquent chez les natifs.</span><span class="only-tiktok">À diplôme égal, plus de chômage chez les natifs.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-nc" data-v="chomage_nc"></span><small>des actifs nés ici se déclarent au chômage</small></p>
+      <p class="big is-compact"><span class="is-metro" data-v="chomage_metro"></span><small>des actifs nés en métropole</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="diplome-egal" role="img" aria-label="Pour chacun des six niveaux de diplôme, de aucun diplôme à bac +3 ou plus, le chômage déclaré des actifs nés en Nouvelle-Calédonie (rond vert) dépasse celui des actifs nés en métropole (carré bleu) en 2019"></svg>
+    </figure>
+    <p class="note">À âge, sexe et diplôme comparables&nbsp;: <strong data-v="chomage_nc_std"></strong> contre <strong class="is-metro" data-v="chomage_metro_std"></strong>. Plus des deux tiers de l’écart demeurent.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Chômage déclaré parmi les actifs de 25 à 64 ans<br>Isee, recensement 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Année d’arrivée</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Même installées avant 1990, les personnes nées en métropole restent bien plus diplômées.</span><span class="only-tiktok">Installées avant 1990&nbsp;: l’écart demeure.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-metro" data-v="bac3_metro_ancien"></span><small>des personnes nées en métropole et installées avant 1990 ont un bac&nbsp;+3</small></p>
+      <p class="big is-compact"><span class="is-nc" data-v="bac3_nc"></span><small>des natifs</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="arrivees" role="img" aria-label="Barres de la part des diplômés d’un bac +3 ou plus parmi les personnes nées en métropole selon leur période d’installation en 2019 : la part baisse des arrivées récentes aux plus anciennes mais reste très au-dessus de celle des natifs (trait vert)"></svg>
+    </figure>
+    <p class="note">Parmi les arrivées de 2015-2019, <strong class="is-metro" data-v="public_metro_recent"></strong> des personnes en emploi travaillent dans le secteur public, contre <strong data-v="public_nc"></strong> des natifs.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Année de la dernière installation, 25-64 ans<br>Isee, recensement 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Arrivés enfants</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Même arrivés avant 16&nbsp;ans, les jeunes nés en métropole ont près de quatre fois plus souvent un bac&nbsp;+3.</span><span class="only-tiktok">Arrivés avant 16&nbsp;ans&nbsp;: l’écart demeure.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-metro" data-v="bac3_enfants"></span><small>des 25-34&nbsp;ans nés en métropole et arrivés avant 16&nbsp;ans</small></p>
+      <p class="big is-compact"><span class="is-nc" data-v="bac3_nc_jeunes"></span><small>des natifs du même âge</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="age-arrivee" role="img" aria-label="Barres de la part des 25-34 ans diplômés d’un bac +3 ou plus en 2019 : natifs, puis personnes nées en métropole selon leur âge à l’arrivée ; toutes les personnes nées en métropole dépassent largement les natifs"></svg>
+    </figure>
+    <p class="note">Ces jeunes ont pourtant, en principe, suivi une partie de leur scolarité dans le pays.<span class="hide-square"> Le recensement ne dit rien du milieu social des familles.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Personnes de 25 à 34 ans, âge à la dernière installation<br>Isee, recensement 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-teal">Logement</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Les natifs vivent près de quatre fois plus souvent dans un logement surpeuplé.</span><span class="only-tiktok">Logement surpeuplé&nbsp;: près de 4&nbsp;fois plus chez les natifs.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-nc" data-v="surpeuplement_nc"></span><small>des personnes nées ici</small></p>
+      <p class="big is-compact"><span class="is-metro" data-v="surpeuplement_metro"></span><small>des personnes nées en métropole</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="paires" data-indicateurs="surpeuplement,sans_internet,proprietaire" role="img" aria-label="Barres comparant les 25-64 ans nés en Nouvelle-Calédonie et ceux nés en métropole en 2019 : logement surpeuplé, logement sans internet et ménage propriétaire de son logement"></svg>
+    </figure>
+    <p class="note">Seule la propriété joue en faveur des natifs&nbsp;: <strong data-v="proprietaire_nc"></strong> vivent dans un ménage propriétaire, contre <strong class="is-metro" data-v="proprietaire_metro"></strong>.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Personnes de 25 à 64 ans en logement ordinaire<br>Isee, recensement 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Quartiers · Nouméa</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok"><span data-v="zones_fortes_maj"></span> zones de Nouméa comptent au moins 40&nbsp;% d’habitants nés en métropole.</span><span class="only-tiktok"><span data-v="zones_fortes_chiffre"></span>&nbsp;zones de Nouméa&nbsp;: au moins 40&nbsp;% nés en métropole.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-metro" data-v="part_metro_fortes"></span><small>des personnes nées en métropole vivent dans ces zones</small></p>
+      <p class="big is-compact"><span class="is-nc" data-v="part_nc_fortes"></span><small>des natifs</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="carte-gn" role="img" aria-label="Carte des zones de recensement du Grand Nouméa selon la part des habitants nés en métropole en 2019 : les parts les plus fortes se trouvent dans le sud de la presqu’île de Nouméa, les plus faibles au nord de l’agglomération"></svg>
+    </figure>
+    <p class="note">À l’inverse, dans <strong data-v="zones_faibles"></strong> zones<span class="hide-square">, dont <strong data-v="zones_faibles_hors_sud"></strong> dans le Nord ou aux îles Loyauté</span>, elles sont moins de 2&nbsp;% des habitants.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">1 zone = 1 IRIS, petit secteur du recensement · tous âges<br>Isee, RGP 2019 · PopGIS3 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Lire ces chiffres</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Le lieu de naissance est un marqueur de trajectoires, pas une cause.</span><span class="only-tiktok">Un marqueur, pas une cause.</span></h2>
+    <ul class="cta-list hide-tiktok">
+      <li>Diplôme, emploi, logement et quartiers</li>
+      <li>Selon l’année et l’âge à l’arrivée</li>
+      <li class="hide-square">Cartes des zones et données à télécharger</li>
+    </ul>
+    <p class="caveat">Le lieu de naissance ne dit pas l’appartenance communautaire. Données de 2019, avant mai&nbsp;2024.</p>
+    <figure class="figure is-strip">
+      <svg data-sketch="composition" role="img" aria-label="Bande de la répartition des personnes de 25 à 64 ans recensées en 2019 selon leur lieu de naissance : Nouvelle-Calédonie, métropole ou DOM, puis étranger, Wallis-et-Futuna et Polynésie française"></svg>
+    </figure>
+    <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · article, figures et données</span></p>
+    <p class="cta-actions">Enregistrez · Partagez</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Nés ici ou en métropole&nbsp;: des inégalités<br>de diplôme, d’emploi et de logement</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "site": "jbrouillon/contours-nc",
+  "commit": "feca9d8e3fb2dc3639cc595763611032e00c2ea3",
+  "importe_le": "2026-10-25T14:29:18+11:00",
+  "fichiers": [
+    {
+      "fichier": "profils-25-64-ans.csv",
+      "origine": "posts/nes-ici-ou-ailleurs-inegalites-nouvelle-caledonie/data/profils-25-64-ans.csv",
+      "sha256": "a2958cecb50ca7b4cd43b6cff8e02116782932dfcebe2b98b08d8dce1bb9e20a",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "diplome-egal.csv",
+      "origine": "posts/nes-ici-ou-ailleurs-inegalites-nouvelle-caledonie/data/diplome-egal.csv",
+      "sha256": "f9548fca5661310c2f87e0e8a20d3698eb713d7f8af690b9070ffc98c53e9078",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "generations-installation.csv",
+      "origine": "posts/nes-ici-ou-ailleurs-inegalites-nouvelle-caledonie/data/generations-installation.csv",
+      "sha256": "2841244d70fecc0f2de8b05ddf36b5bed164dcd2ba005159142df5352ecb645b",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "iris-origines.csv",
+      "origine": "posts/nes-ici-ou-ailleurs-inegalites-nouvelle-caledonie/data/iris-origines.csv",
+      "sha256": "f2f3f5627ba9713c9143550463ad8839b5f6c5b8aad1d626cf3bb2a1dcd1b04e",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "iris-origines.json",
+      "origine": "posts/nes-ici-ou-ailleurs-inegalites-nouvelle-caledonie/data/iris-origines.json",
+      "sha256": "65469c91fbb73bb5dc47b23fc899c43f60d38cd9325d05d32eaab7fe99bd0273",
+      "modifie_localement": false
+    }
+  ]
+}
