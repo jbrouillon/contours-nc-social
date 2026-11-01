@@ -44,8 +44,10 @@ python scripts/exporter_visuels.py html "$A/source.html" --sortie $A --prefixe i
   --formats vertical-9x16 --parametre folio=0 --force
 python scripts/exporter_visuels.py html "$A/source.html" --sortie $A --prefixe inegalites-revenus `
   --formats paysage-1.91x1 --slides 1 --force
-# Aperçu de l'article sur le site (images/previews/inegalites-revenus-nouvelle-caledonie-monde.png,
-# 1 200 × 630) : l'écran 06, le globe, en 1,91:1 ; copier apercu-06.png dans le dépôt du site.
+# L'écran 06 (le globe) en 1,91:1 illustre la carte du globe dans la galerie « Cartes et
+# visualisations » du site (images/previews/inegalites-revenus-nouvelle-caledonie-monde.png) ;
+# copier apercu-06.png dans le dépôt du site. L'aperçu de l'article, lui, est la figure de
+# l'échelle des niveaux de vie (scripts/prepare_social_previews.py du site).
 python scripts/exporter_visuels.py html "$A/source.html" --sortie _essais/apercu-inegalites --prefixe apercu `
   --formats paysage-1.91x1 --slides 6 --force
 # Visite guidée du globe (22,4 s d'animation, somme des étapes du croquis « globe-visite »),
