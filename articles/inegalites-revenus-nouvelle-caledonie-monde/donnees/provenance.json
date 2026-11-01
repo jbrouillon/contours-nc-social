@@ -1,0 +1,61 @@
+{
+  "site": "jbrouillon/contours-nc",
+  "commit": "183739acac12e227260f794cf259faebae516b46",
+  "importe_le": "2026-11-01T12:29:01+11:00",
+  "fichiers": [
+    {
+      "fichier": "deciles-nc.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/deciles-nc.csv",
+      "sha256": "2b5424530edbac46de7c969bedda445599bf7b587452249c11624e827173ed2c",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "deciles-france.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/deciles-france.csv",
+      "sha256": "7f725695a19ef36da3ef0e69f6b1163fd570aa77c54b96dec7244370cfb04230",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "indicateurs-nc.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/indicateurs-nc.csv",
+      "sha256": "880dff5e92ed31c90f7e9bed06386100446e471fe262aa7a3d57d43f3b2d794e",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "seuils-nc.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/seuils-nc.csv",
+      "sha256": "afed6ec515abcab4fde667af7383e04c1921269ba8e9d2494c564a4ad840fa33",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "niveaux-de-vie-nc.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/niveaux-de-vie-nc.csv",
+      "sha256": "ae3e0b34798319388754cd8cf7514c788e152570c4c2f66bc0467441e014bd19",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "gini-monde.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/gini-monde.csv",
+      "sha256": "fafcd88b0772474d222ac79d8777e2fef59d0829f8627f46500e8df9a603884b",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "indicateurs-ocde.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/indicateurs-ocde.csv",
+      "sha256": "8555493441509a8b1638888d3a98d5cc3ffb428cc2704ff3398d3aa4b4120924",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "gini-outre-mer.csv",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/gini-outre-mer.csv",
+      "sha256": "07063d0b6f584a91aa66b45802da7fa7ea920d0a64e3394c673134792706c9aa",
+      "modifie_localement": false
+    },
+    {
+      "fichier": "pays-monde.geojson",
+      "origine": "posts/inegalites-revenus-nouvelle-caledonie-monde/data/pays-monde.geojson",
+      "sha256": "e091732b8a3bab636e8d6260af89b757b74e94bab2484927ee6801714169127d",
+      "modifie_localement": false
+    }
+  ]
+}

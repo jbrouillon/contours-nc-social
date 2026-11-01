@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inégalités de revenus · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    /* Couleurs de l'article : rouge pour la Nouvelle-Calédonie, sépia pour la
+       France et les autres territoires. */
+    .big .is-nc { color: #c54832; }
+    .big .is-fr { color: #7b6a55; }
+    .note strong.is-nc { color: #c54832; }
+    .note strong.is-fr { color: #7b6a55; }
+    /* Deux chiffres comparés, chacun avec son libellé dessous. */
+    .duo { align-items: flex-start; display: flex; gap: calc(var(--s) * 36px); }
+    .duo .big { align-items: flex-start; flex: 1 1 0; flex-direction: column; gap: calc(var(--s) * 6px); }
+    .duo .big + .big { border-left: 3px dashed var(--rule); padding-left: calc(var(--s) * 36px); }
+    .duo .big small { font-size: calc(var(--s) * 28px); }
+    body.layout-link .duo { grid-area: big; }
+    .nw { white-space: nowrap; }
+    /* Écran final, sans figure : l'appel à lire l'article descend en bas. */
+    .cta-url { margin-top: auto; }
+  </style>
+</head>
+<body>
+  <!-- Carrousel « Inégalités de revenus » : le partage des revenus et la
+       France (écrans 01 à 04), les Outre-mer (05), le monde (06), l'OCDE (07),
+       puis l'écart de 2008 à 2019 et la crise de mai 2024 (08). Les chiffres
+       [data-v] sont calculés par visuels.js à partir de donnees/, copie des
+       fichiers publiés par l'article (voir donnees/provenance.json), avec les
+       règles d'arrondi du résumé « En bref » de l'article. -->
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Inégalités de revenus · 2019</span><span class="folio"></span></header>
+    <h1><span class="hide-tiktok">Sur 100&nbsp;francs, les 10&nbsp;% les plus aisés en reçoivent <span data-v="haut10_nb"></span>, les 10&nbsp;% les plus modestes <span data-v="bas10_nb"></span>.</span><span class="only-tiktok">100&nbsp;francs à partager&nbsp;: <span data-v="haut10_nb"></span> pour les plus aisés, <span data-v="bas10_nb"></span> pour les plus modestes.</span></h1>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-nc" data-v="bas10_f"></span><small>pour les 10&nbsp;% les plus modestes</small></p>
+      <p class="big is-compact"><span class="is-nc" data-v="haut10_f"></span><small>pour les 10&nbsp;% les plus aisés</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="partage" role="img" aria-label="Dix silhouettes, des 10 % les plus modestes aux 10 % les plus aisés, chacune sous une pile de francs : sur 100 francs de revenus en Nouvelle-Calédonie en 2019, la pile monte de quelques francs pour le premier dixième à plus d’un quart du total pour le dernier ; trait vert de l’égalité, 10 francs chacun"></svg>
+    </figure>
+    <p class="note">Soit <strong class="is-nc" data-v="rapport_haut_bas"></strong> plus. Si tout le monde avait le même revenu, chacun des dix groupes recevrait 10&nbsp;francs.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Revenus après impôts et prestations, Nouvelle-Calédonie, 2019<br>Isee, enquête Budget des familles · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Écarts</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Les 20&nbsp;% les plus aisés reçoivent <span data-v="s80_fois"></span> plus que les 20&nbsp;% les plus modestes.</span><span class="only-tiktok">Les 20&nbsp;% les plus aisés&nbsp;: <span data-v="s80_fois"></span> plus.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-nc" data-v="bas20"></span><small>du total pour les 20&nbsp;% les plus modestes</small></p>
+      <p class="big is-compact"><span class="is-nc" data-v="haut20"></span><small>pour les 20&nbsp;% les plus aisés</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="quintiles" role="img" aria-label="Cinq paires de piles de francs, une par cinquième de la population, à la même échelle : en rouge la Nouvelle-Calédonie en 2019, en sépia la France métropolitaine en 2018. La pile des 20 % les plus modestes est plus basse en Nouvelle-Calédonie qu’en France, celle des 20 % les plus aisés plus haute, au-delà de 40 francs ; trait vert de l’égalité, 20 francs par cinquième ; en légende, combien de fois plus reçoivent les 20 % les plus aisés dans chaque territoire"></svg>
+    </figure>
+    <p class="note">En France métropolitaine, c’est <strong class="is-fr" data-v="s80_france_fois"></strong> plus&nbsp;: un écart presque deux fois plus faible.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Part du total des revenus<br>Isee, 2019 · France&nbsp;: Insee, 2018 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow is-red">Pauvreté</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok"><span data-v="pauvrete"></span> des habitants vivent sous le seuil de pauvreté, deux fois plus qu’en France.</span><span class="only-tiktok">Sous le seuil de pauvreté&nbsp;: deux fois plus qu’en France.</span></h2>
+    <div class="duo">
+      <p class="big is-compact"><span class="is-nc" data-v="pauvrete"></span><small>en Nouvelle-Calédonie, 2019</small></p>
+      <p class="big is-compact"><span class="is-fr" data-v="pauvrete_france"></span><small>en France, <span data-v="annee_france"></span>, même seuil</small></p>
+    </div>
+    <figure class="figure">
+      <svg data-sketch="pauvrete" role="img" aria-label="Deux grilles de cent silhouettes, une par pour cent de la population : en rouge, les habitants de la Nouvelle-Calédonie sous le seuil de pauvreté en 2019 ; en sépia, ceux de la France, deux fois moins nombreux ; seuil fixé à la moitié du revenu qui partage la population en deux"></svg>
+    </figure>
+    <p class="note">Seuil&nbsp;: <strong class="is-nc" data-v="seuil"></strong> par mois pour une personne seule, la moitié du revenu qui partage la population en deux. <span class="hide-square">Cela représente <strong class="is-nc" data-v="population_pauvre"></strong> personnes.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Seuil&nbsp;: la moitié du revenu du milieu de l’échelle<br>Isee, 2019 · OCDE · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Où est l’écart&nbsp;?</span><span class="folio"></span></header>
+    <h2>L’écart avec la France vient surtout du bas de l’échelle.</h2>
+    <figure class="figure">
+      <svg data-sketch="haut-bas" role="img" aria-label="Deux comparaisons entre la Nouvelle-Calédonie en 2019 et la France. En haut de l’échelle, la part des revenus des 10 % les plus aisés : un peu plus élevée en Nouvelle-Calédonie. En bas de l’échelle, la part des habitants sous le seuil de pauvreté : deux fois plus élevée"></svg>
+    </figure>
+    <p class="note">Les plus aisés reçoivent à peine plus qu’en France&nbsp;; la pauvreté est deux fois plus fréquente.<span class="hide-square"> Les cinq outils de mesure de l’article vont dans le même sens.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Nouvelle-Calédonie&nbsp;: Isee, 2019<br>France&nbsp;: Banque mondiale et OCDE, 2023</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">France et Outre-mer</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Parmi la France et les Outre-mer comparés, seule la Guyane est plus inégalitaire.</span><span class="only-tiktok">France et Outre-mer&nbsp;: seule la Guyane fait plus.</span></h2>
+    <figure class="figure">
+      <svg data-sketch="outre-mer" role="img" aria-label="Barres de l’indice d’inégalité, de 0 à 1 : Guyane, Nouvelle-Calédonie, La Réunion, Guadeloupe et France métropolitaine, du plus élevé au plus bas"></svg>
+    </figure>
+    <p class="note">Indice d’inégalité&nbsp;: 0 si chacun a le même revenu, 1 si une seule personne a tout.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Calcul comparable à celui de la France<br>Isee, 2019 · Insee, 2017-2018</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Dans le monde</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok"><span data-v="monde_au_dessus"></span>&nbsp;pays sur <span data-v="n_monde"></span> seulement ont un écart plus grand qu’en Nouvelle-Calédonie.</span><span class="only-tiktok">Monde&nbsp;: <span data-v="monde_au_dessus"></span>&nbsp;pays sur <span data-v="n_monde"></span> ont un écart plus grand.</span></h2>
+    <figure class="figure">
+      <svg data-sketch="globe" data-centre="pacifique" role="img" aria-label="Globe centré sur le Pacifique, colorié du bleu au rouge selon l’écart entre les 20 % les plus aisés et les 20 % les plus modestes de chaque pays : la Nouvelle-Calédonie, cerclée, est en orange, dans l’avant-dernière classe ; l’Australie voisine est en vert"></svg>
+    </figure>
+    <p class="note">Du bleu au rouge, de l’écart le plus faible au plus grand entre les 20&nbsp;% les plus aisés et les 20&nbsp;% les plus modestes, dans <span data-v="n_monde"></span>&nbsp;pays.<span class="hide-square"> L’Australie voisine est en vert, comme la France.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Dernière enquête depuis 2010 · mesures différentes selon les pays<br>Banque mondiale, 2026 · Isee, 2019</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Face à l’OCDE</span><span class="folio"></span></header>
+    <h2><span class="hide-tiktok">Sur <span data-v="n_ocde"></span> pays suivis par l’OCDE, <span data-v="ocde_lettres"></span> seulement ont un écart plus grand que la Nouvelle-Calédonie.</span><span class="only-tiktok">OCDE&nbsp;: <span data-v="ocde_chiffre"></span> pays sur <span data-v="n_ocde"></span> ont un écart plus grand.</span></h2>
+    <figure class="figure">
+      <svg data-sketch="regles" role="img" aria-label="Un point par pays suivi par l’OCDE, d’autant plus à droite que les 20 % les plus aisés reçoivent plus que les 20 % les plus modestes. La Nouvelle-Calédonie, en rouge, est à droite de presque tous les pays ; seuls l’Afrique du Sud, le Costa Rica, le Brésil, le Chili et les États-Unis sont plus à droite ; la France, l’Australie et la Nouvelle-Zélande sont loin à gauche"></svg>
+    </figure>
+    <p class="note">L’écart mesuré&nbsp;: ce que reçoivent les 20&nbsp;% les plus aisés, comparé aux 20&nbsp;% les plus modestes.<span class="hide-square"> L’OCDE suit surtout des pays riches&nbsp;; l’Australie, la Nouvelle-Zélande et la France sont loin derrière.</span></p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Dernière année disponible selon les pays<br>OCDE · Isee, 2019 · calculs contours.nc</span></footer>
+  </article>
+
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Avant la crise</span><span class="folio"></span></header>
+    <h2>Des chiffres d’avant la crise de mai&nbsp;2024&nbsp;: de 2008 à 2019, les inégalités avaient un peu reculé.</h2>
+    <ul class="cta-list">
+      <li>Les cinq outils de mesure expliqués simplement</li>
+      <li>Un globe interactif pour comparer <span data-v="n_monde"></span>&nbsp;pays</li>
+      <li class="hide-square">Les données à télécharger</li>
+    </ul>
+    <p class="caveat">Les effets de la crise ne sont pas encore mesurés. Entre pays, les mesures diffèrent&nbsp;: retenez les grands écarts.</p>
+    <p class="cta-url"><strong>contours.nc</strong><span>Lien en bio · article, globe et données</span></p>
+    <p class="cta-actions">Enregistrez · Partagez</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Inégalités de revenus&nbsp;:<br>où se situe la Nouvelle-Calédonie&nbsp;?</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>

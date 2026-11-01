@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visite guidée du globe des inégalités · contours.nc</title>
+  <link rel="stylesheet" href="../../assets/css/campagne-article.css">
+  <style>
+    .big .is-nc { color: #c54832; }
+    /* Légende d'étape : titre puis texte, sur une hauteur fixe, pour que le
+       globe garde la même taille d'une étape à l'autre. */
+    .etape {
+      align-items: flex-start;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      gap: calc(var(--s) * 8px);
+      min-height: calc(var(--s) * 215px);
+    }
+    .etape small { font-size: calc(var(--s) * 36px); }
+  </style>
+</head>
+<body>
+  <!-- Visite guidée du globe pour la vidéo de la campagne « Face au monde » :
+       le globe, colorié selon l'écart entre les 20 % les plus aisés et les
+       20 % les plus modestes, va de la France à la Nouvelle-Calédonie, puis
+       montre l'Australie voisine. visuels.js expose window.visiteGlobe(p), p
+       de 0 à 1 ; scripts/produire_gif.py --image-par-image visiteGlobe
+       capture chaque image. Ouverte seule, la page montre l'état final. -->
+  <article class="slide" data-slide>
+    <header class="slide-head"><span class="eyebrow">Inégalités de revenus · monde</span></header>
+    <h1>Où se situe la Nouvelle-Calédonie&nbsp;?</h1>
+    <p class="big is-compact etape" data-etape><span class="is-nc" data-etape-titre><span data-v="monde_au_dessus"></span>&nbsp;sur&nbsp;<span data-v="n_monde"></span></span><small data-etape-texte>pays seulement ont un écart plus grand que la Nouvelle-Calédonie</small></p>
+    <figure class="figure">
+      <svg data-sketch="globe-visite" role="img" aria-label="Globe animé, colorié du bleu au rouge selon l’écart entre les 20 % les plus aisés et les 20 % les plus modestes de chaque pays : il part de la France, en vert, et tourne jusqu’à la Nouvelle-Calédonie, cerclée, en orange, où les 20 % les plus aisés reçoivent 8,4 fois plus que les 20 % les plus modestes ; l’Australie voisine est en vert ; seuls 35 pays sur 164 ont un écart plus grand"></svg>
+    </figure>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Dernière enquête depuis 2010 · mesures différentes selon les pays<br>Banque mondiale, 2026 · Isee, 2019</span></footer>
+  </article>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script src="../../assets/js/campagne-outils.js"></script>
+  <script src="visuels.js"></script>
+</body>
+</html>
