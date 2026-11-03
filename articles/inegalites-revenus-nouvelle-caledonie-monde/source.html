@@ -25,8 +25,9 @@
 </head>
 <body>
   <!-- Carrousel « Inégalités de revenus » : le partage des revenus et la
-       France (écrans 01 à 04), les Outre-mer (05), le monde (06), l'OCDE (07),
-       puis l'écart de 2008 à 2019 et la crise de mai 2024 (08). Les chiffres
+       France (écrans 01 à 04), les Outre-mer (05), l'OCDE (06), puis l'écart
+       de 2008 à 2019 et la crise de mai 2024 (07). Le globe, retiré du
+       carrousel, reste dans apercu-globe.html et visite-globe.html. Les chiffres
        [data-v] sont calculés par visuels.js à partir de donnees/, copie des
        fichiers publiés par l'article (voir donnees/provenance.json), avec les
        règles d'arrondi du résumé « En bref » de l'article. -->
@@ -85,22 +86,12 @@
 
   <article class="slide" data-slide>
     <header class="slide-head"><span class="eyebrow">France et Outre-mer</span><span class="folio"></span></header>
-    <h2><span class="hide-tiktok">Parmi la France et les Outre-mer comparés, seule la Guyane est plus inégalitaire.</span><span class="only-tiktok">France et Outre-mer&nbsp;: seule la Guyane fait plus.</span></h2>
+    <h2><span class="hide-tiktok">Parmi la France et les Outre-mer comparés, seule la Guyane a un écart plus grand.</span><span class="only-tiktok">France et Outre-mer&nbsp;: seule la Guyane fait plus.</span></h2>
     <figure class="figure">
-      <svg data-sketch="outre-mer" role="img" aria-label="Barres de l’indice d’inégalité, de 0 à 1 : Guyane, Nouvelle-Calédonie, La Réunion, Guadeloupe et France métropolitaine, du plus élevé au plus bas"></svg>
+      <svg data-sketch="outre-mer" role="img" aria-label="Barres : combien de fois plus reçoivent les 20 % les plus aisés que les 20 % les plus modestes, en Guyane, en Nouvelle-Calédonie, en Guadeloupe, en Martinique, à La Réunion et en France métropolitaine, du plus élevé au plus bas ; la Nouvelle-Calédonie, en rouge, est deuxième, juste derrière la Guyane, loin devant les autres territoires"></svg>
     </figure>
-    <p class="note">Indice d’inégalité&nbsp;: 0 si chacun a le même revenu, 1 si une seule personne a tout.</p>
-    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Calcul comparable à celui de la France<br>Isee, 2019 · Insee, 2017-2018</span></footer>
-  </article>
-
-  <article class="slide" data-slide>
-    <header class="slide-head"><span class="eyebrow">Dans le monde</span><span class="folio"></span></header>
-    <h2><span class="hide-tiktok"><span data-v="monde_au_dessus"></span>&nbsp;pays sur <span data-v="n_monde"></span> seulement ont un écart plus grand qu’en Nouvelle-Calédonie.</span><span class="only-tiktok">Monde&nbsp;: <span data-v="monde_au_dessus"></span>&nbsp;pays sur <span data-v="n_monde"></span> ont un écart plus grand.</span></h2>
-    <figure class="figure">
-      <svg data-sketch="globe" data-centre="pacifique" role="img" aria-label="Globe centré sur le Pacifique, colorié du bleu au rouge selon l’écart entre les 20 % les plus aisés et les 20 % les plus modestes de chaque pays : la Nouvelle-Calédonie, cerclée, est en orange, dans l’avant-dernière classe ; l’Australie voisine est en vert"></svg>
-    </figure>
-    <p class="note">Du bleu au rouge, de l’écart le plus faible au plus grand entre les 20&nbsp;% les plus aisés et les 20&nbsp;% les plus modestes, dans <span data-v="n_monde"></span>&nbsp;pays.<span class="hide-square"> L’Australie voisine est en vert, comme la France.</span></p>
-    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Dernière enquête depuis 2010 · mesures différentes selon les pays<br>Banque mondiale, 2026 · Isee, 2019</span></footer>
+    <p class="note">Comme pour l’Insee, on retire ici les produits du champ et de la pêche consommés par les familles&nbsp;: l’écart calédonien passe de <strong class="is-nc" data-v="s80_nb"></strong> à <strong class="is-nc" data-v="s80_om_fois"></strong>.</p>
+    <footer class="brandbar"><strong class="contours-brand">contours.nc</strong><span class="source">Écart entre les 20&nbsp;% les plus aisés et <span class="nw">les 20&nbsp;% les plus modestes</span><br>Isee, 2019 · Insee, 2017-2018</span></footer>
   </article>
 
   <article class="slide" data-slide>

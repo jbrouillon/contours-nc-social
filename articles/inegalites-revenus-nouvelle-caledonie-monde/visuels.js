@@ -207,32 +207,36 @@
     check(ratios[0] < 1.1 && ratios[0] === Math.min(...ratios), "Écran 04 : revoir « un peu plus »");
     check(Math.abs(ratios[2] - 2) < 0.1 && Math.abs(ratios[4] - 2) < 0.15, "Écran 04 : revoir « deux fois plus »");
 
-    // Écran 05 France et Outre-mer (définitions rapprochées) : pour l'indice de
-    // Gini, « seule la Guyane » fait plus ; « seule la Guyane est plus
-    // inégalitaire » : aucun autre territoire ne dépasse la
-    // Nouvelle-Calédonie, quel que soit l'indicateur.
+    // Écran 05 France et Outre-mer (définitions rapprochées, sans
+    // l'autoconsommation) : pour l'écart entre les 20 % les plus aisés et les
+    // 20 % les plus modestes, « seule la Guyane » fait plus, comme dans
+    // l'article (analysis.R) ; aucun autre territoire ne dépasse la
+    // Nouvelle-Calédonie, quel que soit l'indicateur. La valeur calédonienne
+    // du tableau est celle des indicateurs de l'article (« passe de 8,4 à
+    // 10,2 fois »).
     const om = (t) => {
       const row = data.outreMer.find((d) => d.territoire === t);
       check(row, `Territoire absent : ${t}`);
       return row;
     };
     const ncOm = om("Nouvelle-Calédonie");
-    const giniH = ncOm.gini;
-    const plus = data.outreMer.filter((d) => Number.isFinite(d.gini) && d.gini > giniH).map((d) => d.territoire);
+    const s80Om = ncOm.s80_s20;
+    check(Math.abs(s80Om - data.nc("s80_s20").nc_2019_harmonise) < 1e-9 && s80Om > s80, "Écran 05 : écart calédonien sans l'autoconsommation incohérent");
+    const plus = data.outreMer.filter((d) => Number.isFinite(d.s80_s20) && d.s80_s20 > s80Om).map((d) => d.territoire);
     check(plus.length === 1 && plus[0] === "Guyane", "Écran 05 : revoir « seule la Guyane »");
     ["gini", "s80_s20", "d9_d1"].forEach((k) => {
       const au = data.outreMer.filter((d) => Number.isFinite(d[k]) && d[k] > ncOm[k]).map((d) => d.territoire);
       check(au.every((t) => t === "Guyane"), `Écran 05 : ${k}, un autre territoire que la Guyane fait plus`);
     });
 
-    // Écran 06 et visite du globe (écart entre les 20 % les plus aisés et
-    // les 20 % les plus modestes, définition officielle : 8,4) : « 35 sur
-    // 164 » pays « seulement » ont un écart plus grand (comme l'article :
-    // « n'est dépassée que par 35 des 164 pays ») ; la France et l'Australie
-    // ont « un écart bien plus faible, en vert » (moins de 70 % de la valeur
+    // Aperçu et visite du globe (écart entre les 20 % les plus aisés et les
+    // 20 % les plus modestes, définition officielle : 8,4) : « 35 sur 164 »
+    // pays « seulement » ont un écart plus grand (comme l'article : « n'est
+    // dépassée que par 35 des 164 pays ») ; la France et l'Australie ont « un
+    // écart bien plus faible, en vert » (moins de 70 % de la valeur
     // calédonienne, dans les deux classes vertes du globe).
     const mondeAbove = data.monde.filter((d) => d.s80_s20 > s80);
-    check(mondeAbove.length / data.monde.length < 0.25, "Écran 06 : revoir « seulement »");
+    check(mondeAbove.length / data.monde.length < 0.25, "Globe : revoir « seulement »");
     ["FRA", "AUS"].forEach((code) => {
       const row = pays(data.monde, code);
       check(row.s80_s20 < 0.7 * s80, `Visite : ${code}, revoir « bien plus faible »`);
@@ -240,22 +244,22 @@
     });
     const giniNc = data.nc("gini").nc_2019;
 
-    // Écran 07 OCDE : pays au rapport S80/S20 plus élevé ; l'Australie, la
+    // Écran 06 OCDE : pays au rapport S80/S20 plus élevé ; l'Australie, la
     // Nouvelle-Zélande et la France « loin derrière » (moins de 70 %).
     const ocdeAbove = data.ocde.filter((d) => d.s80_s20 > s80);
-    check(ocdeAbove.length <= 6, "Écran 07 : revoir « seulement »");
+    check(ocdeAbove.length <= 6, "Écran 06 : revoir « seulement »");
     const voisins = ["AUS", "NZL", "FRA"].map((code) => pays(data.ocde, code));
-    voisins.forEach((d) => check(d.s80_s20 < 0.7 * s80, `Écran 07 : ${d.iso3} pas « loin derrière »`));
+    voisins.forEach((d) => check(d.s80_s20 < 0.7 * s80, `Écran 06 : ${d.iso3} pas « loin derrière »`));
 
-    // Écran 08 De 2008 à 2019, les inégalités ont « un peu reculé » : les cinq
+    // Écran 07 De 2008 à 2019, les inégalités ont « un peu reculé » : les cinq
     // outils baissent, l'indice de Gini de moins de 0,03, le taux de pauvreté
     // de moins d'un point (même contrôle qu'analysis.R).
     ["part_haut10", "s80_s20", "d9_d1", "gini", "pauvrete"].forEach((id) => {
       const row = data.nc(id);
-      check(Number.isFinite(row.nc_2008) && row.nc_2019 < row.nc_2008, `Écran 08 : ${id} n'a pas baissé`);
+      check(Number.isFinite(row.nc_2008) && row.nc_2019 < row.nc_2008, `Écran 07 : ${id} n'a pas baissé`);
     });
-    check(data.nc("gini").nc_2008 - giniNc < 0.03, "Écran 08 : revoir « un peu » (indice de Gini)");
-    check(data.nc("pauvrete").nc_2008 - pauvrete < 1, "Écran 08 : revoir « un peu » (pauvreté)");
+    check(data.nc("gini").nc_2008 - giniNc < 0.03, "Écran 07 : revoir « un peu » (indice de Gini)");
+    check(data.nc("pauvrete").nc_2008 - pauvrete < 1, "Écran 07 : revoir « un peu » (pauvreté)");
 
     return {
       bas10_nb: share(bas10),
@@ -266,7 +270,9 @@
       bas20: pct(bas20),
       haut20: pct(haut20),
       s80_fois: `${ratio(s80)} fois`,
+      s80_nb: ratio(s80),
       s80_france_fois: `${ratio(s80France)} fois`,
+      s80_om_fois: `${ratio(s80Om)} fois`,
       pauvrete: taux(pauvrete),
       pauvrete_france: taux(franceOcde.pauvrete),
       annee_france: String(franceOcde.annee),
@@ -642,7 +648,7 @@
 
     // Globe et échelle des couleurs, où se place la Nouvelle-Calédonie ;
     // centré sur l'Atlantique, ou sur le Pacifique avec data-centre="pacifique"
-    // (couverture de la campagne « monde »).
+    // (apercu-globe.html, image de la galerie du site).
     globe(svg, data, { rc, width, height, node }) {
       const size = fontSize(width, height);
       const legendH = size * 5.6;
@@ -665,8 +671,8 @@
     // dessine l'état p (capturé image par image par scripts/produire_gif.py) :
     // trajet d'une étape à l'autre, puis arrêt, pendant lequel le globe dérive
     // lentement, avec la légende de l'étape au-dessus ([data-etape-titre],
-    // [data-etape-texte]). Les légendes sont vérifiées dans values() (Écran 06
-    // et visite).
+    // [data-etape-texte]). Les légendes sont vérifiées dans values() (aperçu
+    // et visite du globe).
     "globe-visite"(svg, data, { rc, width, height, values: v }) {
       const size = fontSize(width, height);
       const legendH = size * 5.6;
@@ -808,12 +814,14 @@
       label(svg, "plus à droite, plus inégalitaire →", width, axisY + size * 2.6, { anchor: "end", size: size * 0.82, weight: 700, color: muted });
     },
 
-    // Indice de Gini de la France et des Outre-mer comparés par l'Isee.
+    // Écart entre les 20 % les plus aisés et les 20 % les plus modestes
+    // (rapport S80/S20) de la France et des Outre-mer comparés par l'Isee,
+    // Martinique comprise, sur l'échelle de la figure de l'article (0 à 12).
     "outre-mer"(svg, data, { rc, width, height }) {
       const size = fontSize(width, height);
-      const rows = data.outreMer.filter((d) => Number.isFinite(d.gini)).sort((a, b) => b.gini - a.gini);
+      const rows = data.outreMer.filter((d) => Number.isFinite(d.s80_s20)).sort((a, b) => b.s80_s20 - a.s80_s20);
       const labelW = Math.min(width * 0.4, textWidth("France métropolitaine", size) + size);
-      const x = d3.scaleLinear().domain([0, 0.5]).range([labelW, width - size * 3.4]);
+      const x = d3.scaleLinear().domain([0, 12]).range([labelW, width - textWidth("10,5 fois", size * 1.05) - size]);
       const step = height / rows.length;
       const barH = Math.min(step * 0.56, size * 1.9);
       rows.forEach((d, i) => {
@@ -821,11 +829,11 @@
         const isNc = d.territoire === "Nouvelle-Calédonie";
         const color = isNc ? colorNc : colorOther;
         label(svg, d.territoire, labelW - size * 0.6, cy, { anchor: "end", size: isNc ? size : size * 0.92, weight: 800, color: isNc ? hatchColor(colorNc) : ink });
-        svg.append("rect").attr("x", x(0)).attr("y", cy - barH / 2).attr("width", x(d.gini) - x(0)).attr("height", barH).attr("fill", color).attr("fill-opacity", isNc ? 0.2 : 0.12);
-        roughRect(svg, rc, x(0), cy - barH / 2, x(d.gini) - x(0), barH, {
-          fill: color, fillStyle: "hachure", hachureGap: Math.max(4, barH / 5), fillWeight: 1.2, stroke: hatchColor(color), strokeWidth: isNc ? 2.2 : 1.4, seed: `om-${i}`
+        svg.append("rect").attr("x", x(0)).attr("y", cy - barH / 2).attr("width", x(d.s80_s20) - x(0)).attr("height", barH).attr("fill", color).attr("fill-opacity", isNc ? 0.2 : 0.12);
+        roughRect(svg, rc, x(0), cy - barH / 2, x(d.s80_s20) - x(0), barH, {
+          fill: color, fillStyle: "hachure", hachureGap: Math.max(4, barH / 5), fillWeight: 1.2, stroke: hatchColor(color), strokeWidth: isNc ? 2.2 : 1.4, seed: `om-${d.territoire}`
         });
-        label(svg, gini(d.gini), x(d.gini) + 12, cy, { size: size * 1.05, weight: 800, color: hatchColor(color) });
+        label(svg, `${ratio(d.s80_s20)} fois`, x(d.s80_s20) + 12, cy, { size: size * 1.05, weight: 800, color: hatchColor(color) });
       });
       svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", 0).attr("y2", height).attr("stroke", ink).attr("stroke-width", 1.4);
     }
